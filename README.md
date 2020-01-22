@@ -33,13 +33,13 @@ In-store data:
 1. Error checking: make sure the genomic coordinates point to the damage pattern.
    - If not, user can flag "f" to ignore and force to proceed.
    - Give percentage of excluded data
-2. Calculate GC and G content at various width of the genome.
-3. Seqlogos before kmer filtration
+2. Calculate GC and G content at various width of the damage.
+3. Seqlogos before kmer filtration.
 4. Kmer filtration
    - Give percentage of excluded data:
-     - Position where kmer is not possible to form
-     - Overlapping kmers
-     - Total excluded data
+     - Position where kmer is not possible to form.
+     - Overlapping kmers.
+     - Total percentage of excluded data.
 5. Provide score to each kmer pattern
    - Z score
    - p-value
