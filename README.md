@@ -41,7 +41,9 @@ In-store data:
      - Position where kmer is not possible to form.
      - Overlapping kmers.
      - Total percentage of excluded data.
-5. Provide score to each kmer pattern
+5. Update seqlogos and GC and G percentage.
+6. Provide score to each kmer pattern
    - Z score
    - p-value
-6. Output a csv file containing kmers, damage count, control count, fold change, p value, and Z score.
+7. Output a csv file containing kmers, damage count, control count, fold change, p value, and Z score.
+
