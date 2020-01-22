@@ -23,7 +23,7 @@ print(dt)
 5. Selection of genome
    - If genome of interest is not available from the selection, user can provide a genome sequence in a single fasta file where each header must contain only chromosome name just like in the genomic coordinate table.
 
-In-store data:
+In-store data:  
 1. Human genome hg19 and hg38.
 2. GC content at various width of the genome.
 3. G content at various width of the genome.
