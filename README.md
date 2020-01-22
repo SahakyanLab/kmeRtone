@@ -21,11 +21,26 @@ print(dt)
 3. Location of control regions: a vector e.g c(80, 500)
 4. Size of kmer
 5. Selection of genome
-   - If genome of interest is not available from the selection, provide a genome sequence in a single fasta file where each header must contain only chromosome name just like in the genomic coordinate table.
+   - If genome of interest is not available from the selection, user can provide a genome sequence in a single fasta file where each header must contain only chromosome name just like in the genomic coordinate table.
 
 In-store data:
-1. Human genome hg19 and hg38
+1. Human genome hg19 and hg38.
+2. GC content at various width of the genome.
+3. G content at various width of the genome.
 2. Data for analysis e.g. location of transcription start site, G4, etc.
 
 ## Kmertone Workflow
 1. Error checking: make sure the genomic coordinates point to the damage pattern.
+   - If not, user can flag "f" to ignore and force to proceed.
+   - Give percentage of excluded data
+2. Calculate GC and G content at various width of the genome.
+3. Seqlogos before kmer filtration
+4. Kmer filtration
+   - Give percentage of excluded data:
+     - Position where kmer is not possible to form
+     - Overlapping kmers
+     - Total excluded data
+5. Provide score to each kmer pattern
+   - Z score
+   - p-value
+6. Output a csv file containing kmers, damage count, control count, fold change, p value, and Z score.
