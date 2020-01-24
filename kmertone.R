@@ -1,4 +1,4 @@
-kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL, damage.pattern,
+kmertone <- function(genomic.coordinate, genome.name="GRCh38", genome.path=NULL, damage.pattern,
                      k.size, control.region, directionality.mode, ncpu=1) {
   
   # this is the only function user can call. The rest are internal functions
@@ -42,8 +42,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL,
   
   ## Dependant libraries #########################################################
   suppressPackageStartupMessages( library(data.table) )
-  suppressPackageStartupMessages( library(R.utils)    ) # data.table dependency
-  
+
   ## Parallel setup ##############################################################
   if (ncpu > 1) {
     source("lib/guf_doParallelsetup_nofun.R")
@@ -63,10 +62,6 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL,
   } else if (genome.name == "GRCh38") {
     genome.path = "data/GRCh38/"
   }
-  
-  chromosome.list = list.files(genome.path)
-  chromosome.names = list.files(genome.path)
-  
   
   # ---------------- GENOMIC COORDINATE --------------------------------------------------
 

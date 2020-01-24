@@ -6,3 +6,4 @@
 !lib/
 !README.md
 !*.sh
+!*.cpp

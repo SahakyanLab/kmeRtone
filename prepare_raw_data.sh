@@ -34,4 +34,4 @@ mv chr*.fa.gz data/GRCh37
 
 wget ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2585nnn/GSM2585711/suppl/GSM2585711%5FG%2D6%2D4A22%2E1%2Ecu%2Ebo%2Ehg19%2EcoToBa%2EcoToBe%2EunSo%2EcoBeToSiFr%2EslBeb6%2EcoToFiRa10%2EsoBe%2EcoBeToFa%2EgePyDi%2EsoBe%2Ebed%2Egz
 
-mv *.bd.gz data/
+mv *.bed.gz data/
