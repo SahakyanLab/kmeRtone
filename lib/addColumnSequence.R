@@ -1,6 +1,9 @@
 addColumnSequence <- function(genomic.coordinate, genome.path, chromosome.suffix=".fa.gz", ncpu=1) {
   # Because damage sequence is expected to be 1 or 2, we can do vectorisation of 
   # substring() function and get away from memory problem.
+  #
+  # Because data.table is already multithreading, we can only see faster speed after 10 mil table row 
+  # when using foreach loop
   
   dt <- genomic.coordinate
   
@@ -13,13 +16,11 @@ addColumnSequence <- function(genomic.coordinate, genome.path, chromosome.suffix
   
   if (ncpu == 1) {
     
-    chromosome.names <- dt[, unique(chromosome)]
+    # get sequence
+    dt[, sequence := readGenome(genome.path, chromosome, start, end, form = "string"), by = chromosome]
     
-    for (chr in chromosome.names) {
-      
-      dt[chromosome == chr, sequence := readGenome(genome.path, chr, start, end, form = "string")]
-      
-    }
+    # reverse complement for minus strand
+    dt[strand == "-", sequence := reverseComplement(sequence, form = "string")]
     
   } else {
     
@@ -42,34 +43,22 @@ addColumnSequence <- function(genomic.coordinate, genome.path, chromosome.suffix
     ith <- c(1, cumsum(dt.segment) + 1)[1:ncpu]
     jth <- cumsum(dt.segment)
     
-    dt[, sequence := NA]
+    dt.list <- lapply(1:length(ith), function(i) dt[ ith[i]:jth[i] ])
     
     # map the sequence
-    dt[,
-       sequence := foreach(ith=ith, jth=jth, .combine = "c", .packages = "data.table",
-                           .export = c("readGenome", "reverseComplement", "genome.path",
-                                       "chromosome.suffix")) %dopar% {
-                             
-                             dna.seq <- lapply(ith:jth, function(i) {
-                               
-                               dna.seq <- readGenome(genome.path, chromosome[i], start[i], end[i], chromosome.suffix)
-                               
-                               # if - strand, reverse complement
-                               if (strand[i] == "-") {
-                                 dna.seq <- reverseComplement(dna.seq)
-                               }
-                               
-                               # if more than one bases, collapse to string
-                               if (end[i] - start[i] + 1 > 1) {
-                                 dna.seq <- paste(dna.seq, collapse = "")
-                               }
-                               
-                               return(dna.seq)
-                             })
-                             
-                             return(dna.seq)
-                           }
-       ]
+    
+    dt <- foreach(dt=dt.list, .combine = "rbind", .packages = "data.table",
+            .export = c("readGenome", "reverseComplement", "chromosome.suffix")) %dopar% {
+      
+      # get sequence
+      dt[, sequence := readGenome(genome.path, chromosome, start, end, form = "string"),
+         by = chromosome]
+      
+      # reverse complement for minus strand
+      dt[strand == "-", sequence := reverseComplement(sequence, form = "string")]
+      
+      return(dt)
+    }
     
     stopCluster(cl)
     
