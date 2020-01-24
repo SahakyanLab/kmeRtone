@@ -1,12 +1,11 @@
-kmertone <- function(genomic.coordinate, genome.name, genome.path=NULL, damage.pattern,
+kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL, damage.pattern,
                      k.size, control.region, directionality.mode, ncpu=1) {
   
   # this is the only function user can call. The rest are internal functions
   # genomic.coordinate     A data.table of genomic coordinate
-  # genome.name            Name of available genome: hg19 or hg38
-  # genome.path            If provided genome is not available, user can input a single
-  #                        fasta file containing all chromosome sequences with chromosome
-  #                        names as the headers.
+  # genome.name            Name of available genome: GRCh37 or GRCh38
+  # genome.path            If provided genome is not available, user can input a path to
+  #                        a folder containing chromosome fasta files.
   # damage.pattern         A single damage pattern in a string format.
   # k.size                 The size of a kmer
   # control.region         A coordinate in a vector format i.e. c(start, end) pointing to
@@ -14,19 +13,23 @@ kmertone <- function(genomic.coordinate, genome.name, genome.path=NULL, damage.p
   # directionality.mode    Should the analysis be in a "sensitive" or "insensitive" mode for
   #                        strand directionalty?
   
+  # genome.path
+  # To make thing simpler, a genome folder must contain fasta files with chromosome name
+  # as its filename. The chromosome name must be the same like in the genomic coordinate
+  # table. A fasta file must contain a single header with consistent number of bases each 
+  # line. It can be in a compressed or non-compressed form. A compressed file is recommended
+  # as it is faster to load.
+  
   # location of the TrantoR library
   TrantoRLib = "lib/TrantoRext/"
   
   ## Dependant functions #########################################################
-  source("lib/fsa2fastas.R")
-  source("lib/loadGenomeAsList.R")
+  source("lib/readGenome.R")
   source("lib/genomeSequenceMapping.R")
   source("lib/reverseComplement.R")
   
   # Dependant functions from the TrantorR library
-  source(paste0(TrantoRLib, "GEN_readfasta.R"))
-  source(paste0(TrantoRLib, "UTIL_readLinesFast.R"))
-  source(paste0(TrantoRLib, "GEN_loadGenome.R"))
+  
   
   # Task specific dependant functions
   source("lib/getGenome.R")
@@ -39,6 +42,7 @@ kmertone <- function(genomic.coordinate, genome.name, genome.path=NULL, damage.p
   
   ## Dependant libraries #########################################################
   suppressPackageStartupMessages( library(data.table) )
+  suppressPackageStartupMessages( library(R.utils)    ) # data.table dependency
   
   ## Parallel setup ##############################################################
   if (ncpu > 1) {
@@ -49,9 +53,20 @@ kmertone <- function(genomic.coordinate, genome.name, genome.path=NULL, damage.p
   ## Directory setup #############################################################
   suppressWarnings(dir.create("data"))
   
+  
+  
+  
   # ---------------- GENOME -------------------------------------------------------------
   
-  genome = getGenome(genome.name, genome.path)
+  if (genome.name == "GRCh37") {
+    genome.path = "data/GRCh37/"
+  } else if (genome.name == "GRCh38") {
+    genome.path = "data/GRCh38/"
+  }
+  
+  chromosome.list = list.files(genome.path)
+  chromosome.names = list.files(genome.path)
+  
   
   # ---------------- GENOMIC COORDINATE --------------------------------------------------
 
@@ -60,6 +75,7 @@ kmertone <- function(genomic.coordinate, genome.name, genome.path=NULL, damage.p
   
   # check the table
   checkCoordinate(dt, genome, damage.pattern)
+  
   
   # ---------------- PRE-ANALYSIS --------------------------------------------------------
   # GC and G content at various width
