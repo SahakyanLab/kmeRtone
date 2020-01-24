@@ -1,8 +1,10 @@
 addColumnSequence <- function(genomic.coordinate, genome.path, chromosome.suffix=".fa.gz", ncpu=1) {
+  # Because damage sequence is expected to be 1 or 2, we can do vectorisation of 
+  # substring() function and get away from memory problem.
   
   dt <- genomic.coordinate
   
-  # expand "*" to "+" and "-"
+  # expand "*" to "+" and "-" if any
   if (nrow(dt[strand == "*"]) > 0) {
     dt <- rbind(dt[strand %in% c("+", "-")],
                 dt[strand == "*"][, strand := "+"],
@@ -11,23 +13,13 @@ addColumnSequence <- function(genomic.coordinate, genome.path, chromosome.suffix
   
   if (ncpu == 1) {
     
-    dt[, sequence := lapply(1:.N, function(i) {
+    chromosome.names <- dt[, unique(chromosome)]
+    
+    for (chr in chromosome.names) {
       
-      dna.seq <- readGenome(genome.path, chromosome[i], start[i], end[i], chromosome.suffix)
+      dt[chromosome == chr, sequence := readGenome(genome.path, chr, start, end, form = "string")]
       
-      # if - strand, reverse complement
-      if (strand[i] == "-") {
-        dna.seq <- reverseComplement(dna.seq)
-      }
-      
-      # if more than one bases, collapse to string
-      if (end[i] - start[i] + 1 > 1) {
-        dna.seq <- paste(dna.seq, collapse = "")
-      }
-      
-      return(dna.seq)
-      
-    })]
+    }
     
   } else {
     

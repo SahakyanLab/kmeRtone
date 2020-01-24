@@ -1,4 +1,5 @@
-readGenome <- function(genome.path, chromosome, start, end, suffix=".fa.gz") {
+readGenome <- function(genome.path, chromosome, start, end, suffix=".fa.gz",
+                       form="vector", case="upper") {
   # THE COMPARISON
   # GEN_loadGenome cannot accepts .gz file which load way faster than the
   # uncompressed counterpart.
@@ -18,6 +19,11 @@ readGenome <- function(genome.path, chromosome, start, end, suffix=".fa.gz") {
   # - will output character(0) if index out of range
   #    > to give a friendly error require to calculate total number of lines,
   #      which at the moment is slow.
+  #
+  # Arguement
+  # form       "vector" or "string"
+  #             "string" support multiple start and end for vectorisation
+  # case       "original", "upper", or "lower"
   
   # get chromosome path
   chromosome.path <- paste0(genome.path, chromosome, suffix)
@@ -35,15 +41,19 @@ readGenome <- function(genome.path, chromosome, start, end, suffix=".fa.gz") {
   # ## length of sequence
   # DNA.length <- (bases.per.line * last.line-1) + bases.at.last.line
   
+  # get min start and max start number
+  min.start <- min(start)
+  max.end <- max(end)
+  
   # which line does the start coordinate located
-  line.start <- start %/% bases.per.line
-  if ( start %% bases.per.line > 0 ) {
+  line.start <- min.start %/% bases.per.line
+  if ( min.start %% bases.per.line > 0 ) {
     line.start <- line.start + 1
   }
   
   # which line does the end coordinate located
-  line.end <- end %/% bases.per.line
-  if ( end %% bases.per.line > 0 ) {
+  line.end <- max.end %/% bases.per.line
+  if ( max.end %% bases.per.line > 0 ) {
     line.end <- line.end + 1
   }
   
@@ -54,18 +64,38 @@ readGenome <- function(genome.path, chromosome, start, end, suffix=".fa.gz") {
   # line to skip always plus one to skip a header
   dna.segment <- scan(chromosome.path, "", skip = line.to.skip+1, nlines = total.lines, quiet = T)
   
-  dna.segment <- unlist( strsplit(dna.segment, "") )
+  if (form == "vector") {
+    
+    dna.segment <- unlist( strsplit(dna.segment, "") )
+    
+  } else if (form == "string") {
+
+    dna.segment <- paste(dna.segment, collapse = "")
+    
+  }
   
   # start and end index at dna segment
   idx.start <- start - (line.to.skip * bases.per.line)
   idx.end <- end - (line.to.skip * bases.per.line)
   
   # requested dna sequence
-  dna.seq <- dna.segment[ idx.start:idx.end ]
   
-  # because there is a convention of upper and lowercase, change all to upper
-  dna.seq <- toupper(dna.seq)
+  if (form == "vector") {
+    
+    dna.seq <- dna.segment[ idx.start:idx.end ]
+    
+  } else if (form == "string") {
+    
+    dna.seq <- substring(dna.segment, idx.start, idx.end)
 
+  }
+  
+  # because there is a convention of upper and lowercase...
+  if (case == "upper") {
+    dna.seq <- toupper(dna.seq)
+  } else if (case == "lower") {
+    dna.seq <- tolower(dna.seq)
+  }
   
   return(dna.seq)
 }
