@@ -62,6 +62,9 @@ readGenome <- function(genome.path, chromosome, start, end, suffix=".fa.gz") {
   
   # requested dna sequence
   dna.seq <- dna.segment[ idx.start:idx.end ]
+  
+  # because there is a convention of upper and lowercase, change all to upper
+  dna.seq <- toupper(dna.seq)
 
   
   return(dna.seq)
