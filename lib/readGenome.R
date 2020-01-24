@@ -25,6 +25,9 @@ readGenome <- function(genome.path, chromosome, start, end, suffix=".fa.gz",
   #             "string" support multiple start and end for vectorisation
   # case       "original", "upper", or "lower"
   
+  # Dependency: stringi - for speed
+  require(stringi)
+  
   # get chromosome path
   chromosome.path <- paste0(genome.path, chromosome, suffix)
 
@@ -86,15 +89,15 @@ readGenome <- function(genome.path, chromosome, start, end, suffix=".fa.gz",
     
   } else if (form == "string") {
     
-    dna.seq <- substring(dna.segment, idx.start, idx.end)
+    dna.seq <- stri_sub(dna.segment, idx.start, idx.end)
 
   }
   
   # because there is a convention of upper and lowercase...
   if (case == "upper") {
-    dna.seq <- toupper(dna.seq)
+    dna.seq <- stri_trans_toupper(dna.seq)
   } else if (case == "lower") {
-    dna.seq <- tolower(dna.seq)
+    dna.seq <- stri_trans_tolower(dna.seq)
   }
   
   return(dna.seq)

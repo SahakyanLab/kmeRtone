@@ -1,4 +1,4 @@
-kmertone <- function(genomic.coordinate, genome.name="GRCh38", genome.path=NULL, damage.pattern,
+kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL, damage.pattern,
                      k.size, control.region, directionality.mode, ncpu=1) {
   
   # this is the only function user can call. The rest are internal functions
@@ -25,7 +25,6 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh38", genome.path=NULL,
   
   ## Dependant functions #########################################################
   source("lib/readGenome.R")
-  source("lib/genomeSequenceMapping.R")
   source("lib/reverseComplement.R")
   
   # Dependant functions from the TrantorR library
@@ -42,6 +41,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh38", genome.path=NULL,
   
   ## Dependant libraries #########################################################
   suppressPackageStartupMessages( library(data.table) )
+  suppressPackageStartupMessages( library(stringi)    )
 
   ## Parallel setup ##############################################################
   if (ncpu > 1) {
