@@ -21,7 +21,7 @@ print(dt)
 3. Location of control regions: a vector e.g c(80, 500)
 4. Size of kmer
 5. Selection of genome
-   - If genome of interest is not available from the selection, user can provide a genome sequence in a single fasta file where each header must contain only chromosome name just like in the genomic coordinate table.
+   - If genome of interest is not available from the selection, user can provide a path to a genome folder containing chromosome sequence.
 
 
 In-store data:  
