@@ -14,7 +14,6 @@ gzip -9 *.fa
 mv chrMT.fa.gz chrM.fa.gz
 mv chr*.fa.gz data/GRCh38
 
-
 # Download and prepare genome GRCh37
 mkdir data/GRCh37
 for i in $chr; do

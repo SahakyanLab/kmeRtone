@@ -1,48 +1,56 @@
-readGenome <- function(genome.path, chromosome, start, end, suffix=".fa.gz",
-                       form="vector", case="upper") {
-  # THE COMPARISON
-  # GEN_loadGenome cannot accepts .gz file which load way faster than the
-  # uncompressed counterpart.
-  # Reason: GEN_loadGenome depends on UTIL_readLinesFast which uses readChar().
-  #         The size of compressed file will underestimate the number of
-  #         character for the readChar function.
-  # This readGenome() function uses a bit slower function (scan vs. readChar)
-  # to read the file but the compressed file makes it ~3x faster than GEN_loadGenome.
-  # I expect by using Rcpp, this function can perform even much better.
-  # 
+readGenome <- function(chromosome, start, end, form="vector", case="upper",
+         genome.path=genome.PATH, prefix="", suffix=".fa.gz",
+         FULL.PATH=NULL, size=F) {
   # This function...
   # - load on demand
   #    > only load a specific requested sequence
   # - it's core function, scan() become noticeably slow when requesting sequence
-  #   at line >1e+6 of fasta file
-  #    > maybe Rcpp can speed things up
-  # - will output character(0) if index out of range
+  #   at line >1,000,000 of fasta file
+  #    > maybe Rcpp can speed things up - 
+  # - will output character(0) if index out of range or NA if there is an empty last line
   #    > to give a friendly error require to calculate total number of lines,
   #      which at the moment is slow.
   #
   # Arguement
   # form       "vector" or "string"
-  #             "string" support multiple start and end for vectorisation
+  #            "string" support multiple start and end for vectorisation
   # case       "original", "upper", or "lower"
   
-  # Dependency: stringi - for speed
-  require(stringi)
+  # Dependency: R.utils
   
-  # get chromosome path
-  chromosome.path <- paste0(genome.path, chromosome, suffix)
-
+  suppressPackageStartupMessages( require(R.utils) ) 
+  
+  if (is.null(FULL.PATH)) {
+    # get chromosome path
+    chromosome.path <- paste0(genome.path, prefix, chromosome, suffix) 
+  } else {
+    chromosome.path <- FULL.PATH
+  }
+  
   # get bases number per line
   bases.per.line <- nchar(scan(chromosome.path, "", skip = 1, nlines = 1, quiet = T))
   
-  # # calculate sequence length
-  # ## last line number
-  # last.line <- countLines(chromosome.path)[1] # noticably SLOW!
-  # 
-  # ## number of bases at last line
-  # bases.at.last.line <- nchar(scan(chromosome.path, "", skip = last.line-1, nlines = 1, quiet = T))
-  # 
-  # ## length of sequence
-  # DNA.length <- (bases.per.line * last.line-1) + bases.at.last.line
+  # calculate sequence length
+  if (size == TRUE){
+    
+    # last line number
+    last.line <- length(count.fields(chromosome.path, skip = 1))
+    
+    # number of bases at last line
+    bases.at.last.line <- nchar(scan(chromosome.path, "", skip = last.line, nlines = 1, quiet = T))
+    
+    # length of sequence
+    DNA.length <- (bases.per.line * (last.line-1)) + bases.at.last.line
+    
+    return(DNA.length)
+  }
+  
+  # coordinate checking
+  if (sum(start > end) > 0) {
+    stop("End coordinate cannot be bigger than the start.")
+  } else if (start < 0 | end < 0) {
+    stop("Out of range genomic coordinate.")
+  }
   
   # get min start and max start number
   min.start <- min(start)
@@ -63,35 +71,19 @@ readGenome <- function(genome.path, chromosome, start, end, suffix=".fa.gz",
   line.to.skip <- line.start - 1
   total.lines <- line.end - line.start + 1
   
-  # fetch DNA segment which contains the resuested DNA sequence
+  # fetch DNA segment which contains the requested DNA sequence
   # line to skip always plus one to skip a header
   dna.segment <- scan(chromosome.path, "", skip = line.to.skip+1, nlines = total.lines, quiet = T)
   
-  if (form == "vector") {
-    
-    dna.segment <- unlist( strsplit(dna.segment, "") )
-    
-  } else if (form == "string") {
-
-    dna.segment <- paste(dna.segment, collapse = "")
-    
-  }
+  # concatenate the lines
+  dna.segment <- paste(dna.segment, collapse = "")
   
   # start and end index at dna segment
   idx.start <- start - (line.to.skip * bases.per.line)
   idx.end <- end - (line.to.skip * bases.per.line)
   
   # requested dna sequence
-  
-  if (form == "vector") {
-    
-    dna.seq <- dna.segment[ idx.start:idx.end ]
-    
-  } else if (form == "string") {
-    
-    dna.seq <- stri_sub(dna.segment, idx.start, idx.end)
-
-  }
+  dna.seq <- substring(dna.segment, idx.start, idx.end)
   
   # because there is a convention of upper and lowercase...
   if (case == "upper") {
@@ -99,6 +91,11 @@ readGenome <- function(genome.path, chromosome, start, end, suffix=".fa.gz",
   } else if (case == "lower") {
     dna.seq <- stri_trans_tolower(dna.seq)
   }
+  
+  if (form == "vector") {
+    dna.seq <- strsplit(dna.seq, "")
+    if (length(dna.seq) == 1) dna.seq <- unlist(dna.seq)
+  } 
   
   return(dna.seq)
 }

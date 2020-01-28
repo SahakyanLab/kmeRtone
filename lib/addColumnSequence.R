@@ -1,14 +1,19 @@
-addColumnSequence <- function(genomic.coordinate, genome.path, chromosome.suffix=".fa.gz", ncpu=1) {
+addColumnSequence <- function(genomic.coordinate, ncpu=NCPU, ...) {
   # Because damage sequence is expected to be 1 or 2, we can do vectorisation of 
   # substring() function and get away from memory problem.
   #
-  # Because data.table is already multithreading, we can only see faster speed after 10 mil table row 
+  # Because data.table is already multithreading, we can only see faster speed after 1M table row 
   # when using foreach loop
   
   dt <- genomic.coordinate
+
+  # sort
+  setkey(dt, chromosome, start, end)
   
   # expand "*" to "+" and "-" if any
   if (nrow(dt[strand == "*"]) > 0) {
+    message("WARNING! There is same genomic coordinate on plus and minus strands.")
+    message("         Update by reference won't work. You need to assign object.")
     dt <- rbind(dt[strand %in% c("+", "-")],
                 dt[strand == "*"][, strand := "+"],
                 dt[strand == "*"][, strand := "-"])
@@ -17,18 +22,12 @@ addColumnSequence <- function(genomic.coordinate, genome.path, chromosome.suffix
   if (ncpu == 1) {
     
     # get sequence
-    dt[, sequence := readGenome(genome.path, chromosome, start, end, form = "string"), by = chromosome]
+    dt[, sequence := readGenome(chromosome, start, end, form = "string", ...), by = chromosome]
     
     # reverse complement for minus strand
     dt[strand == "-", sequence := reverseComplement(sequence, form = "string")]
     
   } else {
-    
-    require(foreach)
-    require(doParallel)
-    
-    cl <- makeCluster(ncpu)
-    registerDoParallel(cl)
     
     # distribute rows to cpu
     total.rows <- nrow(dt)
@@ -47,20 +46,19 @@ addColumnSequence <- function(genomic.coordinate, genome.path, chromosome.suffix
     
     # map the sequence
     
-    dt <- foreach(dt=dt.list, .combine = "rbind", .packages = "data.table",
-            .export = c("readGenome", "reverseComplement", "chromosome.suffix")) %dopar% {
+    seqs <- foreach(dt=dt.list, .combine = "c") %dopar% {
       
       # get sequence
-      dt[, sequence := readGenome(genome.path, chromosome, start, end, form = "string"),
+      dt[, sequence := readGenome(chromosome, start, end, form = "string", ...),
          by = chromosome]
       
       # reverse complement for minus strand
       dt[strand == "-", sequence := reverseComplement(sequence, form = "string")]
       
-      return(dt)
+      return(dt[, sequence])
     }
     
-    stopCluster(cl)
+    dt[, sequence := seqs]
     
   }
   
