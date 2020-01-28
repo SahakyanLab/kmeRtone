@@ -3,7 +3,8 @@
 
 # except
 !*.R
-!lib/
+!lib/*
+!lib/*/
 !README.md
 !*.sh
 !*.cpp
