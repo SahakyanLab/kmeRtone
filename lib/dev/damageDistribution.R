@@ -1,0 +1,7 @@
+damageDistribution <- function(genomic.coordinate) {
+  
+  
+  
+  
+  
+}

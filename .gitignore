@@ -1,10 +1,6 @@
-# ignore everything
-*
-
-# except
-!*.R
-!lib/*
-!lib/*/
-!README.md
-!*.sh
-!*.cpp
+# ignore
+data/
+*.Rproj
+.Rhistory
+.DS_Store
+.Rproj.user/
