@@ -1,5 +1,5 @@
 readGenome <- function(chromosome, start, end, form="vector", case="upper",
-         genome.path=genome.PATH, prefix="", suffix=".fa.gz",
+         genome.path, prefix="", suffix=".fa.gz",
          FULL.PATH=NULL, size=F) {
   # This function...
   # - load on demand
@@ -16,9 +16,7 @@ readGenome <- function(chromosome, start, end, form="vector", case="upper",
   #            "string" support multiple start and end for vectorisation
   # case       "original", "upper", or "lower"
   
-  # Dependency: R.utils
-  
-  suppressPackageStartupMessages( require(R.utils) ) 
+  # Dependencies: 
   
   if (is.null(FULL.PATH)) {
     # get chromosome path
@@ -48,7 +46,7 @@ readGenome <- function(chromosome, start, end, form="vector", case="upper",
   # coordinate checking
   if (sum(start > end) > 0) {
     stop("End coordinate cannot be bigger than the start.")
-  } else if (start < 0 | end < 0) {
+  } else if (sum(start < 0 | end < 0) > 0) {
     stop("Out of range genomic coordinate.")
   }
   
@@ -87,9 +85,9 @@ readGenome <- function(chromosome, start, end, form="vector", case="upper",
   
   # because there is a convention of upper and lowercase...
   if (case == "upper") {
-    dna.seq <- stri_trans_toupper(dna.seq)
+    dna.seq <- toupper(dna.seq)
   } else if (case == "lower") {
-    dna.seq <- stri_trans_tolower(dna.seq)
+    dna.seq <- tolower(dna.seq)
   }
   
   if (form == "vector") {

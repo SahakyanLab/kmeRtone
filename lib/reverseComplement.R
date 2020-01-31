@@ -6,11 +6,11 @@ reverseComplement <- function(DNA.sequence, form="vector") {
   # Dependency: stringi (for fast vectorisation)
   
   if (form == "string") {
-    
-    require(stringi)
+
+    suppressPackageStartupMessages( require(stringi) )
     
     # complement
-    # equivalent to base function, chartr but faster
+    # equivalent to base function, chartr but a bit faster
     DNA.sequence <- stri_trans_char(DNA.sequence, "ACGT", "TGCA")
     
     # reverse

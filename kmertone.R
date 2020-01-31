@@ -1,43 +1,60 @@
-kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL, damage.pattern,
-                     k.size, control.region, directionality.mode, ncpu=1) {
+kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL, genome.suffix=".fa.gz",
+                     DNA.pattern="TT", k.size=10, control.region, directionality.mode="sensitive", ncpu=1) {
   
   # this is the only function user can call. The rest are internal functions
-  # genomic.coordinate     A data.table of genomic coordinate
-  #                        It can be a list of data.table for replicates
-  # genome.name            Name of available genome: GRCh37 or GRCh38
-  # genome.path            If provided genome is not available, user can input a path to
-  #                        a folder containing chromosome fasta files.
-  # damage.pattern         A single damage pattern in a string format.
-  # k.size                 The size of a kmer
-  # control.region         A coordinate in a vector format i.e. c(start, end) pointing to
-  #                        where control kmers should be extracted from.
-  # directionality.mode    Should the analysis be in a "sensitive" or "insensitive" mode for
-  #                        strand directionalty?
-  
-  # genome.path
-  # To make thing simpler, a genome folder must contain fasta files with chromosome name
-  # as its filename. The chromosome name must be the same like in the genomic coordinate
-  # table. A fasta file must contain a single header with consistent number of bases each 
-  # line. It can be in a compressed or non-compressed form.
+  # genomic.coordinate     <data.table>     A data.table of genomic coordinate. It can be a list of
+  #                                         data.table for replicates. It must contains column 
+  #                                         chromosome, start, end, and strand. For "insensitive" mode
+  #                                         strand information is not required.
+  # genome.name            <string>         Name of available genome: "GRCh37" or "GRCh38"
+  # genome.path            <string>         If provided genome is not available, user can input a path
+  #                                         to a folder containing chromosome fasta files. The fasta
+  #                                         files should be named as chromosome names just like in the
+  #                                         genomic coordinate table and has a uniform extension name.
+  #                                         The extension can  be specified in flag suffix below. The
+  #                                         fasta files are expected to contain only one-line header
+  #                                         followed by same-length sequence in every line.
+  #                                         e.g. chr1.fasta, chr2.fasta, etc. The 
+  # genome.suffix          <string>         An extension name of the fasta files. Compressed file is
+  #                                         supported.
+  #                                         e.g. .fasta, .fa, .fa.gz, etc.
+  # DNA.pattern            <string>         A single damage pattern. e.g. "G", "TT", "TC", etc.
+  # k.size                 <integer>        The size of a kmer.
+  # control.region         <vector>         A coordinate in a vector format i.e. c(start, end) pointing
+  #                                         to where the control kmers should be extracted from. The
+  #                                         coordinate is relative to the damage site (upstream and
+  #                                         downstream)
+  # directionality.mode    <string>         Mode of strand directionality. "sensitive" or "insensitive".
+  #                                         In sensitive mode, strand directionality is important. The
+  #                                         control kmers are be extracted from the sense strand, i.e.
+  #                                         the same strand as the damage. In contrast, in "insensitive"
+  #                                         mode, the control kmers are extracted from both sense and
+  #                                         antisense strands.
+  # ncpu                   <integer>        The number of cpu to use. The default is one.
   
   # location of the TrantoR library
   TrantoRLib = "lib/TrantoRext/"
   
   ## Dependant functions #########################################################
-  source("lib/readGenome.R")
+  source("lib/loadGenomeV2.R")
   source("lib/reverseComplement.R")
-  source("lib/addColumnSequence.R")
-  Rcpp::sourceCpp("lib/cpp/countSlidingBool.cpp")
-  Rcpp::sourceCpp("lib/cpp/scaleCountSliding.cpp")
   source("lib/distributeChunk.R")
+  source()
+  
   source("lib/countSlidingBool.R")
   source("lib/scaleCountSliding.R")
+  source("lib/scaleGenCoordinate.R")
   
   # Dependant functions from the TrantorR library
   
   
   # Task specific dependant functions
-  source("lib/getGenome.R")
+  source("lib/prepGenome.R")
+  source("lib/prepGenCoordinate.R")
+  source("lib/addColumnSequence.R")
+  source("lib/filterTable.R")
+  source("lib/damageDistribution.R")
+  
   source("lib/checkCoordinate.R")
   source("lib/GCcontent.R")
   source("lib/Gcontent.R")
@@ -50,16 +67,16 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL,
   suppressPackageStartupMessages( library(stringi)    )
 
   ## Parallel setup ##############################################################
-  NCPU = ncpu
   if (ncpu > 1) {
     
     suppressPackageStartupMessages( library(foreach)    )
     suppressPackageStartupMessages( library(doParallel) )
     
-    cl <- makeCluster(NCPU)
+    cl <- makeCluster(ncpu)
     registerDoParallel(cl)
+    
+    clusterExport(cl, c("readGenome", "reverseComplement", "genome.path"))
   }
-  
   
   ## Directory setup #############################################################
   suppressWarnings(dir.create("data"))
@@ -69,45 +86,13 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL,
   
   # ---------------- GENOME -------------------------------------------------------------
   
-  if (genome.name %in% c("GRCh37", "GRCh38")) {
-    genome.PATH = paste0("data/", genome.name, "/")
-  } else if (!is.null(genome.path)) {
-    genome.PATH = genome.path
-  } else {
-    stop(paste0("Genome", genome.name, "is not available!"))
-  }
-  
-  # only copy necessary objects to cluster
-  if (ncpu > 1) {
-    clusterExport(cl, c("data.table", "readGenome", "reverseComplement", "genome.PATH"))
-  }
+  prepGenome()
   
   # ---------------- GENOMIC COORDINATE --------------------------------------------------
   # 1. Rename columns
   # 2. Combine replicates (if any)
 
-  dt <- genomic.coordinate
-  
-  # add column sequence
-  if (class(dt) == "list") {
-    
-    cat("Detecting", length(dt), "replicates\n")
-    
-    # rename columns
-    for (dt.rep in dt) {
-      colnames(dt.rep) <- c("chromosome", "start", "end", "strand")
-    }
-    
-    # combine replicate
-    dt <- combineReplicate(dt)
-
-  } else {
-    
-    colnames(dt) <- c("chromosome", "start", "end", "strand")
-    
-  }
-  
-  chromosome.names <- dt[, unique(chromosome)]
+  prepGenCoordinate()
   
   # ---------------- PRE-ANALYSIS --------------------------------------------------------
   # Replicate summary
@@ -115,33 +100,41 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL,
   # Seqlogos
   
   # add column sequence
-  addColumnSequence(dt, NCPU)
+  addColumnSequence()
   
-  # filter table
-  dt <- filterTable(dt, damage.pattern)
+  # filter table - remove chrM
+  damageDistribution(plot=FALSE) # Need more work!
+  filterTable()
   
   # damage distribution
-  damageDistribution(dt)
+  damageDistribution(plot=TRUE)
+  plotDistribution() # Need more work!
   
-  #
-  GCcontent(dt, filename = "GC_before")
+  # G|C and G content
+  Ncontent(count.genome = T, count.damage = "retrieve", N="GC") # Need checking
+  Ncontent(count.genome = T, count.damage = "retrieve", N="G")  # Need checking
   
+  # Plot G|C and G density
+  plotDensity() # TBD
   
-  Gcontent(dt, filename = "G_before")
-  seqlogo(dt, filename = "seqlogo_before")
+  # seqlogo
+  drawSeqlogo() # TBD
+  
+  # volcano plot
+  plotVolcano() # TBD
   
   # ---------------- KMER EXTRACTION ------------------------------------------------------
   
   if (directionality.mode == "sensitive") {
     
-    kmers <- extractSensitiveKmer(dt, genome, damage.pattern, k.size, control.region)
+    kmers <<- extractSensitiveKmer() # TBD
     
   } else if (directionality.mode == "insensitive") {
     
-    kmers <- extractInsensitiveKmer(dt, genome, damage.pattern, k.size, control.region)
+    kmers <<- extractInsensitiveKmer() # TBD
     
   } else {
-    stop('Please only choose "sensitive" or "insensitive" mode')
+    stop('Please choose either "sensitive" or "insensitive" mode.')
   }
   
   # ---------------- UPDATE PRE-ANALYSIS ---------------------------------------------------
@@ -152,14 +145,9 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL,
   
   # ---------------- SCORE -----------------------------------------------------------------
   
-  kmers <- p.value(dts[2])
-  kmers <- z.score(kmers)
-  
-  # ---------------- PLOT ------------------------------------------------------------------
-  
-  volcanoPlot(kmers)
+  kmers <- p.value(dts[2]) # TBD
+  kmers <- z.score(kmers) # TBD
  
-  
   # ---------------- THE END ---------------------------------------------------------------
   
   if (ncpu > 1) {
