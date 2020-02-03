@@ -1,4 +1,4 @@
-countSlidingBool <- function(bool.vector, width, ncpu=1) {
+countSinglePattern <- function(DNA.sequence, width, ncpu=1) {
   # This function count the boolean "TRUE" of sliding windows of a boolean vector.
   #    - The boolean vector is result of single base pattern matching (e.g. G|C, G, etc.) 
   #      of a DNA sequence.
@@ -6,7 +6,7 @@ countSlidingBool <- function(bool.vector, width, ncpu=1) {
   #    - Boolean vector is smaller in size compare to DNA sequence. e.g. chr1 size is 2 GB but
   #      it's G|C boolean vector is only 900 MB
   
-  total.bins <- length(bool.vector) - width + 1
+  total.bins <- nchar(DNA.sequence) - width + 1
   
   if (ncpu == 1) {
 
@@ -20,10 +20,20 @@ countSlidingBool <- function(bool.vector, width, ncpu=1) {
     # count the "TRUE"
     i <- 1
     while ( i <= total.bins ) {
-      count.percent <- as.integer(sum(bool.vector[ i:(i+width-1) ]) / width * 100)
-      count.table[count.percent+1] <- count.table[count.percent+1] + 1
+      #count.vector[i] <- sum(bool.vector[ i:(i+width-1) ])
+      
+      count.percent <- as.integer(stringi::stri_count_fixed(substr(DNA.sequence, i, i+width-1), "G") / width * 100)
+      count.table[[count.percent]] <- count.table[[count.percent]] + 1
       i <- i + 1
     }
+
+    # count.table <- sapply(1:total.bins, function(i) {
+    #   cnt <- 1
+    #   names(cnt) <- as.integer(sum(bool.vector[ i:(i+width-1) ]) / width * 100)
+    #   return(cnt)
+    # })
+    # 
+    # count.table <- tapply(count.table, names(count.table), sum)
     
   } else {
     
@@ -32,30 +42,35 @@ countSlidingBool <- function(bool.vector, width, ncpu=1) {
 
     bool.vector.chunk <- lapply(seq_along(chunks$start), function(i) bool.vector[ chunks$start[i]:(chunks$end[i]+width-1) ])
 
-    toExport <- c("width")
-    
     # Count the "TRUE"
-    count.table <- foreach(bool.vector=bool.vector.chunk, .combine='c', .noexport=ls()[!ls() %in% toExport]) %dopar% {
+    count.vector <- foreach(bool.vector=bool.vector.chunk, .combine='c',
+                            .noexport=c("bool.vector","bool.vector.chunk")) %dopar% {
       
       total.bins <- length(bool.vector) - width + 1
       
+      # initialise count.vector vector
+      count.vector <- rep(NA, total.bins)
+      
       # initialise count table
-      count.table <- rep(0, 101)
-      names(count.table) <- 0:100
+      cnt <- rep(0, 101)
+      names(cnt) <- 0:100
+      count.table <- list(cnt)
+      names(count.table) <- width
       
       # count the "TRUE"
-      i <- 1
-      while ( i <= total.bins ) {
-        count.percent <- as.integer(sum(bool.vector[ i:(i+width-1) ]) / width * 100)
-        count.table[count.percent+1] <- count.table[count.percent+1] + 1
-        i <- i + 1
-      }
+      # i <- 1
+      # while ( i <= total.bins ) {
+      #   count.vector[i] <- sum(bool.vector[ i:(i+width-1) ])
+      #   count.percent <- count.vector[i] / width * 100
+      #   count.table[[as.character(count.percent)]] <- count.table[[as.character(count.percent)]] + 1
+      #   i <- i + 1
+      # }
+      
+      
+      
       return(count.table)
     }
   }
-  
-  count.table <- tapply(count.table, names(count.table), sum)
-  count.table <- count.table[order(as.integer(names(count.table)))]
   
   return(count.table)
 }

@@ -41,5 +41,6 @@ filterTable <- function() {
   cat("-------------------------------------------------------------------\n")
   
   genomic.coordinate <<- genomic.coordinate[(chromosome != "chrM") & (sequence == DNA.pattern)]
+  chromosome.names <<- chromosome.names[!chromosome.names %in% mito]
 
 }

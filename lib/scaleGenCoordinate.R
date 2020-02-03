@@ -1,17 +1,19 @@
-scaleGenCoordinate <- function(genomic.coordinate, chromosome.sizes, scale, side="both") {
+scaleGenCoordinate <- function(genomic.coordinate, genome, scale, side="both") {
   # DESCRIPTION
   # Scale up or down the genomic coordinates. Any out of range numbers will be removed.
   #
-  # chromosomes.size       a named vector of chromosome size with chromosome names. e.g.
-  #
-  #                        > chromosome.sizes
-  #                             chr1      chr2      chr3      chr4      chr5 ...
-  #                        249250621 243199373 198022430 191154276 180915260 ...
-  #
-  # genomic.coordinate     a data.table; must have these columns: chromosome, start, end, strand
-  # scale                  an integer - can be positive (scale up) or negative (scale down)
+  # genomic.coordinate   <string>    A data.table variable (to update by reference)
+  # genome               <string>    A genome variable (not to copy in the local function environment)
+  # scale                <integer>   Scale can be positive (scale up) or negative (scale down)
+  # side                 <string>    Side to scale. Options are "upstream", "downstream", and "both"
   
-  # Dependencies: data.table
+  # Dependencies:
+  #     Kmertone variables: genomic.coordinate, chromosome.names
+  #     Packages          : data.table
+  #     Functions         : readGenome, reverseComplement
+  
+  genomic.coordinate <<- eval(parse(text = genomic.coordinate))
+  genome <<- eval(parse(text = genome))
   
   if (side == "both") {
     

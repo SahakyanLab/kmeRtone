@@ -10,10 +10,9 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-CharacterVector readGenome(std::string chromosome, int start, int end, std::string form="vector",
-                           std::string letter_case="upper", std::string genome_path="data/GRCh37/",
-                           std::string FULL_PATH="", std::string prefix="", std::string suffix=".fa.gz",
-                           bool size=false ) {
+CharacterVector readGenome(std::string chromosome, std::string genome_path, std::string genome_prefix="",
+                           std::string suffix=".fa.gz", std::string form="vector",
+                           std::string letter_case="upper", std::string FULL_PATH="") {
   
   std::string fname ;
   // get chromosome path

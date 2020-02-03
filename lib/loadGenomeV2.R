@@ -1,24 +1,24 @@
-loadGenome <- function(chromosome, genome.path, prefix, suffix,
-                       FULL.PATH=NULL, form="vector", case="upper", vector.factor=T) {
+loadGenome <- function(chromosome, genome.path, genome.prefix, genome.suffix, genome.env=globalenv(),
+                       FULL.PATH=NULL, form="vector", letter.case="upper", vector.factor=T) {
   
   
   # Dependencies:
   #      Global variables: genome, if not exist create one in parent frame variable
   
-  if (!"genome" %in% ls(envir = parent.frame())) {
-    assign("genome", list(), parent.frame())
+  if (!"genome" %in% ls(envir = genome.env)) {
+    assign("genome", list(), genome.env)
   }
   
   if (is.null(FULL.PATH)) {
     # get chromosome path
-    chromosome.path <- paste0(genome.path, prefix, chromosome, suffix) 
+    chromosome.path <- paste0(genome.path, genome.prefix, chromosome, genome.suffix) 
   } else {
     chromosome.path <- FULL.PATH
   }
   
   # if not loaded yet
   if (is.null(genome[chromosome][[1]])) {
-
+    
     chr.seq <- paste( scan(chromosome.path, "", skip = 1, quiet = TRUE), collapse = "")
     
     if (form == "vector") {

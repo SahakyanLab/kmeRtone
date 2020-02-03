@@ -1,145 +1,152 @@
-Ncontent <- function(count.genome=F, count.damage="retrieve", N="N") {
+Ncontent <- function(count.genome=F, count.damage=F, N=NULL) {
   # To calculate N percentage of damage and damage pattern in the genome
   #     at several window size. N is either G or GC
   # 1) To load pre-calculated N percentage of the genome or calculate from scratch
   # 3) To plot the density of N distribution.
   
   # Dependencies:
-  #     Global variables: genomic.coordinate, chromosome.names, genome.path, ncpu
-  #     Packages        : data.table, foreach, doParallel
-  #     Functions       : readGenome, reverseComplement
+  #     Kmertone variables: genomic.coordinate, chromosome.names, genome.path, ncpu
+  #     Packages          : data.table, foreach, doParallel
+  #     Functions         : readGenome, reverseComplement
   
   if (nchar(N) == 1) {
-    N.bool.eval <- paste0("dna.seq == ", N)
+    N.bool.eval <- sprintf("dna.seq == %s", N)
   } else {
     base <- strsplit(N, "")[[1]]
-    N.bool.eval <- paste0("dna.seq == ", base[1], " | ", "dna.seq == ", base[2])
+    N.bool.eval <- sprintf("dna.seq == '%s' | dna.seq == '%s'", base[1], base[2])
   }
   
-
   width <- c(100, 500, 1000, 5000, 10000, 50000, 100000)
-  chromosome.sizes <- sapply(chromosome.names, function(chr) readGenome(chr, size = TRUE))
+
   
   # -------------------------------------------------------------------------------------------
   # N content of genome
   if (count.genome == TRUE) {
     
-    for (chr in chromosome.names) {
-      
-      # get chromosome sequence
-      chromosome.seq <- readGenome(chr, 1, chromosomes.size[[chr]])
-      
-      # get N boolean
-      N.bool <- eval(parse(text = N.bool.eval))
-      
-      # we don't need the sequence anymore. discard!
-      rm(chromosome.seq)
-      
-      cat("\nCounting", N, " of", chr, "at", as.integer(width[1]), "width\n")
-      N.count <- countSlidingBool(N.bool, width[1], ncpu)
-      
-      # save result
-      fwrite(list(N.count), sprintf("data/%s/%s_%s_%s_width_%d.csv", N, genome.name, chr, N, as.integer(width[1])))
-
-      N.count.1 <- N.count
-      w1 <- width[1]
-      
-      for (w in width[-1]) {
-        cat("Counting N of", chr, "at", as.integer(w), "width\n")
+    N.table <- lapply(1:length(width), function(i) {
+      N.table <- rep(0, 101)
+      names(N.table) <- 0:100
+      return(N.table)
+    })
+    names(N.table) <- width
+    
+    Time.Start <- Sys.time()
+    for (w in width) {
+      time.Start <- Sys.time()
+      for (chr in chromosome.names) {
+        time.start <- Sys.time()
+        cat("Counting", N, "of", chr, "at", as.integer(w), "width\t")
         
-        N.count <- scaleCountSliding(N.count.1, w1, w)
+        # get chromosome sequence
+        dna.seq <- strsplit(genome[[chr]], "", fixed = TRUE)[[1]]
         
-        N.count.1 <- N.count
-        w1 <- w
+        # get N boolean
+        N.bool <- eval(parse(text = N.bool.eval))
         
-        # save result
-        fwrite(list(N.count), sprintf("data/%s/%s_%s_%s_width_%d.csv", N, genome.name, chr, N, as.integer(width[1])))
+        # we don't need the sequence anymore. discard!
+        rm(dna.seq)
+        gc()
+        
+        N.count <- countSlidingBool(N.bool, w, ncpu)
+        
+        N.update <- c(N.table[[as.character(w)]], N.count)
+        
+        N.table[[as.character(w)]] <- tapply(N.update, names(N.update), sum)
+        
+        time.diff <- Sys.time() - time.start
+        cat(time.diff[[1]], attr(time.diff, "units"), "\n")
       }
+      time.Diff <- Sys.time() - time.Start
+      cat("Total time taken for", w, "width is", time.Diff[[1]], attr(time.Diff, "units"), "\n\n")
     }
-    rm(N.count, N.bool, N.count.1)
+    Time.Diff <- Sys.time() - Time.Start
+    cat("Total time taken is", Time.Diff[[1]], attr(Time.Diff, "units"), "\n")
+    
+    fwrite(N.table, "data/analysis/GC_genome.csv")
   }
   
   # -------------------------------------------------------------------------------------------
   # N content of the damage coordinate
   # Retrieve the pre-calculated N percentage of the genome or recalculate from scratch
   
-  dt <- genomic.coordinate
-  setkey(dt, chromosome)
-  
-  if (count.damage == "retrieve") {
+  if (count.damage == TRUE) {
+    
+    genomic.coordinate[, `:=`(original_start = start, original_end = end) ]
+    
+    N.table <- lapply(1:length(width), function(i) {
+      N.table <- rep(0, 101)
+      names(N.table) <- 0:100
+      return(N.table)
+    })
+    names(N.table) <- width
     
     for (w in width) {
       
-      dt.w <- scaleGenCoordinate(dt[, 1:4], chromosome.sizes, scale = w/2, side = "both")
-      setkey(dt.w, chromosome, start, end)
+      # shrink start and end coordinates to point to their midpoint
+      genomic.coordinate[, `:=`(start = start + ((end-start+1)%/%2) - 1,
+                                end = end - as.integer((end-start+1)/2 + 0.5) + 1)]
       
-      dt.w[, {
-        
-        dmg.width <- end[1]-start[1]+1
-        
-        # call a function to retrieve N count from the genome calculation
-        N.count <- retrieveCount(genome.name, chromosome, start, round(dmg.width, -1), "N")
-        
-        # add extra tail sequence if the width is not exactly the same
-        if (w != dmg.width) {
-          dna.seq <- matrix(unlist(readGenome(chromosome, start+w, end)), nrow = dmg.width-w)
-          N.count <- N.count + colSums(dna.seq == "G" | dna.seq == "C")
+      # scale up to width; if middle point is odd number expand w/2 on both side; if even expand w/2-1
+      genomic.coordinate[, `:=`(
+        start = {
+          len <- end-start+1
+          s <- start
+          s[len == 2] <- s - w/2 + 1
+          s[len == 1] <- s - w/2
+          s
+        },
+        end = {
+          len <- end-start+1
+          e <- end
+          e[len == 2] <- s + w/2 - 1
+          e[len == 1] <- s + w/2
+          e
         }
-        
-        # save result
-        #fwrite(list(N.count), sprintf("data/%s/%s_%s_%s_width_%d.csv", N, genome.name, chr, N, as.integer(width[1])))
-        
-      }, by = chromosome] 
-    }
-    
-  } else if (count.damage == "scratch") {
-    
-    for (w in width) {
+      )]
       
-      # scale up
-      dt.w <- scaleGenCoordinate(dt[, 1:4], chromosome.sizes, scale = w/2, side = "both")
-      setkey(dt.w, chromosome, start, end)
+      # assign NA to out of range coordinate
+      trimGenCoordinate("genome.coordinate", "genome", kmertone.env)
       
-      # can spike up memory depending on the sequence length
-      #countGenCoordinateN(dt.w, "")
+      # sort by chromosome
+      setkey(genomic.coordinate, chromosome)
       
-      # if memory exhaustive, use this
-      dt.w[, N := {
+      N.table <- genomic.coordinate[(!is.na(start) | (!is.na(end))), {
         
-        start.min <- min(start)
-        end.max <- max(end)
-        dmg.width <- end[1]-start[1]+1
+        # get chromosome sequence
+        dna.seq <- strsplit(genome[[chromosome]], "")[[1]]
         
-        dna.seq <- readGenome(chromosome, start.min, end.max)
-
+        # get N boolean
         N.bool <- eval(parse(text = N.bool.eval))
+        
+        # we don't need the sequence anymore. discard!
         rm(dna.seq)
+        gc()
         
-        # calculate sliding window of 100 width
-        N.count.w100 <- countSlidingBool(N.bool, 100, ncpu)
-        rm(N.bool)
+        N.table <- rep(0, 101)
+        for (i in seq_along(start)) {
+          
+          N.count <- as.integer(sum(N.bool[start:end]) / (end-start+1) * 100)
+          
+          # update N.table
+          N.table[[N.count-1]] <- N.table[[N.count-1]] + 1
 
-        scale <- w / 100 - 1
-        
-        # offset the coordinate
-        start <- start - start.min + 1
-
-        # assign the 100 parts
-        N.count <- mapply(function(start) sum(N.count.w100[seq(start, start+scale*100, 100)]), start)
-        
-        # reset the offset
-        start <- start + start.min - 1
-        
-        # add extra tail sequence if the width is not exactly the same
-        if (w != dmg.width) {
-          dna.seq <- matrix(unlist(readGenome(chromosome, start+w, end)), nrow = dmg.width-w)
-          N.count <- N.count + colSums(dna.seq == "G" | dna.seq == "C")
         }
-
-        #fwrite(list(N.count), sprintf("data/%s/%s_%s_%s_width_%d.csv", N, genome.name, chr, N, as.integer(width[1])))
-        N.count
-      }, by = chromosome]
+        
+        # N.count <- mapply(function(start, end) {as.integer(sum(N.bool[start:end]) / (end-start+1) * 100)},
+        #                   start, end)
+        
+      }, by = chromosome][[2]]
+      
+      # name the count
+      names(N.table) <- rep(0:100, length(N.table)/101)
+      
+      # add same count name
+      N.table[[as.character(w)]] <- tapply(N.table[[as.character(w)]], names(N.table[[as.character(w)]]), sum)
+      
+      # revert coordinate back to original
+      genomic.coordinate[, `:=`(start = original_start, end := original_end)]
+      
     }
+    fwrite(N.table, "table_GC.csv")
   }
 }
-

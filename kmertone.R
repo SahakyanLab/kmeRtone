@@ -1,5 +1,6 @@
-kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL, genome.suffix=".fa.gz",
-                     DNA.pattern="TT", k.size=10, control.region, directionality.mode="sensitive", ncpu=1) {
+kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL, genome.prefix="", genome.suffix=".fa.gz",
+                     DNA.pattern="TT", k=10, expansion.factor=0, control.region,
+                     directionality.mode="sensitive", ncpu=1) {
   
   # this is the only function user can call. The rest are internal functions
   # genomic.coordinate     <data.table>     A data.table of genomic coordinate. It can be a list of
@@ -18,7 +19,8 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL,
   # genome.suffix          <string>         An extension name of the fasta files. Compressed file is
   #                                         supported.
   #                                         e.g. .fasta, .fa, .fa.gz, etc.
-  # DNA.pattern            <string>         A single damage pattern. e.g. "G", "TT", "TC", etc.
+  # DNA.pattern            <string>         A single DNA pattern. e.g. "G", "TT", "TC", etc. It can be
+  #                                         set as NULL if no pattern is desired.
   # k.size                 <integer>        The size of a kmer.
   # control.region         <vector>         A coordinate in a vector format i.e. c(start, end) pointing
   #                                         to where the control kmers should be extracted from. The
@@ -32,6 +34,8 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL,
   #                                         antisense strands.
   # ncpu                   <integer>        The number of cpu to use. The default is one.
   
+  kmertone.env = environment()
+  
   # location of the TrantoR library
   TrantoRLib = "lib/TrantoRext/"
   
@@ -39,10 +43,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL,
   source("lib/loadGenomeV2.R")
   source("lib/reverseComplement.R")
   source("lib/distributeChunk.R")
-  source()
-  
   source("lib/countSlidingBool.R")
-  source("lib/scaleCountSliding.R")
   source("lib/scaleGenCoordinate.R")
   
   # Dependant functions from the TrantorR library
@@ -75,7 +76,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", genome.path=NULL,
     cl <- makeCluster(ncpu)
     registerDoParallel(cl)
     
-    clusterExport(cl, c("readGenome", "reverseComplement", "genome.path"))
+    clusterExport(cl, c("loadGenome", "reverseComplement", "genome.path"))
   }
   
   ## Directory setup #############################################################

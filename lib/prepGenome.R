@@ -4,7 +4,8 @@ prepGenome <- function() {
   if (!is.null(genome.path)) {
     
     genome.path <<- genome.path
-    chromosome.names <<- sub(paste0('\\', genome.sufix, '$'), '', list.files(genome.path))
+    chromosome.names <<- list.files(genome.path)[grep(paste0("\\", genome.suffix, "$"), list.files(genome.path))]
+    chromosome.names <<- gsub(paste0('\\', genome.suffix, '$'), '', chromosome.names)
     genome.name <<- "genome"
     
     cat("Genome path is", genome.path, "\n")
@@ -23,4 +24,7 @@ prepGenome <- function() {
     
   }
   
+  for (chr in chromosome.names) {
+    loadGenome(chr, genome.path, genome.prefix, genome.suffix, kmertone.env, form = "string")
+  }
 }
