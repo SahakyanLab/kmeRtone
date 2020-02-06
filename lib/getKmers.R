@@ -25,9 +25,6 @@ getKmers <- function(env){
     cat("--Length of the coordinates is smaller than size k.\n")
     cat("--Scaling up to size k.\n")
     
-    # back up original coordinates
-    env$genomic.coordinate[, `:=`(original_start = start, original_end = end)]
-    
     # expand to k
     expandGenCoordinate("genomic.coordinate", env$kmertone.env, env$k)
     
@@ -39,6 +36,16 @@ getKmers <- function(env){
     cat("--Coordinate lengths are the same or bigger than size k.\n--Kmer extraction will",
         "be performed by sliding window of size k.\n")
   }
+  
+  # remove overlapping case region
+  before <- nrow(env$genomic.coordinate)
+  
+  removeAllOverlaps("genomic.coordinate", env)
+  
+  loss <- (before - nrow(env$genomic.coordinate)) / before * 100
+  
+  cat("--Removing", loss, "% overlapping case regions.\n")
+  
   
   # now that genomic coordinates are resolved, extract the case kmers
   case.kmers <- extractKmers("genomic.coordinate", "genome", env$k, env$DNA.pattern, env$kmertone.env)

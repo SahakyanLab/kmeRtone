@@ -53,6 +53,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   source("lib/mergeGenCoordinate.R")
   source("lib/expandGenCoordinate.R")
   source("lib/extractKmers.R")
+  source("lib/removeAllOverlaps.R")
   
   # Dependant functions from the TrantorR library
   source("lib/TrantoRext/GEN_getSeqLogo.R", local = TRUE)
@@ -99,9 +100,8 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   # ---------------- GENOME -------------------------------------------------------------
   # 1. Load genome
   
-  cat("[2] Loading genome...")
+  cat("[2] Loading genome...\n\n")
   prepGenome(kmertone.env)
-  cat("DONE!\n")
   
   # ---------------- GENOMIC COORDINATE --------------------------------------------------
   # 1. Rename columns
@@ -157,7 +157,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   
   # ---------------- SCORE -----------------------------------------------------------------
   
-  cat("[6] Calculating z score...")
+  cat("\n[6] Calculating z score...")
   zScore("kmers")
   #pValue("kmers") # TBD
   cat("DONE!\n")
@@ -168,5 +168,5 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
     stopCluster(cl)
   }
    
-  return(kmers) # kmers table: kmer, count, fold_change, p_value, z_score
+  return(kmers) # kmers table: kmer, count, fold_change, p, z
 }
