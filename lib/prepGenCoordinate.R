@@ -20,6 +20,10 @@ prepGenCoordinate <- function(env) {
         
         setnames(env$genomic.coordinate, c("V1", "V2", "V3", "V6"), c("chromosome", "start", "end", "strand"))
         
+        # bed use zero-based index and open-end index e.g. [0,10) which means from index 0 until index 9
+        # change to R indexing
+        env$genomic.coordinate[, start := start + 1]
+        
       } else {
         # strand insensitive i.e. has no strand information
         env$genomic.coordinate[, colnames(env$genomic.coordinate)[!colnames(env$genomic.coordinate) %in% 
