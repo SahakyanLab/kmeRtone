@@ -1,17 +1,0 @@
-
-Compress genome file for smaller package size
-1. pre-calculate file size for readLinesFast function
-2. compress with gzip -9
-
-Save genome as .RDATA
-
-
-
-
-
-BENCHMARK
-
-loadGenome vs loadGenomeV2
-
-                   min       lq     mean   median       uq      max nevalloadGenome    54.70740 54.70740 54.70740 54.70740 54.70740 54.70740     1loadGenomeV2  15.65948 15.65948 15.65948 15.65948 15.65948 15.65948     1
-
