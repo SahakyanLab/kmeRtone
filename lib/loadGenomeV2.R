@@ -9,7 +9,7 @@ loadGenome <- function(genome, chromosome, genome.path, genome.prefix, genome.su
   # genome.suffix   <string>     A suffix name of the fasta filename after the name of the chromosome.
   # full.path       <string>     One can provide a full path to the chromosome fasta file.
   # env           <environment>  An environment object where the genome object exists.
-  # form            <string>     Output the sequence in either in a "vector" of "string" format.
+  # form            <string>     Output the sequence in either in a "vector" or "string" format.
   # letter.case     <string>     Output the sequence in either in an "upper" case or a "lower" case.
   
   if (class(genome)[1] != "character") {
