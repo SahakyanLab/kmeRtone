@@ -98,8 +98,8 @@ Ncontent <- function(count.genome=F, count.damage=F, N=NULL) {
         end = {
           len <- end-start+1
           e <- end
-          e[len == 2] <- s + w/2 - 1
-          e[len == 1] <- s + w/2
+          e[len == 2] <- e + w/2 - 1
+          e[len == 1] <- e + w/2
           e
         }
       )]

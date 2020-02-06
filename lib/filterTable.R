@@ -1,11 +1,11 @@
-filterTable <- function() {
+filterTable <- function(env) {
   # remove sequence that don't match damage pattern
   # remove mitochondria
   
   # Dependencies:
-  #     Global variables: genomic.coordinate, DNA.pattern
-  #     Packages        : data.table
-  #     Functions       : -
+  #     Kmertone variables: genomic.coordinate, DNA.pattern, chromosome.names
+  #     Packages          : data.table
+  #     Functions         : -
   
   options( scipen=999)
   
@@ -13,34 +13,36 @@ filterTable <- function() {
   cat("-------------------------------------------------------------------\n")
   
   # damage pattern summary
-  pattern.count <- data.table(genomic.coordinate[, table(sequence) ])
+  pattern.count <- data.table(env$genomic.coordinate[, table(sequence) ])
   
   # if there is other than pattern of interest
-  if (nrow(pattern.count[sequence != DNA.pattern]) > 0) {
+  if (nrow(pattern.count[sequence != env$DNA.pattern]) > 0) {
     fwrite(pattern.count, "damage_pattern_count.csv")
     # calculate percentage
-    pattern.percent <- genomic.coordinate[sequence != DNA.pattern, table(sequence) / nrow(genomic.coordinate) * 100]
+    pattern.percent <- env$genomic.coordinate[sequence != env$DNA.pattern, table(sequence) 
+                                          / nrow(env$genomic.coordinate) * 100]
     
-    cat("\nThe following unwanted sequence pattern are removed:\n")
+    cat("\nThe following percentage of unwanted sequence pattern are removed:\n")
     print(pattern.percent)
     cat("\n")
   }
   
-  cat("Different DNA pattern\t:", pattern.count[sequence != DNA.pattern, sum(N) / nrow(pattern.count) * 100], "%\n")
+  cat("Different DNA pattern\t:", pattern.count[sequence != env$DNA.pattern, sum(N) / 
+                                                  nrow(env$genomic.coordinate) * 100], "%\n")
   
   # mitochondria - c("chrM", "chrmt")
   mito <- c("chrM", "chrmt")
-  mito.percent <- genomic.coordinate[chromosome %in% mito, .N] / nrow(genomic.coordinate) * 100
+  mito.percent <- env$genomic.coordinate[chromosome %in% mito, .N] / nrow(env$genomic.coordinate) * 100
   
   cat("Mitochondria\t\t:", mito.percent, "%\n")
   
-  genomic.coordinate.remove <- genomic.coordinate[chromosome %in% mito | sequence != DNA.pattern]
+  genomic.coordinate.remove <- env$genomic.coordinate[chromosome %in% mito | sequence != env$DNA.pattern]
   fwrite(genomic.coordinate.remove, "data/removed_data_table.csv")
   
-  cat("Total\t\t\t:", nrow(genomic.coordinate.remove)/nrow(genomic.coordinate)*100, "%\n")
+  cat("Total\t\t\t:", nrow(genomic.coordinate.remove)/nrow(env$genomic.coordinate)*100, "%\n")
   cat("-------------------------------------------------------------------\n")
   
-  genomic.coordinate <<- genomic.coordinate[(chromosome != "chrM") & (sequence == DNA.pattern)]
-  chromosome.names <<- chromosome.names[!chromosome.names %in% mito]
+  env$genomic.coordinate <- env$genomic.coordinate[(chromosome != "chrM") & (sequence == env$DNA.pattern)]
+  env$chromosome.names <- env$chromosome.names[!env$chromosome.names %in% mito]
 
 }

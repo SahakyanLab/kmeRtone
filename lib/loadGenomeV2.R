@@ -1,23 +1,41 @@
-loadGenome <- function(chromosome, genome.path, genome.prefix, genome.suffix, genome.env=globalenv(),
-                       FULL.PATH=NULL, form="vector", letter.case="upper", vector.factor=T) {
+loadGenome <- function(genome, chromosome, genome.path, genome.prefix, genome.suffix,
+                       full.path=NULL, env=parent.frame(), form="string",
+                       letter.case="upper") {
   
+  # genome          <string>     A variable name pointing to a list object containing chromosome sequence.
+  # chromosome      <string>     A chromosome name.
+  # genome.path     <string>     A path to a folder containing chromosome fasta files.
+  # genome.prefix   <string>     A prefix name of the fasta filename before the name of the chromosome.
+  # genome.suffix   <string>     A suffix name of the fasta filename after the name of the chromosome.
+  # full.path       <string>     One can provide a full path to the chromosome fasta file.
+  # env           <environment>  An environment object where the genome object exists.
+  # form            <string>     Output the sequence in either in a "vector" of "string" format.
+  # letter.case     <string>     Output the sequence in either in an "upper" case or a "lower" case.
   
-  # Dependencies:
-  #      Global variables: genome, if not exist create one in parent frame variable
-  
-  if (!"genome" %in% ls(envir = genome.env)) {
-    assign("genome", list(), genome.env)
+  if (class(genome)[1] != "character") {
+    stop("Please input genome variable name in a string format.")
   }
   
-  if (is.null(FULL.PATH)) {
+  if (!genome %in% ls(envir = env)) {
+    
+    env[[genome]] <- list()
+    
+    class(env[[genome]]) <- "genome"
+    
+    # add print function
+    env$print.genome <- function(obj) print(attr(obj, "length"))
+  }
+  
+  if (is.null(full.path)) {
     # get chromosome path
-    chromosome.path <- paste0(genome.path, genome.prefix, chromosome, genome.suffix) 
+    chromosome.path <- paste0(genome.path, genome.prefix, chromosome, genome.suffix)
+    
   } else {
-    chromosome.path <- FULL.PATH
+    chromosome.path <- full.path
   }
   
   # if not loaded yet
-  if (is.null(genome[chromosome][[1]])) {
+  if (is.null(env[[genome]][chromosome][[1]])) {
     
     chr.seq <- paste( scan(chromosome.path, "", skip = 1, quiet = TRUE), collapse = "")
     
@@ -31,9 +49,13 @@ loadGenome <- function(chromosome, genome.path, genome.prefix, genome.suffix, ge
       
     }
     
-    genome[chromosome] <<- list(chr.seq)
+    env[[genome]][chromosome] <- list(chr.seq)
     
-    cat(chromosome, "is loaded.\n")
+    # add length as attribute
+    attr(env[[genome]], "length") <- c(attr(env[[genome]], "length"), chr = nchar(chr.seq))
+    names(attr(env[[genome]], "length"))[names(attr(env[[genome]], "length")) == "chr"] <- chromosome
+    
+    #cat(chromosome, "is loaded.\n")
     
   } else {
     cat(chromosome, "is already loaded.\n")

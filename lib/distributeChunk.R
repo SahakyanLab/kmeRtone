@@ -2,7 +2,8 @@ distributeChunk <- function(total, n) {
   # This function will distribute chunks from [total] equally [n] number.
   # The output would be start and end index of the chunks.
   # It is useful when to manually distribute work equally to CPU, hence reducing
-  # the overhead. Within foreach loop, there will be an internal loop of the chunk.
+  # the overhead and memory usage. Within foreach loop, there will be an internal
+  # loop of the chunk.
   
   # Distribute total to n
   chunk <- rep(total %/% n, n)
