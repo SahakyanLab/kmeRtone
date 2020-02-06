@@ -49,7 +49,7 @@ getKmers <- function(env){
   
   
   time.diff <- Sys.time() - start.time
-  cat("Extracting case kmers...DONE! ---", time.diff[1], attr(time.diff, "units"), "\n\n")
+  cat("Extracting case kmers...DONE! ---", time.diff[1], attr(time.diff, "units"), "\n")
   
   # -------------------------------------------------------------------------------------------
   # SELECTION OF CASE REGIONS
@@ -70,7 +70,7 @@ getKmers <- function(env){
   mergeGenCoordinate("case.region")
   
   time.diff <- Sys.time() - start.time
-  cat("DONE! ---", time.diff[1], attr(time.diff, "units"), "\n\n")
+  cat("DONE! ---", time.diff[1], attr(time.diff, "units"), "\n")
   
   # ------------------------------------------------------------------------------------------
   # SELECTION OF CONTROL REGIONS
@@ -106,7 +106,7 @@ getKmers <- function(env){
   fwrite(control.region, "data/control_regions_coordinates.csv")
   
   time.diff <- Sys.time() - start.time
-  cat("DONE! ---", time.diff[1], attr(time.diff, "units"), "\n\n")
+  cat("DONE! ---", time.diff[1], attr(time.diff, "units"), "\n")
   
   # ------------------------------------------------------------------------------------------
   # EXTRACTION OF CONTROL KMERS
@@ -122,7 +122,7 @@ getKmers <- function(env){
   if (env$strand.mode == "insensitive") countReverseComplement("control.kmers")
   
   time.diff <- Sys.time() - start.time
-  cat("Extracting control kmers...DONE! ---", time.diff[1], attr(time.diff, "units"), "\n\n")
+  cat("Extracting control kmers...DONE! ---", time.diff[1], attr(time.diff, "units"), "\n")
   
   # -----------------------------------------------------------------------------------------
   # KMERS TABLE

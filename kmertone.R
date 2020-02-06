@@ -67,6 +67,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   source("lib/Ncontent.R", local = TRUE)
   source("lib/removeCaseZone.R")
   source("lib/getKmers.R", local = TRUE)
+  source("lib/zScore.R", local = TRUE)
   #source("lib/seqlogo.R", local = TRUE)
 
   ## Dependant libraries #########################################################

@@ -40,7 +40,7 @@ filterTable <- function(env) {
   fwrite(genomic.coordinate.remove, "data/removed_data_table.csv")
   
   cat("Total\t\t\t:", nrow(genomic.coordinate.remove)/nrow(env$genomic.coordinate)*100, "%\n")
-  cat("-------------------------------------------------------------------\n")
+  cat("-------------------------------------------------------------------\n\n")
   
   env$genomic.coordinate <- env$genomic.coordinate[(chromosome != "chrM") & (sequence == env$DNA.pattern)]
   env$chromosome.names <- env$chromosome.names[!env$chromosome.names %in% mito]

@@ -32,7 +32,6 @@ prepGenome <- function(env) {
     
     loadGenome("genome", chr, env$genome.path, env$genome.prefix, env$genome.suffix, env = env, form = "string")
   }
-  
 }
 
 

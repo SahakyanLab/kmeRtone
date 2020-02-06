@@ -12,6 +12,8 @@ loadGenome <- function(genome, chromosome, genome.path, genome.prefix, genome.su
   # form            <string>     Output the sequence in either in a "vector" or "string" format.
   # letter.case     <string>     Output the sequence in either in an "upper" case or a "lower" case.
   
+  start.time <- Sys.time()
+  
   if (class(genome)[1] != "character") {
     stop("Please input genome variable name in a string format.")
   }
@@ -55,9 +57,11 @@ loadGenome <- function(genome, chromosome, genome.path, genome.prefix, genome.su
     attr(env[[genome]], "length") <- c(attr(env[[genome]], "length"), chr = nchar(chr.seq))
     names(attr(env[[genome]], "length"))[names(attr(env[[genome]], "length")) == "chr"] <- chromosome
     
-    #cat(chromosome, "is loaded.\n")
+    time.diff <- Sys.time() - start.time
+    cat(chromosome, "is loaded. ---", time.diff[1], attr(time.diff, "units"), "\n")
     
   } else {
     cat(chromosome, "is already loaded.\n")
   }
+  
 }
