@@ -32,13 +32,13 @@ extractKmers <- function(genomic.coordinate, genome, k, DNA.pattern,
   #    - Nothing changed for 13 million rows. Maybe above 13 million rows.
   #table.chunks <- gl(nrow(genomic.coordinate)/100000, 100000, nrow(genomic.coordinate))
 
-  kmers <- env1[["genomic.coordinate"]][!is.na(end-start), {
+  kmers <- env1[[genomic.coordinate]][!is.na(end-start), {
     
     # ----------------------------------------------------
     # DNA pattern specified
     if (!is.null(DNA.pattern)) {
       
-      DNA.seq <- substring(env2[["genome"]][[chromosome]], start, end)
+      DNA.seq <- substring(env2[[genome]][[chromosome]], start, end)
       
       max.len <- max(nchar(DNA.seq))
       if (is.na(max.len)) stop("\nThere is NA in the table!")
