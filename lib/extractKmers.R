@@ -12,7 +12,7 @@ extractKmers <- function(genomic.coordinate, genome, k, DNA.pattern,
   # DNA.pattern          <string>     DNA pattern at the center of the kmers.
   
   # Dependencies
-  #     Package   : data.table
+  #     Package   : data.table, stringi
   #     Function  : reverseComplement
   #     Object    : <genome>
   
@@ -23,32 +23,38 @@ extractKmers <- function(genomic.coordinate, genome, k, DNA.pattern,
   
   # remove region with lower than size k
   if (env1[[genomic.coordinate]][end - start + 1 < k, .N] > 0) {
-    cat("--Removing regions with shorter than k length\n")
-    env1[[genomic.coordinate]] <- env1[[genomic.coordinate]][end - start + 1 >= k] 
+    cat("--Removing regions with shorter than length k.\n")
+    env1[[genomic.coordinate]] <- env1[[genomic.coordinate]][end - start + 1 >= k]
+    gc()
   }
   
   # To divide and process table by 100k rows - mayble help with memory efficiency.
   #    - Nothing changed for 13 million rows. Maybe above 13 million rows.
   #table.chunks <- gl(nrow(genomic.coordinate)/100000, 100000, nrow(genomic.coordinate))
 
-  kmers <- env1[[genomic.coordinate]][, {
+  kmers <- env1[["genomic.coordinate"]][!is.na(end-start), {
     
     # ----------------------------------------------------
     # DNA pattern specified
     if (!is.null(DNA.pattern)) {
       
-      DNA.seq <- substring(env2[[genome]][[chromosome]], start, end)
+      DNA.seq <- substring(env2[["genome"]][[chromosome]], start, end)
       
       max.len <- max(nchar(DNA.seq))
       if (is.na(max.len)) stop("\nThere is NA in the table!")
       
       # sliding windows
-      kmers <- substring(DNA.seq, 1:(max.len-k+1), k:max.len)
+      kmers <- stri_sub_all(DNA.seq, 1:(max.len-k+1), k:max.len)
+      kmers <- unlist(kmers)
+      kmers <- kmers[kmers != ""]
       
       if (strand == "-") kmers <- reverseComplement(kmers, form = "string")
       
-      idx.case <- substring(kmers, pattern.pos[1], pattern.pos[length(pattern.pos)]) == DNA.pattern
+      # check DNA pattern
+      idx.case <- stri_sub_all(kmers, pattern.pos[1], pattern.pos[length(pattern.pos)]) %in% DNA.pattern
+      idx.case <- unlist(idx.case)
       
+      # only takes DNA pattern
       kmers <- kmers[idx.case]
       
       kmers <- table(kmers)
@@ -57,13 +63,15 @@ extractKmers <- function(genomic.coordinate, genome, k, DNA.pattern,
       # No DNA pattern specified
     } else if (is.null(DNA.pattern)) {
 
-      DNA.seq <- substring(env2[[genome]][[chromosome]], start, end)
+      DNA.seq <- substring(env2[["genome"]][[chromosome]], start, end)
       
       max.len <- max(nchar(DNA.seq))
-      if (is.na(max.len)) stop("There is NA in the table!")
+      if (is.na(max.len)) stop("\nThere is NA in the table!")
       
       # sliding windows
-      kmers <- substring(DNA.seq, 1:(max.len-k+1), k:max.len)
+      kmers <- stri_sub_all(DNA.seq, 1:(max.len-k+1), k:max.len)
+      kmers <- unlist(kmers)
+      kmers <- kmers[kmers != ""]
       
       if (strand == "-") kmers <- reverseComplement(kmers, form = "string")
       

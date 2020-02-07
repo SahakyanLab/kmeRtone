@@ -1,14 +1,15 @@
-trimGenCoordinates <- function(genomic.coordinate, genome, trim=FALSE,
+trimGenCoordinates <- function(genomic.coordinate, genome, remove=FALSE,
                                env=parent.frame()) {
   # DESCRIPTION
   # Trim out of range genomic coordinates
   #
   # genomic.coordinate    <string>     A variable of data.table; must have these columns:
-  #                                    chromosome, start, end, strand
-  # genome                <string>     A variable of genome
+  #                                    chromosome, start, end, strand.
+  # genome                <string>     A variable of genome.
   # env                 <environment>  An environment where genomic.coordinate and genome located
-  # trim                  <string>     If TRUE, out of range coordinate will be removed from the
-  #                                    table. If FALSE, NA will be introduced in place of coordinate
+  # remove                <string>     If TRUE, out of range start AND end coordinate will be removed
+  #                                    from the table. If FALSE, NA will be introduced in place of
+  #                                    coordinate.
   
   if (class(genomic.coordinate)[1] != "character" | class(genome)[1] != "character" | 
       length(genome) != 1 | length(genomic.coordinate) != 1) {
@@ -31,7 +32,7 @@ trimGenCoordinates <- function(genomic.coordinate, genome, trim=FALSE,
   env[[genomic.coordinate]][end > attr(env[[genome]], "length")[chromosome],
                             end := attr(env[[genome]], "length")[chromosome]]
   
-  if (trim == TRUE) {
+  if (remove == TRUE) {
     env[[genomic.coordinate]] <- na.omit(env[[genomic.coordinate]])
   }
 }

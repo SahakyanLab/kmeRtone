@@ -16,6 +16,9 @@ addColumnSequence <- function(env) {
     env$genomic.coordinate <- rbind(env$genomic.coordinate[strand %in% c("+", "-")],
                                     env$genomic.coordinate[strand == "*"][, strand := "+"],
                                     env$genomic.coordinate[strand == "*"][, strand := "-"])
+    env$genomic.coordinate <- unique(env$genomic.coordinate[, .(chromosome, start, end, strand)])
+                              
+    gc()
   }
   
   if (ncpu == 1) {

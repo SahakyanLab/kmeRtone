@@ -18,8 +18,24 @@ expandGenCoordinate <- function(genomic.coordinate, env=parent.frame(), k) {
   }
   
   # shrink start and end coordinates to point to their midpoint
-  env[[genomic.coordinate]][, `:=`(start = start + ((end-start+1)%/%2) - 1,
-                            end = end - as.integer((end-start+1)/2 + 0.5) + 1)]
+  env[[genomic.coordinate]][, `:=`(
+    
+    start = {
+      # if even length
+      start[(end-start+1)%%2 == 0] = start + (end-start+1)/2
+      # if odd length
+      start[(end-start+1)%%2 == 1] = start + (end-start+1)%/%2
+      start
+    },
+    
+    end = {
+      # if even length
+      end[(end-start+1)%%2 == 0] = end - (end-start+1)/2 + 1
+      # if odd length
+      end[(end-start+1)%%2 == 1] = end - (end-start+1)%/%2
+      end
+    }
+    )]
   
   # genomic coordinate length
   len <- env[[genomic.coordinate]][, unique(end - start + 1)]
@@ -33,23 +49,22 @@ expandGenCoordinate <- function(genomic.coordinate, env=parent.frame(), k) {
   env[[genomic.coordinate]][, `:=`(
     start = {
       len <- end-start+1
-      start[len == 2] <- start - k/2 + 1
-      start[len == 1] <- start - k/2
+      start[len == 2] <- start - k%/%2 + 1
+      start[len == 1] <- start - k%/%2
       start
     },
     end = {
-      end[len == 2] <- end + k/2 - 1
-      end[len == 1] <- end + k/2
+      end[len == 2] <- end + k%/%2 - 1
+      end[len == 1] <- end + k%/%2
       end
     }
   )]
   
   if (env[[genomic.coordinate]][, unique(end-start+1) > k]) {
     
-    message(paste0("\tOdd number of DNA pattern. Size of k is changed from ", k, " to ",
-                   genomic.coordinate[, unique(end-start+1)], "."))
-    message("k is updated automatically.")
-    env$k <- genomic.coordinate[, unique(end-start+1)]
-    
+    message(paste0("--Uneven flank between the case region. Size of k is changed from ", k, " to ",
+                   env[[genomic.coordinate]][, unique(end-start+1)], "."))
+    message("--k is updated automatically.")
+    env$k <- env[[genomic.coordinate]][, unique(end-start+1)]
   }
 }

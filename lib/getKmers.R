@@ -19,6 +19,8 @@ getKmers <- function(env){
   
   cat("--Length of genomic coordinates:", len, "nt\n")
   
+  env$genomic.coordinate[, c("original_start", "original_end") := list(start, end)]
+  
   # expand the coordinate to size k if it is smaller
   if (length(len) == 1 & len < env$k) {
     
@@ -29,7 +31,10 @@ getKmers <- function(env){
     expandGenCoordinate("genomic.coordinate", env$kmertone.env, env$k)
     
     # trim down if out of range coordinate
-    trimGenCoordinates("genomic.coordinate", "genome", trim = TRUE, env$kmertone.env)
+    trimGenCoordinates("genomic.coordinate", "genome", remove = FALSE, env$kmertone.env)
+    
+    # flag region with less than size k (as a result of trimming down)
+    env$genomic.coordinate[ end-start+1 < k, c("start", "end") := NA ]
     
   } else if (len >= env$k) {
     
@@ -38,11 +43,11 @@ getKmers <- function(env){
   }
   
   # remove overlapping case region
-  before <- nrow(env$genomic.coordinate)
+  before <- nrow(env$genomic.coordinate[(!is.na(start)) & (!is.na(end))])
   
-  removeAllOverlaps("genomic.coordinate", env)
+  removeAllOverlaps("genomic.coordinate", env, remove = FALSE)
   
-  loss <- (before - nrow(env$genomic.coordinate)) / before * 100
+  loss <- (before - nrow(env$genomic.coordinate[(!is.na(start)) & (!is.na(end))])) / before * 100
   
   cat("--Removing", loss, "% overlapping case regions.\n")
   
@@ -65,13 +70,20 @@ getKmers <- function(env){
   
   cat("Selecting case zone...")
   
-  # create case zone coordinate i.e. kmer/case region + buffer
-  case.region <- env$genomic.coordinate[, .(chromosome, start, end, strand)]
+  # copy table
+  case.region <- env$genomic.coordinate[, .(chromosome, start = original_start, end = original_end, strand)]
+  
+  ## increase to k if case region lower than k
+  if (sum(case.region[end-start+1 < k, .N]) == nrow(case.region)) {
+    expandGenCoordinate("case.region", k=k)
+  }
+  
+  # add buffer region
   case.region[, `:=`(start = start - control.relative.position[1],
-                   end = end + control.relative.position[1])]
+                     end = end + control.relative.position[1])]
   
   # trim out of range coordinates
-  trimGenCoordinates("case.region", "genome", trim = TRUE)
+  trimGenCoordinates("case.region", "genome", remove = TRUE)
   
   # merge overlapped regions
   mergeGenCoordinate("case.region")
@@ -87,7 +99,7 @@ getKmers <- function(env){
   cat("Selecting control regions...")
   
   # select control regions
-  control.region <- env$genomic.coordinate[, .(
+  control.region <- env$genomic.coordinate[!is.na(end-start), .(
     start = c(start - control.relative.position[2], # [upstream] start
               end + control.relative.position[1]),  # (downstream) start
     end = c(start - control.relative.position[1],   # [upstream] end
@@ -95,16 +107,13 @@ getKmers <- function(env){
   ), by = .(chromosome, strand)]
   
   # trim out of range coordinates
-  trimGenCoordinates("control.region", "genome", trim = TRUE)
+  trimGenCoordinates("control.region", "genome", remove = TRUE)
   
   # merge overlapped regions
   mergeGenCoordinate("control.region")
   
   # remove overlapping case-zone portion
   removeCaseZone("control.region", "case.region", env$strand.mode)
-  
-  # remove region with size less than 2
-  control.region <- control.region[end - start + 1 > 2]
   
   # clear up the memory because we just memory copy genomic coordinates
   gc()

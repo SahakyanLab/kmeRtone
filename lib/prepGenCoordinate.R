@@ -46,13 +46,6 @@ prepGenCoordinate <- function(env) {
     }
   }
   
-  # Processing a data.table format
-  if (env$strand.mode == "sensitive") {
-    col.names <- c("chromosome", "start", "end", "strand")
-  } else if (env$strand.mode == "insensitive") {
-    col.names <- c("chromosome", "start", "end")
-  }
-  
   # add column replicate for list of genomic.coordinate replicates
   if (class(env$genomic.coordinate)[1] == "list") {
     
@@ -60,7 +53,7 @@ prepGenCoordinate <- function(env) {
     
     # rename columns
     for (rep in env$genomic.coordinate) {
-      setnames(rep, colnames(rep), col.names)
+      setnames(rep, colnames(rep)[1:4], c("chromosome", "start", "end", "strand"))
     }
     
     # add column replicate_number
@@ -71,7 +64,8 @@ prepGenCoordinate <- function(env) {
     }
 
     cat("Merging the genomic coordinate tables...")
-    dt <- Reduce(function(dt1, dt2) merge(dt1, dt2, by = col.names, all = TRUE),
+    dt <- Reduce(function(dt1, dt2) merge(dt1, dt2, by = c("chromosome", "start", "end", "strand"),
+                                          all = TRUE),
                  x = env$genomic.coordinate)
     
     dt <- unique(dt)
@@ -87,16 +81,17 @@ prepGenCoordinate <- function(env) {
   } else {
     
     setnames(x = env$genomic.coordinate, 
-             old = colnames(env$genomic.coordinate),
-             new = col.names)
+             old = colnames(env$genomic.coordinate)[1:4],
+             new = c("chromosome", "start", "end", "strand"))
     
   }
   
   setkey(env$genomic.coordinate, chromosome)
   if (sum(!env$genomic.coordinate[, unique(chromosome)] %in% env$chromosome.names) > 0) {
     
-    message(paste0("Genome chromosome names: ", env$chromosome.names))
-    message(paste0("Genomic coordinate table chromosome names: ", env$genomic.coordinate[, unique(chromosome)]))
+    message(paste0("Genome chromosome names: ", paste(env$chromosome.names, collapse = " ")))
+    message(paste0("Genomic coordinate table chromosome names: ", paste(env$genomic.coordinate[, unique(chromosome)],
+                                                                        collapse = " ")))
     stop("Chromosome names are not consistent between genome and genomic coordinate table")
     
   }
