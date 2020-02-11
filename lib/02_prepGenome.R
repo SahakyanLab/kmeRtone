@@ -1,7 +1,8 @@
 prepGenome <- function(env) {
   
   # Dependencies:
-  #       Kmertone variables: genome.name, [if user's genome: genome.path, genome.suffix]
+  #       Kmertone variables: genome.name, 
+  #                           if user's own genome: genome.path, genome.suffix, genome.prefix OR full.path
   
 
   if (!is.null(genome.path)) {
@@ -11,27 +12,34 @@ prepGenome <- function(env) {
     env$chromosome.names <- gsub(paste0('\\', env$genome.suffix, '$'), '', env$chromosome.names)
     env$genome.name <- "genome"
     
-    cat("Genome path is", env$genome.path, "\n")
-    cat("Detected chromosome names are\n")
+    cat("\n\nGenome path is", env$genome.path, "\n")
+    cat("\nDetected chromosome names are\n")
     cat(env$chromosome.names, "\n")
     
-  } else if (env$genome.name %in% c("GRCh37", "GRCh38")) {
+    for (chr in env$chromosome.names) {
+      loadGenome("genome", chr, env$genome.path, env$genome.prefix, env$genome.suffix, env = env, form = "string")
+    }
     
-    env$genome.path <- paste0("data/", env$genome.name, "/")
-    env$genome.suffix <- ".fa.gz"
+  } else if (env$genome.name %in% c("GRCh37", "GRCh38", "hg19", "hg38")) {
     
-    env$chromosome.names <- c(paste0("chr", 1:22), "chrX", "chrY", "chrM")
+    if (env$genome.name == "hg19") env$genome.name <- "GRCh37"
+    if (env$genome.name == "hg38") env$genome.name <- "GRCh38"
     
+    genome.path <- paste0("data/genome/", env$genome.name, ".rds")
+    env$genome <- readRDS(genome.path)
+    env$chromosome.names <- names(env$genome)
+    
+    cat("DONE!\n")
+    
+    # add print function
+    env$print.genome <- function(obj) print(attr(obj, "length"))
   } else {
     
-    stop(paste0("Genome ", env$genome.name, " is not available!"))
+    stop(paste0("\nGenome ", env$genome.name, " is not available!"))
     
   }
   
-  for (chr in env$chromosome.names) {
-    
-    loadGenome("genome", chr, env$genome.path, env$genome.prefix, env$genome.suffix, env = env, form = "string")
-  }
+  
 }
 
 

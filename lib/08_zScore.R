@@ -16,7 +16,7 @@ zScore <- function(kmers, env=parent.frame()) {
     z <- sqrt( total.case ) * (p.case - p.control) / sqrt( p.control * (1 - p.control) )
     
     # I inferred based on the thesis equation 1
-    #z <- (case - control) / sqrt( control * (1 - p.control) )
+    z <- (case - control) / sqrt( control * (1 - p.control) )
     
     z
   }]

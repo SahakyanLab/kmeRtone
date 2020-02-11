@@ -6,18 +6,25 @@ prepGenCoordinate <- function(env) {
   
   # processing a string format
   if (class(env$genomic.coordinate)[1] == "character") {
-
+    
     filename <- env$genomic.coordinate
     
     # genomic.coordinate can be replicates
-    env$genomic.coordinate <- lapply(env$genomic.coordinate, fread)
-    
+    env$genomic.coordinate <- lapply(env$genomic.coordinate, function(i) fread(i, showProgress = FALSE))
+
+    # BED files format
     if (sum(grepl("\\.bed", filename)) == length(filename)) {
+      
+      cat("--BED file format detected from the filename extension.\n")
       
       for (i in seq_along(env$genomic.coordinate)) {
         
-        if (length(colnames(env$genomic.coordinate[[i]])) >= 6) {
+        if (ncol(env$genomic.coordinate[[i]]) >= 6) {
           # strand sensitive i.e. has strand information
+          
+          if (strand.mode == "insensitive") {
+            warning("--The strand mode specified is sensitive. Strand information will be ignored.")
+          }
           
           env$genomic.coordinate[[i]][, colnames(env$genomic.coordinate[[i]])[!colnames(env$genomic.coordinate[[i]]) %in% 
                                                                                 c("V1", "V2", "V3", "V6")] := NULL]
@@ -32,13 +39,14 @@ prepGenCoordinate <- function(env) {
           
           if (strand.mode == "sensitive") {
             stop("You specify strand sensitive but there is no strand information in the table.")
-          } else {
+          } else if (strand.mode == "insensitive") {
             
             # strand insensitive i.e. has no strand information
             env$genomic.coordinate[[i]][, colnames(env$genomic.coordinate[[i]])[!colnames(env$genomic.coordinate[[i]]) %in% 
                                                                                   c("V1", "V2", "V3")] := NULL]
             
             setnames(env$genomic.coordinate[[i]], c("V1", "V2", "V3"), c("chromosome", "start", "end"))
+            env$genomic.coordinate[[i]][, start := start + 1]
             env$genomic.coordinate[[i]][, strand := "*"]
           }
         }
@@ -46,14 +54,27 @@ prepGenCoordinate <- function(env) {
     }
   }
   
-  # add column replicate for list of genomic.coordinate replicates
+  if (class(env$genomic.coordinate)[1] == "list" & length(env$genomic.coordinate) == 1){
+    env$genomic.coordinate <- env$genomic.coordinate[[1]]
+    gc()
+  }
+  
+  # if R object list is given, assume a list of data.table
   if (class(env$genomic.coordinate)[1] == "list") {
     
-    cat("Detecting", length(env$genomic.coordinate), "replicates\n")
+    cat("--Detecting", length(env$genomic.coordinate), "replicates\n")
     
     # rename columns
-    for (rep in env$genomic.coordinate) {
-      setnames(rep, colnames(rep)[1:4], c("chromosome", "start", "end", "strand"))
+    for (i in seq_along(env$genomic.coordinate)) {
+      if (ncol(env$genomic.coordinate[[i]]) > 3) {
+        setnames(env$genomic.coordinate[[i]], colnames(env$genomic.coordinate[[i]])[1:4],
+                 c("chromosome", "start", "end", "strand"))
+      } else {
+        setnames(env$genomic.coordinate[[i]], colnames(env$genomic.coordinate[[i]])[1:3],
+                 c("chromosome", "start", "end"))
+        env$genomic.coordinate[[i]][, strand := "*"]
+      }
+      
     }
     
     # add column replicate_number
@@ -63,33 +84,39 @@ prepGenCoordinate <- function(env) {
       cnt <- cnt + 1
     }
 
-    cat("Merging the genomic coordinate tables...")
+    cat("--Merging the genomic coordinate tables...\n")
     dt <- Reduce(function(dt1, dt2) merge(dt1, dt2, by = c("chromosome", "start", "end", "strand"),
                                           all = TRUE),
                  x = env$genomic.coordinate)
     
-    dt <- unique(dt)
+    #fwrite(dt, "data/consolidated_table.csv")
     
     # reassign the consolidated table to genomic.coordinate
-    env$genomic.coordinate <- dt
+    env$genomic.coordinate <- dt[, 1:4]
     
     # memory copy, so gc() to clear memory
     gc()
     
-    cat("DONE\n")
-    
   } else {
     
-    setnames(x = env$genomic.coordinate, 
-             old = colnames(env$genomic.coordinate)[1:4],
-             new = c("chromosome", "start", "end", "strand"))
+    if (ncol(env$genomic.coordinate) > 3) {
+      setnames(x = env$genomic.coordinate, 
+               old = colnames(env$genomic.coordinate)[1:4],
+               new = c("chromosome", "start", "end", "strand"))
+    } else if (ncol(env$genomic.coordinate) == 3) {
+      setnames(x = env$genomic.coordinate, 
+               old = colnames(env$genomic.coordinate)[1:3],
+               new = c("chromosome", "start", "end"))
+      env$genomic.coordinate[, strand := "*"]
+    }
+    
     
   }
   
   setkey(env$genomic.coordinate, chromosome)
   if (sum(!env$genomic.coordinate[, unique(chromosome)] %in% env$chromosome.names) > 0) {
     
-    message(paste0("Genome chromosome names: ", paste(env$chromosome.names, collapse = " ")))
+    message(paste0("Genome chromosome names: ", paste(env$chromosome.names, collapse = ", ")))
     message(paste0("Genomic coordinate table chromosome names: ", paste(env$genomic.coordinate[, unique(chromosome)],
                                                                         collapse = " ")))
     stop("Chromosome names are not consistent between genome and genomic coordinate table")

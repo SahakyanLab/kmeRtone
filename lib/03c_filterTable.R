@@ -9,7 +9,7 @@ filterTable <- function(env) {
   
   options( scipen=999)
   
-  cat("\nSummary of data that are removed from the genomic coordinate table.\n")
+  cat("\n\nSummary of data that are removed from the genomic coordinate table.\n")
   cat("-------------------------------------------------------------------\n")
   
   # ---------------------------------------------------------------------------------------
@@ -18,19 +18,19 @@ filterTable <- function(env) {
     
     # case pattern summary
     pattern.count <- data.table(env$genomic.coordinate[, table(sequence) ])
-    fwrite(pattern.count, "data/case_pattern_count.csv")
+    #fwrite(pattern.count, "data/case_pattern_count.csv")
     
-    if (nrow(pattern.count[sequence != env$DNA.pattern]) > 0) {
+    if (nrow(pattern.count[(!sequence %in% env$DNA.pattern)]) > 0) {
       
       # calculate percentage
-      pattern.percent <- env$genomic.coordinate[sequence != env$DNA.pattern, table(sequence) 
+      pattern.percent <- env$genomic.coordinate[(!sequence %in% env$DNA.pattern), table(sequence) 
                                                 / nrow(env$genomic.coordinate) * 100]
       
       cat("\nThe following percentage of unwanted sequence pattern are removed:\n")
       print(pattern.percent)
       cat("\n")
       
-      diff.DNA.percent <- pattern.count[sequence != env$DNA.pattern, sum(N) / 
+      diff.DNA.percent <- pattern.count[(!sequence %in% env$DNA.pattern), sum(N) / 
                                           nrow(env$genomic.coordinate) * 100]
       
     } else {
@@ -78,23 +78,24 @@ filterTable <- function(env) {
   }
   
   # Save removed data
-  genomic.coordinate.remove <- env$genomic.coordinate[dup.idx]
   if (!is.null(DNA.pattern)) {
-    genomic.coordinate.remove <- rbind(genomic.coordinate.remove,
-                                       env$genomic.coordinate[chromosome %in% mito | sequence != env$DNA.pattern])
+    total.remove <- genomic.coordinate[dup.idx | chromosome %in% mito | (!sequence %in% env$DNA.pattern), .N]
+    #fwrite(genomic.coordinate[dup.idx | chromosome %in% mito | (!sequence %in% env$DNA.pattern)],
+    #       "data/removed_data_table.csv")
   } else if (is.null(DNA.pattern)) {
-    genomic.coordinate.remove <- rbind(genomic.coordinate.remove,
-                                       env$genomic.coordinate[chromosome %in% mito])
+    total.remove <- genomic.coordinate[dup.idx | chromosome %in% mito, .N]
+    #fwrite(genomic.coordinate[dup.idx | chromosome %in% mito],
+    #       "data/removed_data_table.csv")
   }
-  genomic.coordinate.remove <- unique(genomic.coordinate.remove)
-  fwrite(genomic.coordinate.remove, "data/removed_data_table.csv")
   
+  total <- nrow(env$genomic.coordinate)
   # Remove and update the table
   if (!is.null(DNA.pattern)) {
-    env$genomic.coordinate <- env$genomic.coordinate[(!dup.idx) & (!chromosome %in% mito) & (sequence == env$DNA.pattern)]
+    env$genomic.coordinate <- env$genomic.coordinate[(!dup.idx) & (!chromosome %in% mito) & (sequence %in% env$DNA.pattern)]
   } else if (is.null(DNA.pattern)) {
     env$genomic.coordinate <- env$genomic.coordinate[(!dup.idx) & (!chromosome %in% mito)]
   }
+  gc()
   
   # update genome and chromosome names i.e. remove mitochondria
   env$chromosome.names <- env$chromosome.names[!env$chromosome.names %in% mito]
@@ -103,6 +104,6 @@ filterTable <- function(env) {
   cat("Different DNA pattern\t:", diff.DNA.percent, "%\n")
   cat("Mitochondria\t\t:", mito.percent, "%\n")
   cat("Case on both strand\t:", both.strand.percent, "%\n")
-  cat("Total\t\t\t:", nrow(genomic.coordinate.remove)/nrow(env$genomic.coordinate)*100, "%\n")
+  cat("Total\t\t\t:", total.remove/total*100, "%\n")
   cat("-------------------------------------------------------------------\n\n")
 }

@@ -25,11 +25,11 @@ removeCaseZone <- function(control.region, case.region, strand.mode,
   
   # [1] Build the case zone for strand sensitive mode
   if (strand.mode == "sensitive") {
-    ## double the table to reflect both strands
+    ## double the table to reflect case on both strands
     case.zone <- rbind(env[[case.region]][, .(chromosome, start, end, strand)][, strand := "+"],
                        env[[case.region]][, .(chromosome, start, end, strand)][, strand := "-"])
     ## merge
-    case.zone <- mergeGenCoordinate("case.zone", environment())
+    mergeGenCoordinate("case.zone", environment())
     
   } else if (strand.mode == "insensitive") {
     ## in strand insensitive mode, strand region covers both strands, so it is a case region.
@@ -50,10 +50,17 @@ removeCaseZone <- function(control.region, case.region, strand.mode,
   dt[, group := cumsum(c(1, cummax(head(end, -1)) - tail(start, -1) < -1)),
      by = list(chromosome, strand)]
   
-  # [4] Make partition of overlapping regions in each group
-  dt <- dt[, .(start = head(unique( sort(c(start, end)) ), -1),
-               end = unique(sort(c(start, end)))[-1]),
-           by = list(chromosome, strand, group)]
+  # [4] Make partition of overlapping regions in each group [time consuming]
+  # dt <- dt[, .(start = head(unique( sort(c(start, end)) ), -1),
+  #              end = unique(sort(c(start, end)))[-1]),
+  #          by = list(chromosome, strand, group)]
+  
+  dt <- dt[, {
+    coordinate <- sort( union(start, end) )
+    list(start = coordinate[-length(coordinate)], end = coordinate[-1])
+  }, by = .(chromosome, strand, group)]
+  
+  gc()
 
   # [5] Reorganise the columns
   dt[, group := NULL]
@@ -65,6 +72,7 @@ removeCaseZone <- function(control.region, case.region, strand.mode,
   
   ## add original un-partitioned case zone to the table
   dt <- rbind(dt, case.zone)
+  gc()
   
   ## find overlaps i.e. shrunken partitions within the case zones
   setkey(dt, chromosome, strand, start, end)
@@ -74,6 +82,7 @@ removeCaseZone <- function(control.region, case.region, strand.mode,
   ## remove group with more than one partition i.e. the overlaps
   dt <- dt[, if (.N == 1) .(start, end),
             by = .(chromosome, strand, group)]
+  gc()
   
   ## expand the partition back
   dt[, `:=`(start = start - 1, end = end + 1)]

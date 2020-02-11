@@ -14,28 +14,36 @@ expandGenCoordinate <- function(genomic.coordinate, env=parent.frame(), k) {
   
   # check size
   if (env[[genomic.coordinate]][end-start+1 > k, .N] > 0) {
-    stop("The length of coordinates is more than k. The coordinates cannot be expanded.")
+    message("The length of coordinates is more than k. The coordinates cannot be expanded.")
+  } else if (env[[genomic.coordinate]][end-start+1 > k, .N] > 0) {
+    message("Original coordinate is longer than DNA pattern length. Shrinking the coordinates...")
   }
   
   # shrink start and end coordinates to point to their midpoint
   env[[genomic.coordinate]][, `:=`(
     
     start = {
+      
+      len <- end-start+1
+      even <- len %% 2 == 0
+      odd <- len %% 2 == 1
+      
       # if even length
-      start[(end-start+1)%%2 == 0] = start + (end-start+1)/2
+      start[even] = start + len/2 - 1
       # if odd length
-      start[(end-start+1)%%2 == 1] = start + (end-start+1)%/%2
+      start[odd] = start + len%/%2
+      
       start
     },
     
     end = {
       # if even length
-      end[(end-start+1)%%2 == 0] = end - (end-start+1)/2 + 1
+      end[even] = end - len/2 + 1
       # if odd length
-      end[(end-start+1)%%2 == 1] = end - (end-start+1)%/%2
+      end[odd] = end - len%/%2
       end
     }
-    )]
+  )]
   
   # genomic coordinate length
   len <- env[[genomic.coordinate]][, unique(end - start + 1)]
@@ -46,15 +54,16 @@ expandGenCoordinate <- function(genomic.coordinate, env=parent.frame(), k) {
   }
   
   # scale up to k; if middle point is odd number expand k/2 on both side; if even, expand k/2-1
+  # if size k cannot make flanking size b/w the case pattern balance, change k to k+1.
   env[[genomic.coordinate]][, `:=`(
     start = {
       len <- end-start+1
-      start[len == 2] <- start - k%/%2 + 1
+      start[len == 2] <- start - as.integer(k/2+0.5) + 1
       start[len == 1] <- start - k%/%2
       start
     },
     end = {
-      end[len == 2] <- end + k%/%2 - 1
+      end[len == 2] <- end + as.integer(k/2+0.5) - 1
       end[len == 1] <- end + k%/%2
       end
     }

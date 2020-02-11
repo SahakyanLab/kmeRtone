@@ -1,5 +1,6 @@
 kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
                      k, control.relative.position, DNA.pattern=NULL, ncpu=1,
+                     genomic.coordinate.background = NULL,
                      genome.path=NULL, genome.prefix="", genome.suffix=NULL) {
   
   # this is the only function user can call. The rest are internal functions
@@ -18,9 +19,9 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   #                                               e.g. chr1.fasta, chr2.fasta, etc. The 
   # genome.suffix                <string>         An extension name of the fasta files. Compressed file is
   #                                               supported. e.g. .fasta, .fa, .fa.gz, etc.
-  # DNA.pattern                  <string>         A single DNA pattern. e.g. "G", "TT", "TC", etc. It can be
-  #                                               set as NULL if no pattern is desired.
-  # k.size                       <numeric>        The size of a kmer.
+  # DNA.pattern                  <string>         A single or multiple DNA pattern. e.g. "G", "TT", "TC", etc.
+  #                                               It can be set as NULL if no pattern is desired.
+  # k                            <numeric>        The size of a kmer.
   # control.relative.position    <vector>         A coordinate in a vector format i.e. c(start, end) pointing
   #                                               to where the control kmers should be extracted from. The
   #                                               coordinate is relative to the damage site (upstream and
@@ -47,6 +48,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   source("lib/loadGenomeV2.R")
   source("lib/reverseComplement.R")
   source("lib/distributeChunk.R")
+  source("lib/distributeChunk2.R")
   source("lib/countSlidingBool.R")
   source("lib/scaleGenCoordinate.R")
   source("lib/trimGenCoordinates.R")
@@ -54,21 +56,21 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   source("lib/expandGenCoordinate.R")
   source("lib/extractKmers.R")
   source("lib/removeAllOverlaps.R")
+  source("lib/removeCaseZone.R")
   
   # Dependant functions from the TrantorR library
   source("lib/TrantoRext/GEN_getSeqLogo.R", local = TRUE)
   
   # Task specific dependant functions
-  source("lib/inputChecking.R", local = TRUE)
-  source("lib/prepGenome.R", local = TRUE)
-  source("lib/prepGenCoordinate.R", local = TRUE)
-  source("lib/addColumnSequence.R", local = TRUE)
-  source("lib/filterTable.R", local = TRUE)
-  source("lib/damageDistribution.R", local = TRUE)
-  source("lib/Ncontent.R", local = TRUE)
-  source("lib/removeCaseZone.R")
-  source("lib/getKmers.R", local = TRUE)
-  source("lib/zScore.R", local = TRUE)
+  source("lib/01_inputChecking.R", local = TRUE)
+  source("lib/02_prepGenome.R", local = TRUE)
+  source("lib/03a_prepGenCoordinate.R", local = TRUE)
+  source("lib/03b_addColumnSequence.R", local = TRUE)
+  source("lib/03c_filterTable.R", local = TRUE)
+  source("lib/04_damageDistribution.R", local = TRUE)
+  source("lib/05_GCcontent.R", local = TRUE)
+  source("lib/07_getKmers.R", local = TRUE)
+  source("lib/08_zScore.R", local = TRUE)
   #source("lib/seqlogo.R", local = TRUE)
 
   ## Dependant libraries #########################################################
@@ -88,8 +90,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   
   ## Directory setup #############################################################
   suppressWarnings(dir.create("data"))
-  suppressWarnings(dir.create("data/GC"))
-  
+
   
   # ---------------- INPUT CHECKING -----------------------------------------------------
   
@@ -100,41 +101,39 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   # ---------------- GENOME -------------------------------------------------------------
   # 1. Load genome
   
-  cat("[2] Loading genome...\n\n")
+  cat("[2] Loading genome...")
   prepGenome(kmertone.env)
   
   # ---------------- GENOMIC COORDINATE --------------------------------------------------
   # 1. Rename columns
   # 2. Combine replicates (if any)
 
-  cat("[3] Loading genomic coordinate table...")
+  cat("[3] Loading genomic coordinate table...\n")
   prepGenCoordinate(kmertone.env)
-  cat("DONE!\n")
+  #fwrite(genomic.coordinate, "data/merged_table.csv")
+  gc()
+  
+  # add column sequence if strand sensitive
+  if (strand.mode == "sensitive") {
+    cat("[4] Filtering genomic coordinate table...\n")
+    addColumnSequence(kmertone.env)
+    gc()
+    filterTable(kmertone.env) # memory spike here
+    #fwrite(genomic.coordinate, "data/filtered_table.csv")
+  }
   
   # ---------------- PRE-ANALYSIS --------------------------------------------------------
   # Replicate summary
   # GC and G content at various width
   # Seqlogos
   
-  # add column sequence if strand sensitive
-  if (strand.mode == "sensitive") {
-    cat("[4] Filtering genomic coordinate table...\n")
-    addColumnSequence(kmertone.env)
-    filterTable(kmertone.env)
-  }
-  
-  # filter table - remove chrM
-  #damageDistribution() # Need more work!
-  
-  
   # damage distribution
   #damageDistribution(plot=TRUE)
   #plotDistribution() # Need more work!
   
   # G|C and G content
-  #Ncontent(count.genome = T, count.damage = "retrieve", N="GC") # Need checking
-  #Ncontent(count.genome = T, count.damage = "retrieve", N="G")  # Need checking
-  
+  GCcontent(env)
+
   # Plot G|C and G density
   #plotDensity() # TBD
   

@@ -16,79 +16,53 @@ extractKmers <- function(genomic.coordinate, genome, k, DNA.pattern,
   #     Function  : reverseComplement
   #     Object    : <genome>
   
+  # calculate expandion factor and pattern position
   if (!is.null(DNA.pattern)) {
     expansion.factor <- (k-nchar(DNA.pattern))/2
     pattern.pos <- seq(expansion.factor + 1, expansion.factor + nchar(DNA.pattern))
   }
   
-  # remove region with lower than size k
-  if (env1[[genomic.coordinate]][end - start + 1 < k, .N] > 0) {
-    cat("--Removing regions with shorter than length k.\n")
-    env1[[genomic.coordinate]] <- env1[[genomic.coordinate]][end - start + 1 >= k]
-    gc()
+  # all possible kmers - these are used later for fast binary matching %in%
+  # This is also used for all kmers w/o pattern to remove base N
+  possible.kmers <- do.call(CJ, rep(list(c("A", "C", "G", "T")), k))
+  if (!is.null(DNA.pattern)) {
+    pattern.idx <- possible.kmers[, do.call(paste0,.SD) %in% DNA.pattern,
+                                  .SDcols = pattern.pos]
+    possible.kmers <- possible.kmers[pattern.idx]
   }
+  possible.kmers <- possible.kmers[, do.call(paste0,.SD)]
   
-  # To divide and process table by 100k rows - mayble help with memory efficiency.
-  #    - Nothing changed for 13 million rows. Maybe above 13 million rows.
-  #table.chunks <- gl(nrow(genomic.coordinate)/100000, 100000, nrow(genomic.coordinate))
 
+  # get kmers
   kmers <- env1[[genomic.coordinate]][!is.na(end-start), {
     
-    # ----------------------------------------------------
-    # DNA pattern specified
-    if (!is.null(DNA.pattern)) {
+    mini.table.chunk <- distributeChunk2(end-start+1-k+1, 1e+7, "label")
       
-      DNA.seq <- substring(env2[[genome]][[chromosome]], start, end)
+      kmers <- .SD[, {
+        
+        if (sum(unique(end-start+1) != k) > 0) {
+          start = lapply(1:.N, function(i) start[i]:(end[i]-k+1))
+        }
+        
+        DNA.seq <- unlist(stri_sub_all(env2[[genome]][[chromosome]], from = start, length = k))
+        
+        if (strand == "-") DNA.seq <- reverseComplement(DNA.seq, form = "string")
+        
+        DNA.seq <- DNA.seq[DNA.seq %in% possible.kmers]
+        
+        DNA.seq <- table(DNA.seq)
+        
+        list(kmer = names(DNA.seq), count = as.vector(DNA.seq))
+        
+      }, by = mini.table.chunk][, .(kmer, count)]
       
-      max.len <- max(nchar(DNA.seq))
-      if (is.na(max.len)) stop("\nThere is NA in the table!")
-      
-      # sliding windows
-      kmers <- stri_sub_all(DNA.seq, 1:(max.len-k+1), k:max.len)
-      kmers <- unlist(kmers)
-      kmers <- kmers[kmers != ""]
-      
-      if (strand == "-") kmers <- reverseComplement(kmers, form = "string")
-      
-      # check DNA pattern
-      idx.case <- stri_sub_all(kmers, pattern.pos[1], pattern.pos[length(pattern.pos)]) %in% DNA.pattern
-      idx.case <- unlist(idx.case)
-      
-      # only takes DNA pattern
-      kmers <- kmers[idx.case]
-      
-      kmers <- table(kmers)
-      
-      # -------------------------------------------------
-      # No DNA pattern specified
-    } else if (is.null(DNA.pattern)) {
-
-      DNA.seq <- substring(env2[["genome"]][[chromosome]], start, end)
-      
-      max.len <- max(nchar(DNA.seq))
-      if (is.na(max.len)) stop("\nThere is NA in the table!")
-      
-      # sliding windows
-      kmers <- stri_sub_all(DNA.seq, 1:(max.len-k+1), k:max.len)
-      kmers <- unlist(kmers)
-      kmers <- kmers[kmers != ""]
-      
-      if (strand == "-") kmers <- reverseComplement(kmers, form = "string")
-      
-      kmers <- table(kmers)
-
-    }
+      kmers <- kmers[, list(count = sum(count)), by = kmer]
     
-    list(kmer = names(kmers), count = as.vector(kmers))
-    
+    kmers
   }, by = .(chromosome, strand)][, .(kmer, count)]
   
   # aggregate the count
   kmers <- kmers[, list(count = sum(count)), by = kmer]
-  
-  # remove kmer with less than size k; this is a side effect of combining
-  #   unequal size of region and vectorise it
-  kmers <- kmers[nchar(kmer) == k]
   
   return(kmers)
 }

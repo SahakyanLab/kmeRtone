@@ -6,8 +6,8 @@ inputChecking <- function(env=kmertone.env) {
   # Dependencies
   #    Kmertone variables: DNA.pattern, k, control.relative.position, strand.mode, ncpu
   
-  if ((!class(env$DNA.pattern) %in% c("character", "NULL")) | (!length(env$DNA.pattern) %in% 0:1)) {
-    stop("Please input a single DNA pattern in a string format.")
+  if ((!class(env$DNA.pattern) %in% c("character", "NULL"))) {
+    stop("Please input DNA pattern in a string format.")
   }
   
   if (!class(env$k) %in% c("numeric", "integer") || env$k%%1 != 0) {
