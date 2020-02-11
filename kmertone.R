@@ -59,7 +59,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   source("lib/removeCaseZone.R")
   
   # Dependant functions from the TrantorR library
-  source("lib/TrantoRext/GEN_getSeqLogo.R", local = TRUE)
+  source("lib/TrantoRext/GEN_getSeqLogo.R", local = TRUE) # dependent on seqlogo from bioconductor
   
   # Task specific dependant functions
   source("lib/01_inputChecking.R", local = TRUE)
