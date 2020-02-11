@@ -12,8 +12,6 @@ countN <- function(genome, base, width, env=parent.frame(), ncpu=1, exclude.mito
   #    Package   : stringi, foreach, doParallel
   #    Function  : distributeChunk
   
-  source("lib/distributeChunk.R", local = TRUE)
-  
   #width = c(100, 500, 1000, 5000, 10000, 50000, 100000)
   
   if (exclude.mito) {
@@ -24,7 +22,7 @@ countN <- function(genome, base, width, env=parent.frame(), ncpu=1, exclude.mito
   }
   
   # total number of nucleotides inside bins to process at one time
-  threshold.bases = 1e+9
+  threshold.bases = 1e+7
   
   # initiate GC table
   N.table <- lapply(width, function(w) {
@@ -76,13 +74,14 @@ countN <- function(genome, base, width, env=parent.frame(), ncpu=1, exclude.mito
         
         cpu.chunks <- distributeChunk(chunks, ncpu)
         
-        chr.start <- c(0, cpu.chunks$end * threshold.bins)[-(ncpu+1)]+1
+        chr.start <- c(0, cpu.chunks$end * threshold.bins)+1
+        chr.start <- chr.start[-length(chr.start)]
         chr.end <- cpu.chunks$end * threshold.bins
         chr.seq <- stri_sub(env[[genome]][[chr]], chr.start, chr.end+w-1)
         
         to.export <- c("base", "cpu.chunks", "threshold.bins", "w")
         
-        N.tables <- foreach(n=1:ncpu, chr.seq=chr.seq, .noexport=ls()[!ls() %in% to.export], .packages="stringi") %dopar% {
+        N.tables <- foreach(n=1:length(chr.seq), chr.seq=chr.seq, .noexport=ls()[!ls() %in% to.export], .packages="stringi") %dopar% {
           
           #initiate table
           N.table <- rep(0 , 101)
@@ -142,3 +141,4 @@ countN <- function(genome, base, width, env=parent.frame(), ncpu=1, exclude.mito
   
   return(N.table)
 }
+
