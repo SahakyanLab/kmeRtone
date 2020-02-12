@@ -19,17 +19,26 @@ prepGenCoordinate <- function(env) {
       
       for (i in seq_along(env$genomic.coordinate)) {
         
-        if (ncol(env$genomic.coordinate[[i]]) >= 6) {
+        if (ncol(env$genomic.coordinate[[i]]) >= 4) {
           # strand sensitive i.e. has strand information
           
-          if (strand.mode == "insensitive") {
+          if (env$strand.mode == "insensitive") {
             warning("--The strand mode specified is sensitive. Strand information will be ignored.")
           }
           
-          env$genomic.coordinate[[i]][, colnames(env$genomic.coordinate[[i]])[!colnames(env$genomic.coordinate[[i]]) %in% 
-                                                                                c("V1", "V2", "V3", "V6")] := NULL]
+          for (colnum in 4:(ncol(env$genomic.coordinate[[i]]))) {
+            
+            element <- unique(env$genomic.coordinate[[i]][[colnum]])
+            if (sum((element %in% c("+", "-", "*"))) == length(element)) strand.column <- paste0("V", colnum)
+            
+          }
           
-          setnames(env$genomic.coordinate[[i]], c("V1", "V2", "V3", "V6"), c("chromosome", "start", "end", "strand"))
+          if (ncol(env$genomic.coordinate[[i]]) > 4) {
+            env$genomic.coordinate[[i]][, colnames(env$genomic.coordinate[[i]])[!colnames(env$genomic.coordinate[[i]]) %in% 
+                                                                                  c("V1", "V2", "V3", strand.column)] := NULL] 
+          }
+          
+          setnames(env$genomic.coordinate[[i]], c("V1", "V2", "V3", strand.column), c("chromosome", "start", "end", "strand"))
           
           # bed use zero-based index and open-end index e.g. [0,10) which means from index 0 until index 9
           # change to R indexing
@@ -37,9 +46,9 @@ prepGenCoordinate <- function(env) {
           
         } else {
           
-          if (strand.mode == "sensitive") {
+          if (env$strand.mode == "sensitive") {
             stop("You specify strand sensitive but there is no strand information in the table.")
-          } else if (strand.mode == "insensitive") {
+          } else if (env$strand.mode == "insensitive") {
             
             # strand insensitive i.e. has no strand information
             env$genomic.coordinate[[i]][, colnames(env$genomic.coordinate[[i]])[!colnames(env$genomic.coordinate[[i]]) %in% 
@@ -92,7 +101,7 @@ prepGenCoordinate <- function(env) {
     #fwrite(dt, "data/consolidated_table.csv")
     
     # reassign the consolidated table to genomic.coordinate
-    env$genomic.coordinate <- dt[, 1:4]
+    env$genomic.coordinate <- dt
     
     # memory copy, so gc() to clear memory
     gc()
@@ -114,9 +123,9 @@ prepGenCoordinate <- function(env) {
   }
   
   setkey(env$genomic.coordinate, chromosome)
-  if (sum(!env$genomic.coordinate[, unique(chromosome)] %in% env$chromosome.names) > 0) {
+  if (sum(!env$genomic.coordinate[, unique(chromosome)] %in% names(env$genome)) > 0) {
     
-    message(paste0("Genome chromosome names: ", paste(env$chromosome.names, collapse = ", ")))
+    message(paste0("Genome chromosome names: ", paste(names(env$genome), collapse = ", ")))
     message(paste0("Genomic coordinate table chromosome names: ", paste(env$genomic.coordinate[, unique(chromosome)],
                                                                         collapse = " ")))
     stop("Chromosome names are not consistent between genome and genomic coordinate table")
