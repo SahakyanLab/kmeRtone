@@ -1,5 +1,6 @@
 zScore <- function(kmers, env=parent.frame()) {
   # Calculate Z score and update the table
+  # Claudis's thesis equation 1
   
   # kmers   <string>   A variable name pointing to kmers<data.table>. The
   
@@ -8,15 +9,13 @@ zScore <- function(kmers, env=parent.frame()) {
     # total case count
     total.case <- sum(case)
     
-    # calculate proportion
-    p.case <- case / total.case
+    # proportion control
     p.control <- control / sum(control)
     
-    # From Claudia's code
-    z <- sqrt( total.case ) * (p.case - p.control) / sqrt( p.control * (1 - p.control) )
+    # predicted case distribution
+    case.predict <- p.control * total.case
     
-    # I inferred based on the thesis equation 1
-    z <- (case - control) / sqrt( control * (1 - p.control) )
+    z <- (case - case.predict) / sqrt( case.predict * (1 - p.control) )
     
     z
   }]

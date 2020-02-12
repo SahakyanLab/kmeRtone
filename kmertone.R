@@ -33,11 +33,11 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   #                                               from both plus and minus strands.
   # ncpu                         <numeric>        The number of cpu to use. The default is one.
   
-  # library(data.table)
-  # genomic.coordinate <- fread("data/table.csv")
-  # genome.name="GRCh37";genome.path=NULL;genome.prefix=""; genome.suffix=".fa.gz"
-  # DNA.pattern="TT"; k=10; control.relative.position=c(80,500)
-  # strand.mode="sensitive"; ncpu=1
+  library(data.table)
+  genomic.coordinate <- c("data/table.csv")
+  genome.name="GRCh37";genome.path=NULL;genome.prefix=""; genome.suffix=".fa.gz"
+  DNA.pattern="TT"; k=10; control.relative.position=c(80,500)
+  strand.mode="sensitive"; ncpu=1
 
   kmertone.env = environment()
   
@@ -69,7 +69,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   source("lib/03c_filterTable.R", local = TRUE)
   source("lib/04_damageDistribution.R", local = TRUE)
   source("lib/05_GCcontent.R", local = TRUE)
-  source("lib/07_getKmers.R", local = TRUE)
+  source("lib/07_getCaseKmers.R", local = TRUE)
   source("lib/08_zScore.R", local = TRUE)
   #source("lib/seqlogo.R", local = TRUE)
 
@@ -122,6 +122,9 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
     #fwrite(genomic.coordinate, "data/filtered_table.csv")
   }
   
+  # Backup original coordinates
+  genomic.coordinate[, c("original_start", "original_end") := list(start, end)]
+  
   # ---------------- PRE-ANALYSIS --------------------------------------------------------
   # Replicate summary
   # GC and G content at various width
@@ -131,8 +134,11 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   #damageDistribution(plot=TRUE)
   #plotDistribution() # Need more work!
   
+  # Optimum K
+  calculateOptimumK(kmertone.env)
+  
   # G|C and G content
-  GCcontent(env)
+  #GCcontent(env)
 
   # Plot G|C and G density
   #plotDensity() # TBD
@@ -146,7 +152,8 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   # ---------------- KMER EXTRACTION ------------------------------------------------------
   
   cat("[5] Getting kmers...\n\n")
-  getKmers(kmertone.env)
+  getCaseKmers(kmertone.env)
+  fwrite(kmers, "data/kmers.csv")
   
   # ---------------- UPDATE PRE-ANALYSIS ---------------------------------------------------
   
