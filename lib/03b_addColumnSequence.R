@@ -1,4 +1,4 @@
-addColumnSequence <- function(genomic.coordinate, genome, DNA.pattern, ncpu, env=parent.frame()) {
+addColumnSequence <- function(genomic.coordinate, genome, DNA.pattern, env=parent.frame()) {
   # Because data.table is already multithreading, we can only see faster speed after 1M table row 
   # when using foreach loop
   
@@ -52,7 +52,7 @@ addColumnSequence <- function(genomic.coordinate, genome, DNA.pattern, ncpu, env
   
   gc()
   
-  if (ncpu == 1) {
+  # if (ncpu == 1) {
     
     # get sequence
     env[[genomic.coordinate]][, sequence := {
@@ -63,39 +63,39 @@ addColumnSequence <- function(genomic.coordinate, genome, DNA.pattern, ncpu, env
       dna.seq
       },by = .(chromosome, strand)]
     
-  } else if (ncpu > 1) {
-    
-
-    # distribute rows to cpu
-    chunks <- distributeChunk(nrow(env[[genomic.coordinate]]), ncpu)
-    
-    genomic.coordinate.list <- lapply(1:ncpu, function(i) env[[genomic.coordinate]][ chunks$start[i]:chunks$end[i] ])
-    
-    # map the sequence
-    toExport <- c("reverseComplement")
-    seqs <- foreach(genomic.coordinate=genomic.coordinate.list, .combine = "c",
-                    .noexport = ls()[!ls() %in% toExport], .packages = "data.table") %dopar% {
-                      
-    # divide table by 10mil
-    #table.chunks <- gl(env[[genomic.coordinate]][, .N/5e+6], 5e+6, env[[genomic.coordinate]][, .N])
-                      
-    # get sequence
-    env[[genomic.coordinate]][, sequence := {
-      if (.N > 7e+5) {
-        start <- split(start, ceiling(seq_along(start)/7e+5))
-        end <- split(end, ceiling(seq_along(end)/7e+5))
-      }
-      dna.seq <- unlist(stri_sub_all(genome[[chromosome]], start, end))
-      if (strand == "-") dna.seq <- reverseComplement(dna.seq, form = "string")
-      
-      dna.seq
-       },by = .(chromosome, strand)]
-      
-      return(genomic.coordinate[, sequence])
-    }
-    
-    env[[genomic.coordinate]][, sequence := seqs]
-  }
+  # } else if (ncpu > 1) {
+  #   
+  # 
+  #   # distribute rows to cpu
+  #   chunks <- distributeChunk(nrow(env[[genomic.coordinate]]), ncpu)
+  #   
+  #   genomic.coordinate.list <- lapply(1:ncpu, function(i) env[[genomic.coordinate]][ chunks$start[i]:chunks$end[i] ])
+  #   
+  #   # map the sequence
+  #   toExport <- c("reverseComplement")
+  #   seqs <- foreach(genomic.coordinate=genomic.coordinate.list, .combine = "c",
+  #                   .noexport = ls()[!ls() %in% toExport], .packages = "data.table") %dopar% {
+  #                     
+  #   # divide table by 10mil
+  #   #table.chunks <- gl(env[[genomic.coordinate]][, .N/5e+6], 5e+6, env[[genomic.coordinate]][, .N])
+  #                     
+  #   # get sequence
+  #   env[[genomic.coordinate]][, sequence := {
+  #     if (.N > 7e+5) {
+  #       start <- split(start, ceiling(seq_along(start)/7e+5))
+  #       end <- split(end, ceiling(seq_along(end)/7e+5))
+  #     }
+  #     dna.seq <- unlist(stri_sub_all(genome[[chromosome]], start, end))
+  #     if (strand == "-") dna.seq <- reverseComplement(dna.seq, form = "string")
+  #     
+  #     dna.seq
+  #      },by = .(chromosome, strand)]
+  #     
+  #     return(genomic.coordinate[, sequence])
+  #   }
+  #   
+  #   env[[genomic.coordinate]][, sequence := seqs]
+  # }
   gc()
   time.diff <- Sys.time() - start.time
   cat("DONE! ---", time.diff[1], attr(time.diff, "units"))

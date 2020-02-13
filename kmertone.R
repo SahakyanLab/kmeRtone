@@ -1,5 +1,5 @@
 kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
-                     k, control.relative.position, DNA.pattern=NULL, ncpu=1,
+                     k, control.relative.position, DNA.pattern=NULL,
                      genomic.coordinate.background = NULL,
                      genome.path=NULL, genome.prefix="", genome.suffix=NULL) {
   
@@ -31,8 +31,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   #                                               kmers are extracted from the sense strand only.
   #                                               In contrast, in "insensitive" mode, the kmers are extracted
   #                                               from both plus and minus strands.
-  # ncpu                         <numeric>        The number of cpu to use. The default is one.
-  
+
   # library(data.table)
   # genomic.coordinate <- c("data/table.csv")
   # genome.name="GRCh37";genome.path=NULL;genome.prefix=""; genome.suffix=".fa.gz"
@@ -78,15 +77,15 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   suppressPackageStartupMessages( library(stringi)    )
 
   ## Parallel setup ##############################################################
-  if (ncpu > 1) {
-    
-    suppressPackageStartupMessages( library(foreach)    )
-    suppressPackageStartupMessages( library(doParallel) )
-    
-    cl <- makeCluster(ncpu)
-    registerDoParallel(cl)
-
-  }
+  # if (ncpu > 1) {
+  #   
+  #   suppressPackageStartupMessages( library(foreach)    )
+  #   suppressPackageStartupMessages( library(doParallel) )
+  #   
+  #   cl <- makeCluster(ncpu)
+  #   registerDoParallel(cl)
+  # 
+  # }
   
   ## Directory setup #############################################################
   suppressWarnings(dir.create("data"))
@@ -116,7 +115,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   # add column sequence if strand sensitive
   if (strand.mode == "sensitive") {
     cat("[4] Filtering genomic coordinate table...\n")
-    addColumnSequence("genomic.coordinate", genome, DNA.pattern, ncpu, kmertone.env)
+    addColumnSequence("genomic.coordinate", genome, DNA.pattern, kmertone.env)
     gc()
     filterTable("genomic.coordinate", DNA.pattern, strand.mode, kmertone.env) # memory spike here
     #fwrite(genomic.coordinate, "data/filtered_table.csv")
@@ -152,7 +151,8 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   # ---------------- KMER EXTRACTION ------------------------------------------------------
   
   cat("[5] Getting kmers...\n\n")
-  getCaseKmers(kmertone.env)
+  getCaseKmers("genomic.coordinate", genome, k, DNA.pattern, strand.mode,
+               remove.overlaps=TRUE, kmertone.env)
   fwrite(kmers, "data/kmers.csv")
   
   # ---------------- UPDATE PRE-ANALYSIS ---------------------------------------------------
@@ -164,15 +164,15 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   # ---------------- SCORE -----------------------------------------------------------------
   
   cat("\n[6] Calculating z score...")
-  zScore("kmers")
+  zScore("kmers", kmertone.env)
   #pValue("kmers") # TBD
   cat("DONE!\n")
  
   # ---------------- THE END ---------------------------------------------------------------
   
-  if (ncpu > 1) {
-    stopCluster(cl)
-  }
+  # if (ncpu > 1) {
+  #   stopCluster(cl)
+  # }
    
   return(kmers) # kmers table: kmer, count, fold_change, p, z
 }
