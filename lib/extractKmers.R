@@ -1,13 +1,12 @@
 extractKmers <- function(genomic.coordinate, genome, k, DNA.pattern,
-                         env1=parent.frame(), env2=env1) {
+                         env=parent.frame()) {
   # Extract kmers from genomic coordinate table
   #
   # genomic.coordinate   <string>     A variable name pointing to genomic coordinate
   #                                   <data.table>. Strand can be +- or *. * strand
   #                                   is treated as + strand only.
-  # genome               <string>     A variable name for <genome> class object.
-  # env1               <environment>  An enviroment object for genomic coordinate.
-  # env2               <environment>  An enviroment object for genome.
+  # genome               <string>     A <genome> class object.
+  # env                <environment>  An enviroment object for genomic coordinate.
   # k                    <numeric>    Size of kmer. <integer> is accepted as well.
   # DNA.pattern          <string>     DNA pattern at the center of the kmers.
   
@@ -32,9 +31,8 @@ extractKmers <- function(genomic.coordinate, genome, k, DNA.pattern,
   }
   possible.kmers <- possible.kmers[, do.call(paste0,.SD)]
   
-
   # get kmers
-  kmers <- env1[[genomic.coordinate]][!is.na(end-start), {
+  kmers <- env[[genomic.coordinate]][!is.na(end-start), {
     
     mini.table.chunk <- distributeChunk2(end-start+1-k+1, 1e+7, "label")
       
@@ -44,7 +42,7 @@ extractKmers <- function(genomic.coordinate, genome, k, DNA.pattern,
           start = lapply(1:.N, function(i) start[i]:(end[i]-k+1))
         }
         
-        DNA.seq <- unlist(stri_sub_all(env2[[genome]][[chromosome]], from = start, length = k))
+        DNA.seq <- unlist(stri_sub_all(genome[[chromosome]], from = start, length = k))
         
         if (strand == "-") DNA.seq <- reverseComplement(DNA.seq, form = "string")
         

@@ -4,7 +4,7 @@ scaleGenCoordinate <- function(genomic.coordinate, genome, env=parent.frame(),
   # Scale up or down the genomic coordinates. Any out of range numbers will be removed.
   #
   # genomic.coordinate   <string>    A data.table variable (to update by reference)
-  # genome               <string>    A genome variable (not to copy in the local function environment)
+  # genome               <string>    A <genome> class object
   # env               <environment>  An environment where data.table and genome located.
   # scale                <integer>   Scale can be positive (scale up) or negative (scale down)
   # side                 <string>    Side to scale. Options are "upstream", "downstream", and "both"
@@ -14,7 +14,7 @@ scaleGenCoordinate <- function(genomic.coordinate, genome, env=parent.frame(),
   #     Packages          : data.table
   #     Functions         : readGenome, reverseComplement
   
-  if (sum(class(genomic.coordinate) != "character") > 0 | sum(class(genome) != "character") > 0) {
+  if (sum(class(genomic.coordinate) != "character") > 0 ) {
     stop("Please input variable name in a string format.")
   }
   
@@ -42,8 +42,8 @@ scaleGenCoordinate <- function(genomic.coordinate, genome, env=parent.frame(),
   env[[genomic.coordinate]][end < 1, end := NA]
   
   # # more than chromosome end number
-  env[[genomic.coordinate]][start > attr(env[[genome]], "length")[chromosome], start:=NA]
-  env[[genomic.coordinate]][end > attr(env[[genome]], "length")[chromosome], end:=NA]
+  env[[genomic.coordinate]][start > attr(genome, "length")[chromosome], start:=NA]
+  env[[genomic.coordinate]][end > attr(genome, "length")[chromosome], end:=NA]
   
   # cat("Below are the index numbers which have out of range coordinates:\n", 
   #     which(is.na(genomic.coordinate$start) | is.na(genomic.coordinate$end)))

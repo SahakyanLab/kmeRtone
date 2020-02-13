@@ -12,9 +12,9 @@ removeAllOverlaps <- function(genomic.coordinate, env, remove = FALSE) {
                          by = list(chromosome, strand)]
   
   ## save overlaps
-  fwrite(env[[genomic.coordinate]][, if (.N > 1) .(start, end),
-                                   by = .(chromosome, strand, group)],
-         "data/overlapping_case_region.csv")
+  # fwrite(env[[genomic.coordinate]][, if (.N > 1) .(start, end),
+  #                                  by = .(chromosome, strand, group)],
+  #        "data/overlapping_case_region.csv")
   
   ## remove overlaps
   if (remove == TRUE) {
