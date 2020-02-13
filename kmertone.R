@@ -33,11 +33,11 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   #                                               from both plus and minus strands.
   # ncpu                         <numeric>        The number of cpu to use. The default is one.
   
-  library(data.table)
-  genomic.coordinate <- c("data/table.csv")
-  genome.name="GRCh37";genome.path=NULL;genome.prefix=""; genome.suffix=".fa.gz"
-  DNA.pattern="TT"; k=10; control.relative.position=c(80,500)
-  strand.mode="sensitive"; ncpu=1
+  # library(data.table)
+  # genomic.coordinate <- c("data/table.csv")
+  # genome.name="GRCh37";genome.path=NULL;genome.prefix=""; genome.suffix=".fa.gz"
+  # DNA.pattern="TT"; k=10; control.relative.position=c(80,500)
+  # strand.mode="sensitive"; ncpu=1
 
   kmertone.env = environment()
   
@@ -49,7 +49,6 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   source("lib/reverseComplement.R")
   source("lib/distributeChunk.R")
   source("lib/distributeChunk2.R")
-  source("lib/countSlidingBool.R")
   source("lib/scaleGenCoordinate.R")
   source("lib/trimGenCoordinates.R")
   source("lib/mergeGenCoordinate.R")
@@ -67,10 +66,11 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   source("lib/03a_prepGenCoordinate.R", local = TRUE)
   source("lib/03b_addColumnSequence.R", local = TRUE)
   source("lib/03c_filterTable.R", local = TRUE)
-  source("lib/04_damageDistribution.R", local = TRUE)
+  source("lib/04_caseDistribution.R", local = TRUE)
   source("lib/05_GCcontent.R", local = TRUE)
   source("lib/07_getCaseKmers.R", local = TRUE)
   source("lib/08_zScore.R", local = TRUE)
+  source("lib/00_calculateOptimumK.R")
   #source("lib/seqlogo.R", local = TRUE)
 
   ## Dependant libraries #########################################################
@@ -95,30 +95,30 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   # ---------------- INPUT CHECKING -----------------------------------------------------
   
   cat("[1] Checking inputs...")
-  inputChecking(kmertone.env)
+  inputChecking(kmertone)
   cat("DONE!\n")
   
   # ---------------- GENOME -------------------------------------------------------------
   # 1. Load genome
   
   cat("[2] Loading genome...")
-  prepGenome(kmertone.env)
+  prepGenome(genome.name, genome.path, genome.prefix, genome.suffix, kmertone.env)
   
   # ---------------- GENOMIC COORDINATE --------------------------------------------------
   # 1. Rename columns
   # 2. Combine replicates (if any)
 
   cat("[3] Loading genomic coordinate table...\n")
-  prepGenCoordinate(kmertone.env)
+  prepGenCoordinate("genomic.coordinate", strand.mode, genome, kmertone.env)
   #fwrite(genomic.coordinate, "data/merged_table.csv")
   gc()
   
   # add column sequence if strand sensitive
   if (strand.mode == "sensitive") {
     cat("[4] Filtering genomic coordinate table...\n")
-    addColumnSequence(kmertone.env)
+    addColumnSequence("genomic.coordinate", genome, DNA.pattern, ncpu, kmertone.env)
     gc()
-    filterTable(kmertone.env) # memory spike here
+    filterTable("genomic.coordinate", DNA.pattern, strand.mode, kmertone.env) # memory spike here
     #fwrite(genomic.coordinate, "data/filtered_table.csv")
   }
   
@@ -135,7 +135,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   #plotDistribution() # Need more work!
   
   # Optimum K
-  calculateOptimumK(kmertone.env)
+  #calculateOptimumK(kmertone.env, set.k = c(2,4,6,8,10,12))
   
   # G|C and G content
   #GCcontent(env)

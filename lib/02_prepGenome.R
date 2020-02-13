@@ -1,4 +1,5 @@
-prepGenome <- function(env) {
+prepGenome <- function(genome.name, genome.path, genome.prefix,
+                       genome.suffix, env) {
   
   # Dependencies:
   #       Kmertone variables: genome.name, 
@@ -7,27 +8,27 @@ prepGenome <- function(env) {
 
   if (!is.null(genome.path)) {
     
-    env$chromosome.names <- list.files(genome.path)[grep(paste0("\\", env$genome.suffix, "$"),
-                                                                  list.files(env$genome.path))]
-    env$chromosome.names <- gsub(paste0('\\', env$genome.suffix, '$'), '', env$chromosome.names)
-    env$genome.name <- "genome"
+    chromosome.names <- list.files(genome.path)[grep(paste0("\\", genome.suffix, "$"),
+                                                                  list.files(genome.path))]
+    chromosome.names <- gsub(paste0('\\', genome.suffix, '$'), '', chromosome.names)
+    genome.name <- "genome"
     
-    cat("\n\nGenome path is", env$genome.path, "\n")
+    cat("\n\nGenome path is", genome.path, "\n")
     cat("\nDetected chromosome names are\n")
-    cat(env$chromosome.names, "\n")
+    cat(chromosome.names, "\n")
     
-    for (chr in env$chromosome.names) {
-      loadGenome("genome", chr, env$genome.path, env$genome.prefix, env$genome.suffix, env = env, form = "string")
+    for (chr in chromosome.names) {
+      loadGenome("genome", chr, genome.path, genome.prefix, genome.suffix, env = env, form = "string")
     }
     
-  } else if (env$genome.name %in% c("GRCh37", "GRCh38", "hg19", "hg38")) {
+  } else if (genome.name %in% c("GRCh37", "GRCh38", "hg19", "hg38")) {
     
-    if (env$genome.name == "hg19") env$genome.name <- "GRCh37"
-    if (env$genome.name == "hg38") env$genome.name <- "GRCh38"
+    if (genome.name == "hg19") genome.name <- "GRCh37"
+    if (genome.name == "hg38") genome.name <- "GRCh38"
     
-    genome.path <- paste0("data/genome/", env$genome.name, ".rds")
+    genome.path <- paste0("data/genome/", genome.name, ".rds")
     env$genome <- readRDS(genome.path)
-    env$chromosome.names <- names(env$genome)
+    chromosome.names <- names(env$genome)
     
     cat("DONE!\n")
     
@@ -35,11 +36,9 @@ prepGenome <- function(env) {
     env$print.genome <- function(obj) print(attr(obj, "length"))
   } else {
     
-    stop(paste0("\nGenome ", env$genome.name, " is not available!"))
+    stop(paste0("\nGenome ", genome.name, " is not available!"))
     
   }
-  
-  
 }
 
 

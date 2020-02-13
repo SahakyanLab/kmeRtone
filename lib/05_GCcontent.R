@@ -1,4 +1,6 @@
-GCcontent(env) {
+GCcontent <- function(env) {
+  
+  stop("NOT properly implemented yet.")
   
   width = c(100, 500, 1000, 5000, 10000, 50000, 100000)
   
