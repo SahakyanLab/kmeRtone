@@ -1,4 +1,5 @@
-getCaseKmers <- function(env, k){
+getCaseKmers <- function(genomic.coordinate, genome, k, DNA.pattern, strand.mode, 
+                         remove.overlaps=TRUE, env=parent.frame()){
   
   # Dependencies:
   #     Kmertone variables: genomic.coordinate, DNA.pattern, k, strand.mode
@@ -15,7 +16,7 @@ getCaseKmers <- function(env, k){
   cat("Extracting case kmers...\n")
   
   # check if genomic coordinate length varies
-  len <- env$genomic.coordinate[, unique(end - start + 1)]
+  len <- env[[genomic.coordinate]][, unique(end - start + 1)]
   
   cat("--Length of genomic coordinates:", len, "nt\n")
   
@@ -26,13 +27,13 @@ getCaseKmers <- function(env, k){
     cat("--Scaling up to size k.\n")
     
     # expand to k
-    expandGenCoordinate("genomic.coordinate", env$kmertone.env, k)
+    expandGenCoordinate("genomic.coordinate", env, k)
     
     # trim down if out of range coordinate
-    trimGenCoordinates("genomic.coordinate", "genome", remove = FALSE, env$kmertone.env)
+    trimGenCoordinates("genomic.coordinate", genome, remove = FALSE, env)
     
     # flag region with less than size k (as a result of trimming down)
-    env$genomic.coordinate[ end-start+1 < k, c("start", "end") := NA ]
+    env[[genomic.coordinate]][ end-start+1 < k, c("start", "end") := NA ]
     
   } else if (len >= k) {
     
@@ -41,22 +42,29 @@ getCaseKmers <- function(env, k){
   }
   
   # remove overlapping case region
-  cat("--Detecting overlapping case regions. ")
-  before <- env$genomic.coordinate[(!is.na(start)) & (!is.na(end)), .N]
+  if (remove.overlaps) {
+    
+    cat("--Detecting overlapping case regions. ")
+    before <- env[[genomic.coordinate]][(!is.na(start)) & (!is.na(end)), .N]
+    
+    removeAllOverlaps("genomic.coordinate", env, remove = FALSE)
+    
+    loss <- (before - env[[genomic.coordinate]][(!is.na(start)) & (!is.na(end)), .N]) / before * 100
+    
+    cat(loss, "% overlapping case regions are removed.\n")
+    
+  } else {
+    cat("Overlapping case kmers are set not to be removed.\n")
+  }
   
-  removeAllOverlaps("genomic.coordinate", env, remove = FALSE)
-  
-  loss <- (before - env$genomic.coordinate[(!is.na(start)) & (!is.na(end)), .N]) / before * 100
-  
-  cat(loss, "% overlapping case regions are removed.\n")
   
   cat("Extracting case kmers...")
   # now that genomic coordinates are resolved, extract the case kmers
-  case.kmers <- extractKmers("genomic.coordinate", "genome", k, env$DNA.pattern, env$kmertone.env)
+  case.kmers <- extractKmers("genomic.coordinate", genome, k, DNA.pattern, env)
   
   ## ------------------------------
   # INSENSITIVE STRAND MODE
-  if (env$strand.mode == "insensitive") countReverseComplement("case.kmers")
+  if (strand.mode == "insensitive") countReverseComplement("case.kmers")
   
   
   time.diff <- Sys.time() - start.time

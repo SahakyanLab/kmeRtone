@@ -1,4 +1,4 @@
-addColumnSequence <- function(env) {
+addColumnSequence <- function(genomic.coordinate, genome, DNA.pattern, ncpu, env=parent.frame()) {
   # Because data.table is already multithreading, we can only see faster speed after 1M table row 
   # when using foreach loop
   
@@ -11,22 +11,22 @@ addColumnSequence <- function(env) {
   cat("Adding sequence to the table...")
   
   # sort
-  setkey(env$genomic.coordinate, chromosome, start, end)
+  setkey(env[[genomic.coordinate]], chromosome, start, end)
   
   # expand "*" to "+" and "-" if any
-  if (nrow(env$genomic.coordinate[strand == "*"]) > 0) {
+  if (nrow(env[[genomic.coordinate]][strand == "*"]) > 0) {
     message("WARNING! There is same genomic coordinate on plus and minus strands.")
-    env$genomic.coordinate <- rbind(env$genomic.coordinate[strand %in% c("+", "-")],
-                                    env$genomic.coordinate[strand == "*"][, strand := "+"],
-                                    env$genomic.coordinate[strand == "*"][, strand := "-"])
-    env$genomic.coordinate <- unique(env$genomic.coordinate[, .(chromosome, start, end, strand)])
+    env[[genomic.coordinate]] <- rbind(env[[genomic.coordinate]][strand %in% c("+", "-")],
+                                    env[[genomic.coordinate]][strand == "*"][, strand := "+"],
+                                    env[[genomic.coordinate]][strand == "*"][, strand := "-"])
+    env[[genomic.coordinate]] <- unique(env[[genomic.coordinate]][, .(chromosome, start, end, strand)])
                               
     gc()
   }
   
   # for shrinking uv data. comment out to be correct 
   # shrink start and end coordinates to point to their midpoint
-  env$genomic.coordinate[, `:=`(
+  env[[genomic.coordinate]][, `:=`(
     
     start = {
       
@@ -55,9 +55,9 @@ addColumnSequence <- function(env) {
   if (ncpu == 1) {
     
     # get sequence
-    env$genomic.coordinate[, sequence := {
+    env[[genomic.coordinate]][, sequence := {
 
-      dna.seq <- unlist(stri_sub_all(env$genome[[chromosome]], start, end))
+      dna.seq <- unlist(stri_sub_all(genome[[chromosome]], start, end))
 
       if (strand == "-") dna.seq <- reverseComplement(dna.seq, form = "string")
       dna.seq
@@ -67,9 +67,9 @@ addColumnSequence <- function(env) {
     
 
     # distribute rows to cpu
-    chunks <- distributeChunk(nrow(env$genomic.coordinate), ncpu)
+    chunks <- distributeChunk(nrow(env[[genomic.coordinate]]), ncpu)
     
-    genomic.coordinate.list <- lapply(1:ncpu, function(i) env$genomic.coordinate[ chunks$start[i]:chunks$end[i] ])
+    genomic.coordinate.list <- lapply(1:ncpu, function(i) env[[genomic.coordinate]][ chunks$start[i]:chunks$end[i] ])
     
     # map the sequence
     toExport <- c("reverseComplement")
@@ -77,15 +77,15 @@ addColumnSequence <- function(env) {
                     .noexport = ls()[!ls() %in% toExport], .packages = "data.table") %dopar% {
                       
     # divide table by 10mil
-    #table.chunks <- gl(env$genomic.coordinate[, .N/5e+6], 5e+6, env$genomic.coordinate[, .N])
+    #table.chunks <- gl(env[[genomic.coordinate]][, .N/5e+6], 5e+6, env[[genomic.coordinate]][, .N])
                       
     # get sequence
-    env$genomic.coordinate[, sequence := {
+    env[[genomic.coordinate]][, sequence := {
       if (.N > 7e+5) {
         start <- split(start, ceiling(seq_along(start)/7e+5))
         end <- split(end, ceiling(seq_along(end)/7e+5))
       }
-      dna.seq <- unlist(stri_sub_all(env$genome[[chromosome]], start, end))
+      dna.seq <- unlist(stri_sub_all(genome[[chromosome]], start, end))
       if (strand == "-") dna.seq <- reverseComplement(dna.seq, form = "string")
       
       dna.seq
@@ -94,7 +94,7 @@ addColumnSequence <- function(env) {
       return(genomic.coordinate[, sequence])
     }
     
-    env$genomic.coordinate[, sequence := seqs]
+    env[[genomic.coordinate]][, sequence := seqs]
   }
   gc()
   time.diff <- Sys.time() - start.time
