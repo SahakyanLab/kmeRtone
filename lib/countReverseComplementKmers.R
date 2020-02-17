@@ -1,4 +1,4 @@
-countReverseComplement <- function(kmers, env=parent.env()) {
+countReverseComplementKmers <- function(kmers, env=parent.env()) {
   # Smartly count the reverse complement sequence from it's contrast strand
   #
   # kmers     <string>      A variable name pointing to data.table object. The data.table
