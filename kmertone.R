@@ -1,6 +1,6 @@
-kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
+kmertone <- function(genomic.coordinate, genome.name, strand.mode,
                      k, control.relative.position, DNA.pattern=NULL,
-                     genomic.coordinate.background = NULL,
+                     genomic.coordinate.background = NULL, genome=NULL,
                      genome.path=NULL, genome.prefix="", genome.suffix=NULL) {
   
   # this is the only function user can call. The rest are internal functions
@@ -68,6 +68,7 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   source("lib/04_caseDistribution.R", local = TRUE)
   source("lib/05_GCcontent.R", local = TRUE)
   source("lib/07_getCaseKmers.R", local = TRUE)
+  source("lib/08_getControlKmers.R", local = TRUE)
   source("lib/08_zScore.R", local = TRUE)
   source("lib/00_calculateOptimumK.R")
   #source("lib/seqlogo.R", local = TRUE)
@@ -94,15 +95,15 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   # ---------------- INPUT CHECKING -----------------------------------------------------
   
   cat("[1] Checking inputs...")
-  inputChecking(kmertone)
+  inputChecking(DNA.pattern, k, control.relative.position, strand.mode)
   cat("DONE!\n")
   
   # ---------------- GENOME -------------------------------------------------------------
   # 1. Load genome
   
   cat("[2] Loading genome...")
-  prepGenome(genome.name, genome.path, genome.prefix, genome.suffix, kmertone.env)
-  
+  prepGenome(genome.name, genome.path, genome.prefix, genome.suffix, genome, kmertone.env)
+
   # ---------------- GENOMIC COORDINATE --------------------------------------------------
   # 1. Rename columns
   # 2. Combine replicates (if any)
@@ -150,11 +151,18 @@ kmertone <- function(genomic.coordinate, genome.name="GRCh37", strand.mode,
   
   # ---------------- KMER EXTRACTION ------------------------------------------------------
   
-  cat("[5] Getting kmers...\n\n")
-  getCaseKmers("genomic.coordinate", genome, k, DNA.pattern, strand.mode,
+  cat("[5] Getting case kmers...\n\n")
+  kmers <- getCaseKmers("genomic.coordinate", genome, k, DNA.pattern, strand.mode,
                remove.overlaps=TRUE, kmertone.env)
-  fwrite(kmers, "data/kmers.csv")
+  #fwrite(kmers, "data/kmers.csv")
   
+  if (!is.null(control.relative.position)) {
+    cat("[5] Getting case kmers...\n\n")
+    kmers <- getControlKmers("genomic.coordinate", genome, k, DNA.pattern, strand.mode,
+                             "kmers", kmertone.env)
+    #fwrite(kmers, "data/kmers.csv")
+  }
+
   # ---------------- UPDATE PRE-ANALYSIS ---------------------------------------------------
   
   #GCcontent(dts[1], genome, filename = "GC_after")

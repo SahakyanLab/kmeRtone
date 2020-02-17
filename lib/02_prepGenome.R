@@ -1,12 +1,21 @@
 prepGenome <- function(genome.name, genome.path, genome.prefix,
-                       genome.suffix, env) {
+                       genome.suffix, genome, env) {
   
   # Dependencies:
   #       Kmertone variables: genome.name, 
   #                           if user's own genome: genome.path, genome.suffix, genome.prefix OR full.path
   
-
-  if (!is.null(genome.path)) {
+  if (class(genome) == "genome") {
+    
+    # add print function
+    env$print.genome <- function(obj) print(attr(obj, "length"))
+    env$genome <- genome
+    
+    cat("Genome is already loaded.\n\n")
+    print(genome)
+    cat("\n")
+    
+  } else if (!is.null(genome.path)) {
     
     chromosome.names <- list.files(genome.path)[grep(paste0("\\", genome.suffix, "$"),
                                                                   list.files(genome.path))]
