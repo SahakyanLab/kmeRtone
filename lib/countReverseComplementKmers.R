@@ -19,13 +19,17 @@ countReverseComplementKmers <- function(kmers, env=parent.frame()) {
   
   # Because some reverse complement sequence are not exist in the plus strand,
   # match() results in NAs. Change NA to zero
-  rc.count[is.na(rc.count)] <- 0
+  if (length(rc.count[is.na(rc.count)]) > 0) {
+    rc.count[is.na(rc.count)] <- 0
+  }
   
   # Update the count
   env[[kmers]][, count := count + rc.count]
   
   # Add the non-existing rc sequence
-  env[[kmers]] <- rbind(env[[kmers]], data.table(kmer = case.kmers[rc.count==0, rc], count = 1), fill=TRUE)
+  if (length(rc.count[is.na(rc.count)]) > 0) {
+    env[[kmers]] <- rbind(env[[kmers]], data.table(kmer = env[[kmers]][rc.count==0, rc], count = 1), fill=TRUE)
+  }
   
   # Remove rc column
   env[[kmers]][, rc := NULL]
