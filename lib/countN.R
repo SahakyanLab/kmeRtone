@@ -1,11 +1,10 @@
-countN <- function(genome, base, width, env=parent.frame(), ncpu=1, exclude.mito=TRUE) {
+countN <- function(genome, base, width, ncpu=1, exclude.mito=TRUE) {
   # Calculate percentage of base N. N can be a single base e.g. {A,C,G,T} and OR set e.g. C or G (C|G) 
   # The calculation is done in a sliding window manner.
   #
   # genome    <string>      A variable name of <genome> class object.
   # base     <character>    A base e.g. {A,C,G,T}. It can be a vector as well to count a multiple occurence.
   # width     <numeric>     A width of DNA sequence to window slide.
-  # env     <environment>   An environment where the <genome> object resides.
   # ncpu      <numeric>     A number of cpu to use.
   
   # Dependencies
@@ -16,7 +15,7 @@ countN <- function(genome, base, width, env=parent.frame(), ncpu=1, exclude.mito
   
   if (exclude.mito) {
     mito = c("chrM", "chrm", "chrmt", "chrMT", "chrMt", "chrMito", "chrmito")
-    chromosome.names <- names(env[["genome"]])[!names(env[["genome"]]) %in% mito]  # exclude mitochondria
+    chromosome.names <- names(genome)[!names(genome) %in% mito]  # exclude mitochondria
   } else {
     chromosome.names <- names(env[[genome]])
   }
@@ -59,7 +58,7 @@ countN <- function(genome, base, width, env=parent.frame(), ncpu=1, exclude.mito
           start.bin <- i * threshold.bins + 1
           end.bin <- (i+1) * threshold.bins
           
-          dna.seq <- stri_sub(env[["genome"]][[chr]], start.bin:end.bin, length = w)
+          dna.seq <- stri_sub(genome[[chr]], start.bin:end.bin, length = w)
           
           N.count <- lapply(base, function(nt) stri_count_fixed(dna.seq, nt))
           N.count <- as.integer(Reduce(`+`, N.count) / w * 100)

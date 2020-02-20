@@ -53,8 +53,10 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
   source("lib/mergeGenCoordinate.R")
   source("lib/expandGenCoordinate.R")
   source("lib/extractKmers.R")
+  source("lib/countReverseComplementKmers.R")
   source("lib/removeAllOverlaps.R")
   source("lib/removeCaseZone.R")
+  source("lib/extractGenomeKmers.R")
   
   # Dependant functions from the TrantorR library
   source("lib/TrantoRext/GEN_getSeqLogo.R", local = TRUE) # dependent on seqlogo from bioconductor
@@ -75,7 +77,9 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
 
   ## Dependant libraries #########################################################
   suppressPackageStartupMessages( library(data.table) )
-  suppressPackageStartupMessages( library(stringi)    )
+  suppressPackageStartupMessages( library(  stringi ) )
+  suppressPackageStartupMessages( library(Biostrings) )
+  suppressPackageStartupMessages( library(  seqLogo ) )
 
   ## Parallel setup ##############################################################
   # if (ncpu > 1) {
@@ -103,6 +107,7 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
   
   cat("[2] Loading genome...")
   prepGenome(genome.name, genome.path, genome.prefix, genome.suffix, genome, kmertone.env)
+  cat("\n")
 
   # ---------------- GENOMIC COORDINATE --------------------------------------------------
   # 1. Rename columns
@@ -112,12 +117,12 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
   prepGenCoordinate("genomic.coordinate", strand.mode, genome, kmertone.env)
   #fwrite(genomic.coordinate, "data/merged_table.csv")
   gc()
+  cat("\n")
   
   # add column sequence if strand sensitive
   if (strand.mode == "sensitive") {
     cat("[4] Filtering genomic coordinate table...\n")
     addColumnSequence("genomic.coordinate", genome, DNA.pattern, kmertone.env)
-    gc()
     filterTable("genomic.coordinate", DNA.pattern, strand.mode, kmertone.env) # memory spike here
     #fwrite(genomic.coordinate, "data/filtered_table.csv")
   }
@@ -130,8 +135,8 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
   # GC and G content at various width
   # Seqlogos
   
-  # damage distribution
-  #damageDistribution(plot=TRUE)
+  # case distribution
+  caseDistribution(genomic.coordinate, DNA.pattern, env=kmertone.env)
   #plotDistribution() # Need more work!
   
   # Optimum K
@@ -155,9 +160,10 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
   kmers <- getCaseKmers("genomic.coordinate", genome, k, DNA.pattern, strand.mode,
                remove.overlaps=TRUE, kmertone.env)
   #fwrite(kmers, "data/kmers.csv")
+  cat("\n")
   
   if (!is.null(control.relative.position)) {
-    cat("[5] Getting case kmers...\n\n")
+    cat("[6] Getting control kmers...\n\n")
     kmers <- getControlKmers("genomic.coordinate", genome, k, DNA.pattern, strand.mode,
                              "kmers", kmertone.env)
     #fwrite(kmers, "data/kmers.csv")
@@ -171,7 +177,7 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
   
   # ---------------- SCORE -----------------------------------------------------------------
   
-  cat("\n[6] Calculating z score...")
+  cat("\n[7] Calculating z score...")
   zScore("kmers", kmertone.env)
   #pValue("kmers") # TBD
   cat("DONE!\n")

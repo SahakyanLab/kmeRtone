@@ -1,0 +1,225 @@
+STDOUT
+
+##############################################################################################################
+CDP-CT
+
+[1] Checking inputs...DONE!
+[2] Loading genome...Genome is already loaded.
+
+     chr1      chr2      chr3      chr4      chr5      chr6      chr7      chr8      chr9     chr10     chr11 
+249250621 243199373 198022430 191154276 180915260 171115067 159138663 146364022 141213431 135534747 135006516 
+    chr12     chr13     chr14     chr15     chr16     chr17     chr18     chr19     chr20     chr21     chr22 
+133851895 115169878 107349540 102531392  90354753  81195210  78077248  59128983  63025520  48129895  51304566 
+     chrX      chrY      chrM 
+155270560  59373566     16569 
+
+[3] Loading genomic coordinate table...
+--BED file format detected from the filename extension.
+--Detecting 2 replicates
+--Merging the genomic coordinate tables...
+
+[4] Filtering genomic coordinate table...
+Adding sequence to the table...DONE! --- 2.098521 mins
+
+Summary of data that are removed from the genomic coordinate table.
+-------------------------------------------------------------------
+
+The following percentage of unwanted sequence pattern are removed:
+sequence
+            AA             AC             AG             AT             CA             CC             CG 
+ 0.00008060074  0.00015367874  0.00007200333  0.00034712051  0.00004513641  0.00014508133  0.00001719482 
+            GA             GC             GG             GT             NN             TA             TC 
+ 0.00004083771  0.00018806839  0.00006448059  0.00038795822  0.03835950289  0.00079848464  0.00080063399 
+            TG             TT 
+ 0.00028801330 79.40939498099 
+
+Different DNA pattern	: 79.45118 %
+Mitochondria		: 0.004545882 %
+Case on both strand	: 0 %
+Total			: 79.4514 %
+-------------------------------------------------------------------
+
+[5] Getting case kmers...
+
+Extracting case kmers...
+--Length of genomic coordinates: 2 nt
+--Length of the coordinates is smaller than size k.
+--Scaling up to size k.
+--Detecting overlapping case regions. 6.782924 % overlapping case regions are removed.
+Extracting case kmers...DONE! --- 3.558551 mins 
+
+[5] Getting control kmers...
+
+Selecting case zone...DONE! --- 2.318955 mins 
+Selecting control regions...DONE! --- 6.139244 mins 
+Extracting control kmers...
+Extracting control kmers...DONE! --- 15.68574 mins 
+
+[6] Calculating z score...DONE!
+
+##############################################################################################################
+CPD-TT
+
+[1] Checking inputs...DONE!
+[2] Loading genome...Genome is already loaded.
+
+     chr1      chr2      chr3      chr4      chr5      chr6      chr7      chr8      chr9     chr10     chr11 
+249250621 243199373 198022430 191154276 180915260 171115067 159138663 146364022 141213431 135534747 135006516 
+    chr12     chr13     chr14     chr15     chr16     chr17     chr18     chr19     chr20     chr21     chr22 
+133851895 115169878 107349540 102531392  90354753  81195210  78077248  59128983  63025520  48129895  51304566 
+     chrX      chrY      chrM 
+155270560  59373566     16569 
+
+[3] Loading genomic coordinate table...
+--BED file format detected from the filename extension.
+--Detecting 2 replicates
+--Merging the genomic coordinate tables...
+
+[4] Filtering genomic coordinate table...
+Adding sequence to the table...DONE! --- 2.007975 mins
+
+Summary of data that are removed from the genomic coordinate table.
+-------------------------------------------------------------------
+
+The following percentage of unwanted sequence pattern are removed:
+sequence
+            AA             AC             AG             AT             CA             CC             CG 
+ 0.00008060074  0.00015367874  0.00007200333  0.00034712051  0.00004513641  0.00014508133  0.00001719482 
+            CT             GA             GC             GG             GT             NN             TA 
+20.54881622342  0.00004083771  0.00018806839  0.00006448059  0.00038795822  0.03835950289  0.00079848464 
+            TC             TG 
+ 0.00080063399  0.00028801330 
+
+Different DNA pattern	: 20.59061 %
+Mitochondria		: 0.004545882 %
+Case on both strand	: 0 %
+Total			: 20.59151 %
+-------------------------------------------------------------------
+
+[5] Getting case kmers...
+
+Extracting case kmers...
+--Length of genomic coordinates: 2 nt
+--Length of the coordinates is smaller than size k.
+--Scaling up to size k.
+--Detecting overlapping case regions. 30.5716 % overlapping case regions are removed.
+Extracting case kmers...DONE! --- 15.80746 mins 
+
+[5] Getting control kmers...
+
+Selecting case zone...DONE! --- 6.331439 mins 
+Selecting control regions...DONE! --- 7.298273 mins 
+Extracting control kmers...
+Extracting control kmers...DONE! --- 2.475049 mins 
+
+[6] Calculating z score...DONE!
+
+##############################################################################################################
+PP-TC
+
+[1] Checking inputs...DONE!
+[2] Loading genome...Genome is already loaded.
+
+     chr1      chr2      chr3      chr4      chr5      chr6      chr7      chr8      chr9     chr10     chr11 
+249250621 243199373 198022430 191154276 180915260 171115067 159138663 146364022 141213431 135534747 135006516 
+    chr12     chr13     chr14     chr15     chr16     chr17     chr18     chr19     chr20     chr21     chr22 
+133851895 115169878 107349540 102531392  90354753  81195210  78077248  59128983  63025520  48129895  51304566 
+     chrX      chrY      chrM 
+155270560  59373566     16569 
+
+[3] Loading genomic coordinate table...
+--BED file format detected from the filename extension.
+--Detecting 2 replicates
+--Merging the genomic coordinate tables...
+
+[4] Filtering genomic coordinate table...
+Adding sequence to the table...DONE! --- 1.292626 mins
+
+Summary of data that are removed from the genomic coordinate table.
+-------------------------------------------------------------------
+
+The following percentage of unwanted sequence pattern are removed:
+sequence
+            AA             AC             AG             AT             CA             CC             CG 
+ 0.00012876138  0.00010076977  0.00006717985  0.00066993239  0.00064940521  0.00060835086  0.00019780734 
+            CT             GA             GC             GG             GT             NN             TA 
+ 0.00084534644  0.00004851878  0.00006158153  0.00004478657  0.00044973177  0.05524796204  0.00053370658 
+            TG             TT 
+ 0.00020713787 52.32464953532 
+
+Different DNA pattern	: 52.38451 %
+Mitochondria		: 0.006273852 %
+Case on both strand	: 0 %
+Total			: 52.38508 %
+-------------------------------------------------------------------
+
+[5] Getting case kmers...
+
+Extracting case kmers...
+--Length of genomic coordinates: 2 nt
+--Length of the coordinates is smaller than size k.
+--Scaling up to size k.
+--Detecting overlapping case regions. 10.25091 % overlapping case regions are removed.
+Extracting case kmers...DONE! --- 5.999891 mins 
+
+[5] Getting control kmers...
+
+Selecting case zone...DONE! --- 34.20966 secs 
+Selecting control regions...DONE! --- 2.662778 mins 
+Extracting control kmers...
+Extracting control kmers...DONE! --- 12.07769 mins 
+
+[6] Calculating z score...DONE!
+
+##############################################################################################################
+PP-TT
+
+[1] Checking inputs...DONE!
+[2] Loading genome...Genome is already loaded.
+
+     chr1      chr2      chr3      chr4      chr5      chr6      chr7      chr8      chr9     chr10     chr11     chr12     chr13 
+249250621 243199373 198022430 191154276 180915260 171115067 159138663 146364022 141213431 135534747 135006516 133851895 115169878 
+    chr14     chr15     chr16     chr17     chr18     chr19     chr20     chr21     chr22      chrX      chrY      chrM 
+107349540 102531392  90354753  81195210  78077248  59128983  63025520  48129895  51304566 155270560  59373566     16569 
+
+[3] Loading genomic coordinate table...
+--BED file format detected from the filename extension.
+--Detecting 2 replicates
+--Merging the genomic coordinate tables...
+
+[4] Filtering genomic coordinate table...
+Adding sequence to the table...DONE! --- 38.80971 secs
+
+Summary of data that are removed from the genomic coordinate table.
+-------------------------------------------------------------------
+
+The following percentage of unwanted sequence pattern are removed:
+sequence
+            AA             AC             AG             AT             CA             CC             CG             CT 
+ 0.00012876138  0.00010076977  0.00006717985  0.00066993239  0.00064940521  0.00060835086  0.00019780734  0.00084534644 
+            GA             GC             GG             GT             NN             TA             TC             TG 
+ 0.00004851878  0.00006158153  0.00004478657  0.00044973177  0.05524796204  0.00053370658 47.61548948629  0.00020713787 
+
+Different DNA pattern	: 47.67535 %
+Mitochondria		: 0.006273852 %
+Case on both strand	: 0 %
+Total			: 47.67644 %
+-------------------------------------------------------------------
+
+[5] Getting case kmers...
+
+Extracting case kmers...
+--Length of genomic coordinates: 2 nt
+--Length of the coordinates is smaller than size k.
+--Scaling up to size k.
+--Detecting overlapping case regions. 8.300908 % overlapping case regions are removed.
+Extracting case kmers...DONE! --- 2.633044 mins 
+
+[6] Getting control kmers...
+
+Selecting case zone...DONE! --- 37.00349 secs 
+Selecting control regions...DONE! --- 2.325824 mins 
+Extracting control kmers...
+Extracting control kmers...DONE! --- 10.02703 mins 
+
+[7] Calculating z score...DONE!

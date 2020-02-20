@@ -1,4 +1,4 @@
-caseDistribution <- function(env) {
+caseDistribution <- function(genomic.coordinate, DNA.pattern, env=parent.frame()) {
   # venndiagram
   # any experimental bias
   
@@ -9,82 +9,85 @@ caseDistribution <- function(env) {
   
   options( scipen=999)
   
+  # replicate exist?
+  replicate.exist <- sum(grep("replicate", colnames(env[[genomic.coordinate]]))) > 0
+  
   # if there are replicates
-  if(sum(grep("replicate", colnames(env$genomic.coordinate))) > 0) {
+  if(replicate.exist) {
     
-    replicate.names <- colnames(env$genomic.coordinate)[grep("replicate", colnames(env$genomic.coordinate))]
+    replicate.names <- colnames(env[[genomic.coordinate]])[grep("replicate", colnames(env[[genomic.coordinate]]))]
     
-    total.dmg.reps <- sum(sapply(replicate.names, function(rep) {
-      env$genomic.coordinate[eval(parse(text = rep)) > 0, .N]
+    total.case.reps <- sum(sapply(replicate.names, function(rep) {
+      env[[genomic.coordinate]][eval(parse(text = rep)) > 0, .N]
     }))
-    cat("\nTotal case site:\t\t", total.dmg.reps)
+    cat("\nTotal case site:\t\t", total.case.reps)
   }
   
   # Check for duplicated record
-  dup.cnt <- env$genomic.coordinate[duplicated(env$genomic.coordinate[ ,1:5]), .N]
+  dup.cnt <- env[[genomic.coordinate]][duplicated(env[[genomic.coordinate]][ ,1:5]), .N]
   if (dup.cnt > 0) message(paste("WARNING! There are", dup.cnt, "duplicates!"))
   
   # Check case pattern
-  if (!is.null(env$DNA.pattern)) {
-    pattern.percent <- env$genomic.coordinate[, table(sequence) / .N * 100]
+  if (!is.null(DNA.pattern)) {
+    pattern.percent <- env[[genomic.coordinate]][, table(sequence) / .N * 100]
   }
   
   
-  if(sum(grep("replicate", colnames(env$genomic.coordinate))) > 0) {
+  if(replicate.exist) {
     pattern.percent.by.replicate <- sapply(replicate.names, function(rep) {
-      env$genomic.coordinate[ eval(parse(text = rep)) > 0 , table(sequence) / total.dmg.reps * 100]
+      env[[genomic.coordinate]][ eval(parse(text = rep)) > 0 , table(sequence) / total.case.reps * 100]
     }) 
   }
   
   ## Print message
-  cat("\nTotal unique case site\t:", nrow(env$genomic.coordinate))
-  if (!is.null(env$DNA.pattern)) cat("\nDNA pattern\t\t\t:", DNA.pattern, "\n")
+  cat("\nTotal unique case site\t:", nrow(env[[genomic.coordinate]]))
+  if (!is.null(DNA.pattern)) cat("\nDNA pattern\t\t\t:", DNA.pattern, "\n")
   
   cat("\nThe percentage of unique case site is: \n")
   print(pattern.percent)
   if (sum(!names(pattern.percent) %in% DNA.pattern) > 0) {message("WARNING! Unexpected DNA pattern.")}
   else {cat("\n")}
-  if(sum(grep("replicate", colnames(env$genomic.coordinate))) > 0) {
+  if(replicate.exist) {
     cat("Percentage of case occurence in each replicate (out of total case)\n")
     print(pattern.percent.by.replicate)
   }
   
   # Check if case happened at the same position of both strands
-  idx.both.strands <- duplicated(env$genomic.coordinate[ ,1:3]) | duplicated(env$genomic.coordinate[ ,1:3], fromLast = T)
-  dmg.both.strands.genomic.coordinate <- env$genomic.coordinate[idx.both.strands][order(chromosome, start, end)]
+  idx.both.strands <- duplicated(env[[genomic.coordinate]][ ,1:3]) | duplicated(env[[genomic.coordinate]][ ,1:3], fromLast = T)
+  case.both.strands.genomic.coordinate <- env[[genomic.coordinate]][idx.both.strands][order(chromosome, start, end)]
   
   ## Print message
-  if (nrow(dmg.both.strands.genomic.coordinate) > 0) {
+  if (nrow(case.both.strands.genomic.coordinate) > 0) {
     message("\nWARNING! There are unique cases occur at the same position of both plus and minus strands.")
-    print(dmg.both.strands.genomic.coordinate)
+    print(case.both.strands.genomic.coordinate)
     
     # Count the percentage of this occurence
-    dmg.both.strands.percent <- dmg.both.strands.genomic.coordinate[, table(sequence) / nrow(env$genomic.coordinate) * 100]
+    case.both.strands.percent <- case.both.strands.genomic.coordinate[, table(sequence) / nrow(env[[genomic.coordinate]]) * 100]
     by.replicate <- sapply(replicate.names, function(rep) {
-      dmg.both.strands.genomic.coordinate[eval(parse(text = rep)) > 0, table(sequence)]
+      case.both.strands.genomic.coordinate[eval(parse(text = rep)) > 0, table(sequence)]
     })
     
     message(paste("\nTotal percentage (out of total unique cases) of such occurence is",
-                  sum(dmg.both.strands.percent), "%"))
+                  sum(case.both.strands.percent), "%"))
     cat("The percentage breakdown is as follow:\n")
-    print( dmg.both.strands.percent )
+    print( case.both.strands.percent )
     
-    if(sum(grep("replicate", colnames(env$genomic.coordinate))) > 0) {
+    if(replicate.exist) {
       # Count the percentage of this occurence in each replicate
       cat("\nThe percentage of replicates displaying this behaviour are as follow:\n")
-      print(dmg.both.strands.cnt.by.rep)
+      print(case.both.strands.cnt.by.rep)
       
       ## If there is a count mismatch between complementary sequences, that means the strands are mixed
       ## and matched to produce this observation (same genomic coordinates on both plus and minus strand)
-      if ( sum(dmg.both.strands.cnt.by.rep[c("A"),] != dmg.both.strands.cnt.by.rep[c("T"),]) > 0 | 
-           sum(dmg.both.strands.cnt.by.rep[c("C"),] != dmg.both.strands.cnt.by.rep[c("G"),]) > 0 ) {
+      if ( sum(case.both.strands.cnt.by.rep[c("A"),] != case.both.strands.cnt.by.rep[c("T"),]) > 0 | 
+           sum(case.both.strands.cnt.by.rep[c("C"),] != case.both.strands.cnt.by.rep[c("G"),]) > 0 ) {
         
-        dmg.both.strands.cnt.by.rep <- sapply(replicate.names, function(rep) {
-          idx <- duplicated(env$genomic.coordinate[ !is.na(eval(parse(text = rep))), 1:3]) | 
-            duplicated(env$genomic.coordinate[ !is.na(eval(parse(text = rep))), 1:3],
+        case.both.strands.cnt.by.rep <- sapply(replicate.names, function(rep) {
+          idx <- duplicated(env[[genomic.coordinate]][ !is.na(eval(parse(text = rep))), 1:3]) | 
+            duplicated(env[[genomic.coordinate]][ !is.na(eval(parse(text = rep))), 1:3],
                        fromLast = T)
-          tab <- env$genomic.coordinate[ !is.na(eval(parse(text = rep))) ][idx, table(sequence) /  
-                                                                         total.dmg.reps * 100]
+          tab <- env[[genomic.coordinate]][ !is.na(eval(parse(text = rep))) ][idx, table(sequence) /  
+                                                                         total.case.reps * 100]
           
           # fill missing sequence with zero so that sapply output a nice matrix instead of a list
           i <- !(c("A", "C", "G", "T") %in% names(tab))
@@ -98,9 +101,53 @@ caseDistribution <- function(env) {
         })
         message("\nWARNING! There is a mix and match between strands of different replicates")
         cat("Here is the real percentage within each replicate where case occurs at the same position of both strands.\n")
-        print(dmg.both.strands.cnt.by.rep)
+        print(case.both.strands.cnt.by.rep)
       }
     }
     
   }
+  
+  #-------------------------------------------------------------------------------------------------------
+  # Venn/Euler Diagram of replicates
+  
+  if (replicate.exist){
+    
+    n <- length(replicate.names)
+    
+    setops <- sapply(1:n, function(i) {
+      
+      rep.combn <- combn(1:n, i)
+      rep.combn.names <- apply(rep.combn, 2, paste, collapse="&")
+      
+      rep.combn.count <- rep(NA, ncol(rep.combn))
+      names(rep.combn.count) <- rep.combn.names
+      
+      for (j in length(rep.combn)) {
+        
+        reps <- rep.combn[, j]
+        filter <- paste0("(!is.na(replicate_", reps, "))", collapse = " & ")
+        
+        rep.combn.count[rep.combn.names[j]] <- env[[genomic.coordinate]][filter, .N]
+      }
+      
+      return(rep.combn.count)
+    })
+    
+    setops <- unlist(setops)
+    
+    venn <- venneuler(setops)
+    
+    plot(venn)
+    
+    # auto plot labeling. hmmm...
+    
+    # calculaye percentage
+    setops.percent <- round( setops / sum(setops[1:length(replicate.names)]) * 100)
+    
+    cat("Damage summary\n")
+    print(setops.percent)
+
+  }
+  
+  
 }

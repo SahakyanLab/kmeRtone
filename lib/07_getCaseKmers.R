@@ -64,7 +64,7 @@ getCaseKmers <- function(genomic.coordinate, genome, k, DNA.pattern, strand.mode
   
   ## ------------------------------
   # INSENSITIVE STRAND MODE
-  if (strand.mode == "insensitive") countReverseComplement("case.kmers")
+  if (strand.mode == "insensitive") countReverseComplementKmers("case.kmers")
   
   
   time.diff <- Sys.time() - start.time

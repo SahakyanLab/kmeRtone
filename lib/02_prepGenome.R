@@ -13,8 +13,7 @@ prepGenome <- function(genome.name, genome.path, genome.prefix,
     
     cat("Genome is already loaded.\n\n")
     print(genome)
-    cat("\n")
-    
+
   } else if (!is.null(genome.path)) {
     
     chromosome.names <- list.files(genome.path)[grep(paste0("\\", genome.suffix, "$"),

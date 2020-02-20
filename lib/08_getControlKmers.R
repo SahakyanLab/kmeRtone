@@ -18,6 +18,9 @@ getControlKmers <- function(genomic.coordinate, genome, k, DNA.pattern, strand.m
   # copy table
   case.region <- env[[genomic.coordinate]][, .(chromosome, start = original_start, end = original_end, strand)]
   
+  # check if genomic coordinate length varies
+  len <- case.region[, unique(end - start + 1)]
+  
   ## increase to k if case region lower than k
   if (length(len) == 1 & len < k) {
     expandGenCoordinate("case.region", k=k)
@@ -30,7 +33,7 @@ getControlKmers <- function(genomic.coordinate, genome, k, DNA.pattern, strand.m
                      end = end + control.relative.position[1])]
   
   # trim out of range coordinates
-  trimGenCoordinates("case.region", "genome", remove = TRUE)
+  trimGenCoordinates("case.region", genome, remove = TRUE)
   
   # merge overlapped regions
   mergeGenCoordinate("case.region")
@@ -57,7 +60,7 @@ getControlKmers <- function(genomic.coordinate, genome, k, DNA.pattern, strand.m
   gc()
   
   # trim out of range coordinates
-  trimGenCoordinates("control.region", "genome", remove = TRUE)
+  trimGenCoordinates("control.region", genome, remove = TRUE)
   
   # merge overlapped regions
   mergeGenCoordinate("control.region")
@@ -91,11 +94,11 @@ getControlKmers <- function(genomic.coordinate, genome, k, DNA.pattern, strand.m
   
   cat("Extracting control kmers...\n")
   
-  control.kmers <- extractKmers("control.region", "genome", k, DNA.pattern, env2 = env)
+  control.kmers <- extractKmers("control.region", genome, k, DNA.pattern, environment())
   
   ## ------------------------------
   # INSENSITIVE STRAND MODE
-  if (strand.mode == "insensitive") countReverseComplement("control.kmers")
+  if (strand.mode == "insensitive") countReverseComplementKmers("control.kmers")
   
   time.diff <- Sys.time() - start.time
   cat("Extracting control kmers...DONE! ---", time.diff[1], attr(time.diff, "units"), "\n")
