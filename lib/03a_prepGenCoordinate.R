@@ -4,6 +4,8 @@ prepGenCoordinate <- function(genomic.coordinate, strand.mode, genome, env=paren
   #     Kmertone variables : genomic.coordinate, strand.mode
   #     Package            : data.table
   
+  essential.columns <- c("chromosome", "start", "end", "strand")
+  
   # processing a string format
   if (class(env[[genomic.coordinate]])[1] == "character") {
     
@@ -38,7 +40,7 @@ prepGenCoordinate <- function(genomic.coordinate, strand.mode, genome, env=paren
                                                                                   c("V1", "V2", "V3", strand.column)] := NULL] 
           }
           
-          setnames(env[[genomic.coordinate]][[i]], c("V1", "V2", "V3", strand.column), c("chromosome", "start", "end", "strand"))
+          setnames(env[[genomic.coordinate]][[i]], c("V1", "V2", "V3", strand.column), essential.columns)
           
           # bed use zero-based index and open-end index e.g. [0,10) which means from index 0 until index 9
           # change to R indexing
@@ -54,7 +56,7 @@ prepGenCoordinate <- function(genomic.coordinate, strand.mode, genome, env=paren
             env[[genomic.coordinate]][[i]][, colnames(env[[genomic.coordinate]][[i]])[!colnames(env[[genomic.coordinate]][[i]]) %in% 
                                                                                   c("V1", "V2", "V3")] := NULL]
             
-            setnames(env[[genomic.coordinate]][[i]], c("V1", "V2", "V3"), c("chromosome", "start", "end"))
+            setnames(env[[genomic.coordinate]][[i]], c("V1", "V2", "V3"), essential.columns[-4])
             env[[genomic.coordinate]][[i]][, start := start + 1]
             env[[genomic.coordinate]][[i]][, strand := "*"]
           }
@@ -75,27 +77,42 @@ prepGenCoordinate <- function(genomic.coordinate, strand.mode, genome, env=paren
     
     # rename columns
     for (i in seq_along(env[[genomic.coordinate]])) {
-      if (ncol(env[[genomic.coordinate]][[i]]) > 3) {
-        setnames(env[[genomic.coordinate]][[i]], colnames(env[[genomic.coordinate]][[i]])[1:4],
-                 c("chromosome", "start", "end", "strand"))
-      } else {
-        setnames(env[[genomic.coordinate]][[i]], colnames(env[[genomic.coordinate]][[i]])[1:3],
-                 c("chromosome", "start", "end"))
-        env[[genomic.coordinate]][[i]][, strand := "*"]
+      
+      columns.in.table <- colnames(env[[genomic.coordinate]][[i]])
+      
+      # If essential columns not exist
+      if(sum(essential.columns %in% columns.in.table) < 3){
+        
+        if (ncol(env[[genomic.coordinate]][[i]]) > 3) {
+          setnames(env[[genomic.coordinate]][[i]], columns.in.table[1:4], essential.columns)
+        } else {
+          setnames(env[[genomic.coordinate]][[i]], columns.in.table[1:3], essential.columns[-4])
+          env[[genomic.coordinate]][[i]][, strand := "*"]
+        }
+      }
+      
+      non.essential.columns <- columns.in.table[!columns.in.table %in% essential.columns]
+      
+      # Remove other than essential columns
+      env[[genomic.coordinate]][[i]][, eval(non.essential.columns) := NULL]
+      
+    }
+    
+    # add column replicate_number if not exist yet
+    if(sum(grepl("replicate_", colnames(env[[genomic.coordinate]]))) < 1) {
+      
+      cnt <- 1
+      for (i in 1:length(env[[genomic.coordinate]])) {
+        env[[genomic.coordinate]][[i]][, paste0("replicate_", cnt) := 1]
+        cnt <- cnt + 1
       }
       
     }
     
-    # add column replicate_number
-    cnt <- 1
-    for (i in 1:length(env[[genomic.coordinate]])) {
-      env[[genomic.coordinate]][[i]][, paste0("replicate_", cnt) := 1]
-      cnt <- cnt + 1
-    }
+    essential.columns <- essential.columns[columns.in.table %in% essential.columns]
 
     cat("--Merging the genomic coordinate tables...\n")
-    dt <- Reduce(function(dt1, dt2) merge(dt1, dt2, by = c("chromosome", "start", "end", "strand"),
-                                          all = TRUE),
+    dt <- Reduce(function(dt1, dt2) merge.data.table(dt1[, ], dt2, by = essential.columns, all = TRUE),
                  x = env[[genomic.coordinate]])
     
     #fwrite(dt, "data/consolidated_table.csv")

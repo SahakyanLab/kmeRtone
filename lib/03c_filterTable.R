@@ -1,4 +1,4 @@
-filterTable <- function(genomic.coordinate, DNA.pattern, strand.mode, env=parent.frame()) {
+filterTable <- function(genomic.coordinate, DNA.pattern, strand.mode, output, env=parent.frame()) {
   # remove sequence that don't match case pattern
   # remove mitochondria
   
@@ -6,7 +6,7 @@ filterTable <- function(genomic.coordinate, DNA.pattern, strand.mode, env=parent
   #     Kmertone variables: genomic.coordinate, DNA.pattern
   #     Packages          : data.table
   #     Functions         : -
-  
+
   options( scipen=999)
   
   cat("\n\nSummary of data that are removed from the genomic coordinate table.\n")
@@ -80,12 +80,11 @@ filterTable <- function(genomic.coordinate, DNA.pattern, strand.mode, env=parent
   # Save removed data
   if (!is.null(DNA.pattern)) {
     total.remove <- env[[genomic.coordinate]][dup.idx | chromosome %in% mito | (!sequence %in% DNA.pattern), .N]
-    #fwrite(genomic.coordinate[dup.idx | chromosome %in% mito | (!sequence %in% env$DNA.pattern)],
-    #       "data/removed_data_table.csv")
+    fwrite(env[[genomic.coordinate]][dup.idx | chromosome %in% mito | (!sequence %in% DNA.pattern)],
+           paste0(output, "/removed_table.csv"))
   } else if (is.null(DNA.pattern)) {
     total.remove <- env[[genomic.coordinate]][dup.idx | chromosome %in% mito, .N]
-    #fwrite(genomic.coordinate[dup.idx | chromosome %in% mito],
-    #       "data/removed_data_table.csv")
+    fwrite(env[[genomic.coordinate]][dup.idx | chromosome %in% mito], paste0(output, "/removed_table.csv"))
   }
   
   total <- nrow(env[[genomic.coordinate]])

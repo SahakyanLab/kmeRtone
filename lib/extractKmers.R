@@ -1,63 +1,100 @@
-extractKmers <- function(genomic.coordinate, genome, k, DNA.pattern,
-                         env=parent.frame()) {
+extractKmers <- function(genomic.coordinate, genome, k, DNA.pattern=NULL) {
   # Extract kmers from genomic coordinate table
   #
-  # genomic.coordinate   <string>     A variable name pointing to genomic coordinate
-  #                                   <data.table>. Strand can be +- or *. * strand
+  # genomic.coordinate   <data.table> Genomic coordinate
+  #                                   Strand can be +, - or *. * strand
   #                                   is treated as + strand only.
   # genome               <string>     A <genome> class object.
-  # env                <environment>  An enviroment object for genomic coordinate.
   # k                    <numeric>    Size of kmer. <integer> is accepted as well.
   # DNA.pattern          <string>     DNA pattern at the center of the kmers.
   
   # Dependencies
   #     Package   : data.table, stringi
-  #     Function  : reverseComplement
+  #     Function  : reverseComplement, distributeChunk2
   #     Object    : <genome>
   
-  # calculate expandion factor and pattern position
+  # Input checking
+  if(class(genome)[1] != "genome"){
+    stop("Please input <genome> object for the genome.")
+  } else if (class(genomic.coordinate)[1] == "character"){
+    genomic.coordinate <- fread(genomic.coordinate, showProgress = FALSE)
+  } else if (class(genomic.coordinate)[1] != "data.table"){
+    stop("Please input genomic coordinate as <data.table> object.")
+  }
+  
+  # Check genomic.coordinate - return empty data.table
+  invalid.coordinate <- genomic.coordinate[!is.na(end-start), sum(end-start+1 >= k)] < 1
+  if(invalid.coordinate) return(data.table(kmer=character(), count=numeric()))
+  
+  # calculate expansion factor and pattern position
   if (!is.null(DNA.pattern)) {
-    expansion.factor <- (k-nchar(DNA.pattern))/2
-    pattern.pos <- seq(expansion.factor + 1, expansion.factor + nchar(DNA.pattern))
+    expansion.factor <- (k-nchar(DNA.pattern[1]))/2
+    pattern.pos <- seq(expansion.factor + 1, expansion.factor + nchar(DNA.pattern[1]))
   }
   
   # all possible kmers - these are used later for fast binary matching %in%
   # This is also used for all kmers w/o pattern to remove base N
-  possible.kmers <- do.call(CJ, rep(list(c("A", "C", "G", "T")), k))
-  if (!is.null(DNA.pattern)) {
-    pattern.idx <- possible.kmers[, do.call(paste0,.SD) %in% DNA.pattern,
-                                  .SDcols = pattern.pos]
-    possible.kmers <- possible.kmers[pattern.idx]
+  
+  if (!is.null(DNA.pattern) && k > nchar(DNA.pattern[1])) {
+    
+    possible.kmers <- lapply(DNA.pattern, function(dna.pattern) {
+      
+      expansion.kmers <- do.call(CJ, rep(list(c("A", "C", "G", "T")), expansion.factor))
+      expansion.kmers <- expansion.kmers[, do.call(paste0, .SD)]
+      
+      possible.kmers <- do.call(CJ, rep(list(expansion.kmers), 2))
+      possible.kmers[, center := dna.pattern]
+      setcolorder(possible.kmers, c(1,3,2))
+      
+    })
+    
+    possible.kmers <- rbindlist(possible.kmers)
+
+  } else if(is.null(DNA.pattern) || k == nchar(DNA.pattern)) {
+    # k is limited to 15 because vector size is limited to .Machine$integer.max
+    possible.kmers <- do.call(CJ, rep(list(c("A", "C", "G", "T")), k))
   }
+  
   possible.kmers <- possible.kmers[, do.call(paste0,.SD)]
   
   # get kmers
-  kmers <- env[[genomic.coordinate]][!is.na(end-start), {
+  kmers <- genomic.coordinate[ (!is.na(end-start)) & ((end-start+1) >= k), {
     
     mini.table.chunk <- distributeChunk2(end-start+1-k+1, 1e+7, "label")
+    
+    kmers <- .SD[, {
       
-      kmers <- .SD[, {
-        
-        if (sum(unique(end-start+1) != k) > 0) {
-          start = lapply(1:.N, function(i) start[i]:(end[i]-k+1))
-        }
-        
-        DNA.seq <- unlist(stri_sub_all(genome[[chromosome]], from = start, length = k))
-        
-        if (strand == "-") DNA.seq <- reverseComplement(DNA.seq, form = "string")
-        
-        DNA.seq <- DNA.seq[DNA.seq %in% possible.kmers]
-        
-        DNA.seq <- table(DNA.seq)
-        
-        list(kmer = names(DNA.seq), count = as.vector(DNA.seq))
-        
-      }, by = mini.table.chunk][, .(kmer, count)]
+      if (sum(unique(end-start+1) != k) > 0) {
+        start = lapply(1:.N, function(i) start[i]:(end[i]-k+1))
+      }
+
+      kmers <- unlist(stri_sub_all(genome[[chromosome]], from = start, length = k))
       
-      kmers <- kmers[, list(count = sum(count)), by = kmer]
+      if (strand == "-") kmers <- reverseComplement(kmers, form = "string")
+      
+      kmers <- kmers[kmers %in% possible.kmers]
+      
+      kmers <- table(kmers)
+      
+      counts <- as.vector(kmers)
+      kmers <- names(kmers)
+      
+      # In an event where there is no kmer
+      if(is.null(kmers)) kmers <- count <- NA
+      
+      list(kmer = kmers, count = counts)
+      
+    }, by = mini.table.chunk][, .(kmer, count)]
+    
+    kmers <- kmers[, list(count = sum(count)), by = kmer]
     
     kmers
   }, by = .(chromosome, strand)][, .(kmer, count)]
+  
+  #print(kmers)
+  
+  # Omit NA (non-existence kmers i.e. bases other than ACTG)
+  kmers <- na.omit(kmers)
   
   # aggregate the count
   kmers <- kmers[, list(count = sum(count)), by = kmer]

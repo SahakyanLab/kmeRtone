@@ -92,16 +92,16 @@ getControlKmers <- function(genomic.coordinate, genome, k, DNA.pattern, strand.m
   
   start.time <- Sys.time()
   
-  cat("Extracting control kmers...\n")
+  cat("Extracting control kmers...")
   
-  control.kmers <- extractKmers("control.region", genome, k, DNA.pattern, environment())
+  control.kmers <- extractKmers(control.region, genome, k, DNA.pattern)
   
   ## ------------------------------
   # INSENSITIVE STRAND MODE
   if (strand.mode == "insensitive") countReverseComplementKmers("control.kmers")
   
   time.diff <- Sys.time() - start.time
-  cat("Extracting control kmers...DONE! ---", time.diff[1], attr(time.diff, "units"), "\n")
+  cat("DONE! ---", time.diff[1], attr(time.diff, "units"), "\n")
   
   # -----------------------------------------------------------------------------------------
   # KMERS TABLE
@@ -111,7 +111,7 @@ getControlKmers <- function(genomic.coordinate, genome, k, DNA.pattern, strand.m
   setnames(env[[case.kmers]], "count", "case")
   
   # merge the table
-  kmers <- merge(control.kmers, env[[case.kmers]], all = TRUE)
+  kmers <- merge.data.table(control.kmers, env[[case.kmers]], all = TRUE)
   
   # change NA to 0
   kmers[is.na(control), control := 0]

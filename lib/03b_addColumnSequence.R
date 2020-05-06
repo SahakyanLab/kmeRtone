@@ -1,4 +1,4 @@
-addColumnSequence <- function(genomic.coordinate, genome, DNA.pattern, env=parent.frame()) {
+addColumnSequence <- function(genomic.coordinate, genome, env=parent.frame()) {
   # Because data.table is already multithreading, we can only see faster speed after 1M table row 
   # when using foreach loop
   

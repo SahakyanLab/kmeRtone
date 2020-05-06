@@ -33,7 +33,7 @@ removeCaseZone <- function(control.region, case.region, strand.mode,
     
   } else if (strand.mode == "insensitive") {
     ## in strand insensitive mode, strand region covers both strands, so it is a case region.
-    case.zone <- case.region
+    case.zone <- env[[case.region]][, .(chromosome, start, end, strand)]
     
     ## check if + - exist.
     if (env[[case.region]][strand != "*", .N] > 0 | env[[control.region]][strand != "*", .N] > 0) {

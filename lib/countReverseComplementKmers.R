@@ -1,4 +1,4 @@
-countReverseComplementKmers <- function(kmers, env=parent.frame()) {
+countReverseComplementKmers <- function(kmers, env=parent.frame(), update.count=TRUE) {
   # Smartly count the reverse complement sequence from it's contrast strand
   #
   # kmers     <string>      A variable name pointing to data.table object. The data.table
@@ -13,25 +13,37 @@ countReverseComplementKmers <- function(kmers, env=parent.frame()) {
     stop("Please input a variable name of kmers table in string format.")
   }
   
-  # Smartly count the reverse complement
-  env[[kmers]][, rc := reverseComplement(kmer, form="string")]
-  rc.count <- env[[kmers]][match(rc, kmer), count]
+  # Find reverse complement
+  env[[kmers]][, rc.seq := reverseComplement(kmer, form="string")]
+  
+  # Some reverse complement sequence may not exist in the plus strand, so add the new sequence if any
+  if(env[[kmers]][!rc.seq %in% kmer, .N > 0]){
+    env[[kmers]] <- rbind(env[[kmers]], env[[kmers]][!rc.seq %in% kmer, .(kmer = rc.seq, count = 0, rc.seq = kmer)])
+  }
+
+  # Count complementary sequence
+  rc.count <- env[[kmers]][match(rc.seq, kmer), count]
   
   # Because some reverse complement sequence are not exist in the plus strand,
   # match() results in NAs. Change NA to zero
   if (length(rc.count[is.na(rc.count)]) > 0) {
+    stop("Something is wrong!")
     rc.count[is.na(rc.count)] <- 0
   }
   
-  # Update the count
-  env[[kmers]][, count := count + rc.count]
-  
-  # Add the non-existing rc sequence
-  if (length(rc.count[is.na(rc.count)]) > 0) {
-    env[[kmers]] <- rbind(env[[kmers]], data.table(kmer = env[[kmers]][rc.count==0, rc], count = 1), fill=TRUE)
+  if(update.count){
+    
+    # Update the count
+    env[[kmers]][, count := count + rc.count]
+    
+  } else {
+    
+    # Add column rc.count
+    env[[kmers]][, rc.count := rc.count]
+    
   }
   
-  # Remove rc column
-  env[[kmers]][, rc := NULL]
+  # Remove rc.seq column
+  env[[kmers]][, rc.seq := NULL]
   
 }

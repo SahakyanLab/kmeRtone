@@ -1,9 +1,12 @@
-kmertone <- function(genomic.coordinate, genome.name, strand.mode,
-                     k, control.relative.position, DNA.pattern=NULL,
-                     genomic.coordinate.background = NULL, genome=NULL,
-                     genome.path=NULL, genome.prefix="", genome.suffix=NULL) {
+kmertone <- function(genomic.coordinate, genome.name, strand.mode, k,
+                     control.relative.position, DNA.pattern=NULL, output="data",
+                     genome, genome.path=NULL, genome.prefix="", genome.suffix=NULL) {
   
-  # this is the only function user can call. The rest are internal functions
+  # Kmertone program follows UCSC Genome convention e.g. chromosomes are named as chr1, chr2, chr3, chr?, ...
+  # However indexing format strictly follows R format i.e. one-based index.
+  # Genomic coordinate table is a BED-like format with only 4 columns in order: chromosome, start, end, strand.
+  
+  # Flag                          Format          Description
   # genomic.coordinate           <data.table>     A data.table of genomic coordinate. It can be a list of
   #                                               data.table for replicates. It must contains column 
   #                                               chromosome, start, end, and strand. For "insensitive" mode
@@ -22,6 +25,7 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
   # DNA.pattern                  <string>         A single or multiple DNA pattern. e.g. "G", "TT", "TC", etc.
   #                                               It can be set as NULL if no pattern is desired.
   # k                            <numeric>        The size of a kmer.
+  #                              <string>         "optimum" - Calculate optimum k and use it.
   # control.relative.position    <vector>         A coordinate in a vector format i.e. c(start, end) pointing
   #                                               to where the control kmers should be extracted from. The
   #                                               coordinate is relative to the damage site (upstream and
@@ -34,17 +38,27 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
 
   # library(data.table)
   # genomic.coordinate <- c("data/table.csv")
-  # genome.name="GRCh37";genome.path=NULL;genome.prefix=""; genome.suffix=".fa.gz"
+  # genome.name="hg19";genome.path=NULL;genome.prefix=""; genome.suffix=".fa.gz"
   # DNA.pattern="TT"; k=10; control.relative.position=c(80,500)
   # strand.mode="sensitive"; ncpu=1
 
   kmertone.env = environment()
+  #setwd("../kmertone/")
   
   # location of the TrantoR library
   TrantoRLib = "lib/TrantoRext/"
   
+  ## Dependant libraries #########################################################
+  # order is important due to namespace masking effect
+  suppressPackageStartupMessages( library(Biostrings) )
+  suppressPackageStartupMessages( library(  seqLogo ) )
+  suppressPackageStartupMessages( library( venneuler) )
+  suppressPackageStartupMessages( library(  stringi ) )
+  suppressPackageStartupMessages( library(data.table) )
+  
   ## Dependant functions #########################################################
-  source("lib/loadGenomeV2.R")
+  source("lib/loadGenomeV3.R")
+  source("lib/splitFasta.R")
   source("lib/reverseComplement.R")
   source("lib/distributeChunk.R")
   source("lib/distributeChunk2.R")
@@ -68,18 +82,12 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
   source("lib/03b_addColumnSequence.R", local = TRUE)
   source("lib/03c_filterTable.R", local = TRUE)
   source("lib/04_caseDistribution.R", local = TRUE)
-  source("lib/05_GCcontent.R", local = TRUE)
-  source("lib/07_getCaseKmers.R", local = TRUE)
+  #source("lib/05_GCcontent.R", local = TRUE)
+  source("lib/07_getCaseKmers.R")
   source("lib/08_getControlKmers.R", local = TRUE)
   source("lib/08_zScore.R", local = TRUE)
-  source("lib/00_calculateOptimumK.R")
+  source("lib/05_calculateOptimumK.R")
   #source("lib/seqlogo.R", local = TRUE)
-
-  ## Dependant libraries #########################################################
-  suppressPackageStartupMessages( library(data.table) )
-  suppressPackageStartupMessages( library(  stringi ) )
-  suppressPackageStartupMessages( library(Biostrings) )
-  suppressPackageStartupMessages( library(  seqLogo ) )
 
   ## Parallel setup ##############################################################
   # if (ncpu > 1) {
@@ -93,54 +101,67 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
   # }
   
   ## Directory setup #############################################################
-  suppressWarnings(dir.create("data"))
+  suppressWarnings(dir.create(output, recursive = TRUE))
 
   
-  # ---------------- INPUT CHECKING -----------------------------------------------------
+  # ---------------- A. INPUT CHECKING -----------------------------------------------------
   
   cat("[1] Checking inputs...")
   inputChecking(DNA.pattern, k, control.relative.position, strand.mode)
   cat("DONE!\n")
   
-  # ---------------- GENOME -------------------------------------------------------------
+  # ---------------- B. GENOME -------------------------------------------------------------
   # 1. Load genome
   
   cat("[2] Loading genome...")
   prepGenome(genome.name, genome.path, genome.prefix, genome.suffix, genome, kmertone.env)
   cat("\n")
 
-  # ---------------- GENOMIC COORDINATE --------------------------------------------------
+  # ---------------- C. GENOMIC COORDINATE --------------------------------------------------
   # 1. Rename columns
   # 2. Combine replicates (if any)
 
   cat("[3] Loading genomic coordinate table...\n")
   prepGenCoordinate("genomic.coordinate", strand.mode, genome, kmertone.env)
-  #fwrite(genomic.coordinate, "data/merged_table.csv")
   gc()
   cat("\n")
   
   # add column sequence if strand sensitive
   if (strand.mode == "sensitive") {
     cat("[4] Filtering genomic coordinate table...\n")
-    addColumnSequence("genomic.coordinate", genome, DNA.pattern, kmertone.env)
-    filterTable("genomic.coordinate", DNA.pattern, strand.mode, kmertone.env) # memory spike here
-    #fwrite(genomic.coordinate, "data/filtered_table.csv")
+    addColumnSequence("genomic.coordinate", genome, kmertone.env)
+    filterTable("genomic.coordinate", DNA.pattern, strand.mode, output, kmertone.env) # memory spike here
+    fwrite(genomic.coordinate, paste0(output, "/filtered_table.csv"))
   }
+  
+  assign("genomic.coordinate", genomic.coordinate, envir = globalenv())
   
   # Backup original coordinates
   genomic.coordinate[, c("original_start", "original_end") := list(start, end)]
   
-  # ---------------- PRE-ANALYSIS --------------------------------------------------------
+  # ---------------- 4. PRE-ANALYSIS --------------------------------------------------------
   # Replicate summary
   # GC and G content at various width
-  # Seqlogos
-  
+
   # case distribution
-  caseDistribution(genomic.coordinate, DNA.pattern, env=kmertone.env)
-  #plotDistribution() # Need more work!
-  
+  cat("Distribution of case site after filtering.\n\n")
+  caseDistribution("genomic.coordinate", DNA.pattern, output, env=kmertone.env)
+  cat("\n")
+
   # Optimum K
-  #calculateOptimumK(kmertone.env, set.k = c(2,4,6,8,10,12))
+  if(k == "optimum"){
+    cat("Calculating optimum k...\n")
+    
+    q <- calculateOptimumK(genomic.coordinate, genome, set.k, DNA.pattern,
+                      strand.mode, env=kmertone.env)
+    
+    cat("Optimum k is", k)
+    # For testing purpose
+    return(q)
+  }
+  
+  
+  # seqlogos
   
   # G|C and G content
   #GCcontent(env)
@@ -154,29 +175,27 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
   # volcano plot
   #plotVolcano() # TBD
   
-  # ---------------- KMER EXTRACTION ------------------------------------------------------
+  # ---------------- 5. KMER EXTRACTION ------------------------------------------------------
   
   cat("[5] Getting case kmers...\n\n")
   kmers <- getCaseKmers("genomic.coordinate", genome, k, DNA.pattern, strand.mode,
                remove.overlaps=TRUE, kmertone.env)
-  #fwrite(kmers, "data/kmers.csv")
   cat("\n")
-  
+
   if (!is.null(control.relative.position)) {
     cat("[6] Getting control kmers...\n\n")
     kmers <- getControlKmers("genomic.coordinate", genome, k, DNA.pattern, strand.mode,
                              "kmers", kmertone.env)
-    #fwrite(kmers, "data/kmers.csv")
   }
 
-  # ---------------- UPDATE PRE-ANALYSIS ---------------------------------------------------
-  
-  #GCcontent(dts[1], genome, filename = "GC_after")
-  #Gcontent(dts[1], genome, filename = "G_after")
-  #seqlogo(dts[1], genome, filename = "seqlogo_after")
-  
-  # ---------------- SCORE -----------------------------------------------------------------
-  
+  # # ---------------- 6. UPDATE PRE-ANALYSIS ---------------------------------------------------
+  # 
+  # #GCcontent(dts[1], genome, filename = "GC_after")
+  # #Gcontent(dts[1], genome, filename = "G_after")
+  # #seqlogo(dts[1], genome, filename = "seqlogo_after")
+  # 
+  # # ---------------- 7. SCORE -----------------------------------------------------------------
+
   cat("\n[7] Calculating z score...")
   zScore("kmers", kmertone.env)
   #pValue("kmers") # TBD
@@ -187,6 +206,13 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode,
   # if (ncpu > 1) {
   #   stopCluster(cl)
   # }
+  
+  # Save kmers
+  if(is.null(DNA.pattern)){
+    fwrite(kmers, paste0(output, "/kmers_k-", k, ".csv"))
+  } else {
+    fwrite(kmers, paste0(output, "/kmers_k-", k, "_pattern-", DNA.pattern, ".csv"))
+  }
    
   return(kmers) # kmers table: kmer, count, fold_change, p, z
 }

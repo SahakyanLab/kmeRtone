@@ -75,5 +75,6 @@ expandGenCoordinate <- function(genomic.coordinate, env=parent.frame(), k) {
                    env[[genomic.coordinate]][, unique(end-start+1)], "."))
     message("--k is updated automatically.")
     env$k <- env[[genomic.coordinate]][, unique(end-start+1)]
+    assign("k", env$k, envir = parent.frame())
   }
 }

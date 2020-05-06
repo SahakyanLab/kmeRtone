@@ -1,4 +1,4 @@
-caseDistribution <- function(genomic.coordinate, DNA.pattern, env=parent.frame()) {
+caseDistribution <- function(genomic.coordinate, DNA.pattern, output, env=parent.frame()) {
   # venndiagram
   # any experimental bias
   
@@ -20,7 +20,7 @@ caseDistribution <- function(genomic.coordinate, DNA.pattern, env=parent.frame()
     total.case.reps <- sum(sapply(replicate.names, function(rep) {
       env[[genomic.coordinate]][eval(parse(text = rep)) > 0, .N]
     }))
-    cat("\nTotal case site:\t\t", total.case.reps)
+    cat("Total case site\t\t\t:", total.case.reps, "\n")
   }
   
   # Check for duplicated record
@@ -32,24 +32,26 @@ caseDistribution <- function(genomic.coordinate, DNA.pattern, env=parent.frame()
     pattern.percent <- env[[genomic.coordinate]][, table(sequence) / .N * 100]
   }
   
-  
   if(replicate.exist) {
     pattern.percent.by.replicate <- sapply(replicate.names, function(rep) {
       env[[genomic.coordinate]][ eval(parse(text = rep)) > 0 , table(sequence) / total.case.reps * 100]
     }) 
   }
   
+  total.union <- nrow(env[[genomic.coordinate]])
   ## Print message
-  cat("\nTotal unique case site\t:", nrow(env[[genomic.coordinate]]))
+  cat("Total unique case site\t\t:", total.union, "\n")
   if (!is.null(DNA.pattern)) cat("\nDNA pattern\t\t\t:", DNA.pattern, "\n")
   
   cat("\nThe percentage of unique case site is: \n")
   print(pattern.percent)
   if (sum(!names(pattern.percent) %in% DNA.pattern) > 0) {message("WARNING! Unexpected DNA pattern.")}
   else {cat("\n")}
+  
   if(replicate.exist) {
     cat("Percentage of case occurence in each replicate (out of total case)\n")
     print(pattern.percent.by.replicate)
+    cat("\n")
   }
   
   # Check if case happened at the same position of both strands
@@ -58,8 +60,9 @@ caseDistribution <- function(genomic.coordinate, DNA.pattern, env=parent.frame()
   
   ## Print message
   if (nrow(case.both.strands.genomic.coordinate) > 0) {
-    message("\nWARNING! There are unique cases occur at the same position of both plus and minus strands.")
+    message("WARNING! There are unique cases occur at the same position of both plus and minus strands.")
     print(case.both.strands.genomic.coordinate)
+    cat("\n")
     
     # Count the percentage of this occurence
     case.both.strands.percent <- case.both.strands.genomic.coordinate[, table(sequence) / nrow(env[[genomic.coordinate]]) * 100]
@@ -67,7 +70,7 @@ caseDistribution <- function(genomic.coordinate, DNA.pattern, env=parent.frame()
       case.both.strands.genomic.coordinate[eval(parse(text = rep)) > 0, table(sequence)]
     })
     
-    message(paste("\nTotal percentage (out of total unique cases) of such occurence is",
+    message(paste("Total percentage (out of total unique cases) of such occurence is",
                   sum(case.both.strands.percent), "%"))
     cat("The percentage breakdown is as follow:\n")
     print( case.both.strands.percent )
@@ -102,6 +105,7 @@ caseDistribution <- function(genomic.coordinate, DNA.pattern, env=parent.frame()
         message("\nWARNING! There is a mix and match between strands of different replicates")
         cat("Here is the real percentage within each replicate where case occurs at the same position of both strands.\n")
         print(case.both.strands.cnt.by.rep)
+        cat("\n")
       }
     }
     
@@ -117,17 +121,18 @@ caseDistribution <- function(genomic.coordinate, DNA.pattern, env=parent.frame()
     setops <- sapply(1:n, function(i) {
       
       rep.combn <- combn(1:n, i)
+      
       rep.combn.names <- apply(rep.combn, 2, paste, collapse="&")
       
       rep.combn.count <- rep(NA, ncol(rep.combn))
       names(rep.combn.count) <- rep.combn.names
       
-      for (j in length(rep.combn)) {
+      for (j in 1:length(rep.combn.names)) {
         
         reps <- rep.combn[, j]
         filter <- paste0("(!is.na(replicate_", reps, "))", collapse = " & ")
         
-        rep.combn.count[rep.combn.names[j]] <- env[[genomic.coordinate]][filter, .N]
+        rep.combn.count[rep.combn.names[j]] <- env[[genomic.coordinate]][eval(parse(text = filter)), .N]
       }
       
       return(rep.combn.count)
@@ -135,16 +140,18 @@ caseDistribution <- function(genomic.coordinate, DNA.pattern, env=parent.frame()
     
     setops <- unlist(setops)
     
-    venn <- venneuler(setops)
+    diagram <- venneuler(setops)
     
-    plot(venn)
+    png(paste0(output, "/replicates_venneuler.png"))
+    plot(diagram)
+    dev.off()
     
     # auto plot labeling. hmmm...
     
-    # calculaye percentage
-    setops.percent <- round( setops / sum(setops[1:length(replicate.names)]) * 100)
+    # calculate percentage
+    setops.percent <- setops / total.union * 100
     
-    cat("Damage summary\n")
+    cat("Damage summary (percentage out of total unique sites)\n")
     print(setops.percent)
 
   }

@@ -1,23 +1,34 @@
-calculateOptimumK <- function(env, set.k) {
+calculateOptimumK <- function(genomic.coordinate, genome, set.k, DNA.pattern,
+                              strand.mode, env=parent.frame()) {
   # To calculate optimum k value. The calculation is based on
   # Claudia's thesis equation 3 and 4.
-  #
-
-  set.k <- c(2, 4, 6, 8, 10, 12)
+  # This is a stand-alone function - separate from kmertone function.
+  
+  # Dependencies:
+  #     Packages: data.table, stringi
+  #     Functions: prepGenome, prepGenCoordinate, addColumnSequence, filterTable, getCaseKmers
+  #     Information: 1) proportion of precalculated A, C, G, and T of the whole genome (hg19)
+  
+  DNA.pattern.size <- unique(nchar(DNA.pattern))
+  set.k <- seq(DNA.pattern.size, 14, 2)
   
   kmers.list <- lapply(set.k, function(k) {
     
-    kmers <- getCaseKmers(kmertone.env, k)
-    kmertone.env$genomic.coordinate[, c("start", "end") := list(original_start, original_end)]
+    cat("\nk = ", k, "...")
+    kmers <- getCaseKmers("genomic.coordinate", genome, k, DNA.pattern, strand.mode, 
+                          remove.overlaps=TRUE, env)
+    env[["genomic.coordinate"]][, c("start", "end") := list(original_start, original_end)]
     
     return(kmers)
   })
   
   names(kmers.list) <- set.k
   
-  for (k in set.k) {
-    fwrite(kmers.list[[as.character(k)]], paste0("data/case-kmers_k-", k, ".csv"))
-  }
+  # for (k in set.k) {
+  #   fwrite(kmers.list[[as.character(k)]], paste0("data/case-kmers_k-", k, ".csv"))
+  # }
+  
+  cat("[5] Calculating optimal k...\n")
   
   q <- sapply(set.k[-1], function(k) {
     
@@ -35,7 +46,7 @@ calculateOptimumK <- function(env, set.k) {
         names(count) <- kmer
         count[seq.mid]/sum(count)
         
-        }]
+      }]
       
       # proportion of precalculated A, C, G, and T of the whole genome (hg19)
       p.nt <- c(A=0.295, T=0.295, C=0.205, G=0.205)

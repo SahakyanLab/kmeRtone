@@ -7,3 +7,4 @@ data/
 .Rproj.user
 *.csv
 Rprof.out
+output

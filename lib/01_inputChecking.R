@@ -11,7 +11,7 @@ inputChecking <- function(DNA.pattern, k, control.relative.position, strand.mode
   }
   
   if (!class(k) %in% c("numeric", "integer") || k%%1 != 0) {
-    stop("Please input a round number for k.")
+    if(k != "optimum") stop("Please input a round number for k.")
   }
   
   if (length(control.relative.position) != 2 ||

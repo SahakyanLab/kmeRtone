@@ -40,7 +40,7 @@ downloadMassGenome <- function(assembly.summary.path, folder.path) {
                                        stri_replace_all_regex(asm_name, " |\\(|\\)|\\[|\\]|\\'|/", "_"),
                                        "_genomic.fna.gz"),
                           destfile = paste0(folder.path, `# assembly_accession`, ".fna.gz"),
-                          quiet = T)
+                          quiet = TRUE)
           ,
           by = 1:nrow(summary)]
 }
