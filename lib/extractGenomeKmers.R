@@ -1,53 +1,33 @@
-extractGenomeKmers <- function(genome, single.fasta.path=NULL, k) {
+extractGenomeKmers <- function(genome.name, k, genome, 
+                               genome.path=NULL, genome.prefix=NULL,
+                               genome.suffix=NULL, env=parent.frame()) {
   # Extract kmers from genome
-  # Notes: oligonucleotideFrequency is not stable at k > 10 for hg19
-  #        and k > 11 for tardigrade genome
   
   # Dependencies:
-  #     Packages: data.table, stringi, Biostrings
-  #     Function: countReverseComplementKmers, reverseComplement
+  #     Packages: data.table, stringi
+  #     Function: prepGenome, countReverseComplementKmers, reverseComplement
   
-  if(k < 11){
-    
-    # load genome fasta
-    if(!is.null(single.fasta.path)) {
-      genome <- readDNAStringSet(fasta.path, use.names = F)
-      
-      # convert to DNAStringSet
-    } else if(class(genome) %in% c("genome", "list")) {
-      genome <- DNAStringSet(genome)
-    }
-    
-    # extract kmers
-    kmers <- oligonucleotideFrequency(genome, k)
-    
-    # add every column for every scaffold/ chromosome
-    kmers <- colSums(kmers)
-    
-    # change to data.table
-    kmers <- data.table(kmer = names(kmers), count = kmers)
-    
-  } else if (k > 10){
-    
-    cat("k is bigger than 10. It will take a long time.\n")
-    
-    # initiate all possible kmers
-    kmers <- do.call(CJ, rep(list(c("A", "C", "G", "T")), k))
-    kmers <- kmers[, .(kmer = do.call(paste0,.SD))]
-    
-    # count the kmers
-    kmers[, count := {
-      
-      count <- sapply(genome, stri_count_fixed, pattern=kmer, overlap=TRUE)
-      count <- rowSums(count)
-      
-      count
-    }]
-    
-  }
+  # Prepare genome
+  prepGenome(genome.name, genome.path, genome.prefix, genome.suffix, genome, env)
   
-  # count the opposite strand kmers
+  # Only take base chr and exclude mitochondria. Some genome use roman numeral (IXV) e.g. yeast genome
+  chr.names <- names(genome)[grep("chr[0-9XYIV]+$", names(genome))]
+  
+  # Build genome genomic.coordinate table
+  genome.dt <- data.table(chromosome = chr.names,
+                          start = 1,
+                          end = attr(genome, "length")[chr.names],
+                          strand = "*")
+  
+  # Extract kmers on + strand
+  kmers <- extractKmers(genome.dt, genome, k)
+  
+  # Count kmers on - strand
   countReverseComplementKmers("kmers")
+  
+  # write to data folder
+  suppressWarnings(dir.create("data/kmers", recursive = TRUE))
+  fwrite(kmers, paste0("data/kmers/kmers_genome-", genome.name, ".csv"))
   
   return(kmers)
 }

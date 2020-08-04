@@ -26,31 +26,32 @@ extractKmers <- function(genomic.coordinate, genome, k, DNA.pattern=NULL) {
   invalid.coordinate <- genomic.coordinate[!is.na(end-start), sum(end-start+1 >= k)] < 1
   if(invalid.coordinate) return(data.table(kmer=character(), count=numeric()))
   
-  # calculate expansion factor and pattern position
-  if (!is.null(DNA.pattern)) {
-    expansion.factor <- (k-nchar(DNA.pattern[1]))/2
-    pattern.pos <- seq(expansion.factor + 1, expansion.factor + nchar(DNA.pattern[1]))
-  }
-  
   # all possible kmers - these are used later for fast binary matching %in%
   # This is also used for all kmers w/o pattern to remove base N
   
-  if (!is.null(DNA.pattern) && k > nchar(DNA.pattern[1])) {
+  if (!is.null(DNA.pattern)) {
     
-    possible.kmers <- lapply(DNA.pattern, function(dna.pattern) {
+    # calculate expansion factor and pattern position
+    expansion.factor <- (k-nchar(DNA.pattern[1]))/2
+    #pattern.pos <- seq(expansion.factor + 1, expansion.factor + nchar(DNA.pattern[1]))
+    
+    # include complementary sequence as well
+    rc.DNA.pattern <- reverseComplement(DNA.pattern, form = "string")
+    
+    expansion.kmers <- do.call(CJ, rep(list(c("A", "C", "G", "T")), expansion.factor))
+    expansion.kmers <- expansion.kmers[, do.call(paste0, .SD)]
+    expansion.kmers.combn <- do.call(CJ, rep(list(expansion.kmers), 2))
+    
+    possible.kmers <- lapply(c(DNA.pattern, rc.DNA.pattern), function(dna.pattern) {
       
-      expansion.kmers <- do.call(CJ, rep(list(c("A", "C", "G", "T")), expansion.factor))
-      expansion.kmers <- expansion.kmers[, do.call(paste0, .SD)]
-      
-      possible.kmers <- do.call(CJ, rep(list(expansion.kmers), 2))
-      possible.kmers[, center := dna.pattern]
-      setcolorder(possible.kmers, c(1,3,2))
-      
+      possible.kmers <- expansion.kmers.combn[, .(V1, dna.pattern, V2)]
+
+      return(possible.kmers)
     })
     
     possible.kmers <- rbindlist(possible.kmers)
 
-  } else if(is.null(DNA.pattern) || k == nchar(DNA.pattern)) {
+  } else if(is.null(DNA.pattern)) {
     # k is limited to 15 because vector size is limited to .Machine$integer.max
     possible.kmers <- do.call(CJ, rep(list(c("A", "C", "G", "T")), k))
   }
@@ -89,7 +90,9 @@ extractKmers <- function(genomic.coordinate, genome, k, DNA.pattern=NULL) {
     kmers <- kmers[, list(count = sum(count)), by = kmer]
     
     kmers
-  }, by = .(chromosome, strand)][, .(kmer, count)]
+  }, by = .(chromosome, strand)]
+  
+  kmers[, c("chromosome", "strand") := NULL]
   
   #print(kmers)
   

@@ -1,4 +1,4 @@
-removeAllOverlaps <- function(genomic.coordinate, env, remove = FALSE) {
+removeAllOverlaps <- function(genomic.coordinate, env, remove = FALSE, strand.sensitive = TRUE) {
   # Remove all overlapping regions. This is used for removing
   # overlapping case regions.
   
@@ -7,9 +7,9 @@ removeAllOverlaps <- function(genomic.coordinate, env, remove = FALSE) {
   # env                  <environment>    An environment object where the table exists.
   
   ## locate continuous overlapping regions --> group them together and assign group number
-  setkey(env[[genomic.coordinate]], chromosome, strand, start, end)
+  setkeyv(env[[genomic.coordinate]], c("chromosome", if(strand.sensitive) "strand", "start", "end"))
   env[[genomic.coordinate]][!is.na(end-start), group := cumsum(c(1, cummax(head(end, -1)) - tail(start, -1) < 0)),
-                         by = list(chromosome, strand)]
+                         by = c("chromosome", if(strand.sensitive) "strand")]
   
   ## save overlaps
   # fwrite(env[[genomic.coordinate]][, if (.N > 1) .(start, end),
@@ -19,13 +19,13 @@ removeAllOverlaps <- function(genomic.coordinate, env, remove = FALSE) {
   ## remove overlaps
   if (remove == TRUE) {
     env[[genomic.coordinate]] <- env[[genomic.coordinate]][, if (.N == 1) .(start, end),
-                                                           by = .(chromosome, strand, group)]
+                                                           by = c("chromosome", if(strand.sensitive) "strand", "group")]
     # memory copy, so gc()
     gc()
   } else if (remove == FALSE) {
     # introduce NA in place
     env[[genomic.coordinate]][, `:=`(start = {start[.N > 1] <- NA; start}, end = {end[.N > 1] <- NA; end}),
-                              by = .(chromosome, strand, group)]
+                              by = c("chromosome", if(strand.sensitive) "strand", "group")]
   }
   
   # remove the columns

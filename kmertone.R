@@ -1,62 +1,76 @@
-kmertone <- function(genomic.coordinate, genome.name, strand.mode, k,
+kmertone <- function(genomic.coordinate, genome.name, strand.sensitive, k,
                      control.relative.position, DNA.pattern=NULL, output="data",
-                     genome, genome.path=NULL, genome.prefix="", genome.suffix=NULL) {
-  
-  # Kmertone program follows UCSC Genome convention e.g. chromosomes are named as chr1, chr2, chr3, chr?, ...
-  # However indexing format strictly follows R format i.e. one-based index.
-  # Genomic coordinate table is a BED-like format with only 4 columns in order: chromosome, start, end, strand.
-  
-  # Flag                          Format          Description
-  # genomic.coordinate           <data.table>     A data.table of genomic coordinate. It can be a list of
-  #                                               data.table for replicates. It must contains column 
-  #                                               chromosome, start, end, and strand. For "insensitive" mode
-  #                                               strand information is not required.
-  # genome.name                  <string>         Name of available genome: "GRCh37" or "GRCh38"
-  # genome.path                  <string>         If provided genome is not available, user can input a path
-  #                                               to a folder containing chromosome fasta files. The fasta
-  #                                               files should be named as chromosome names just like in the
-  #                                               genomic coordinate table and has a uniform extension name.
-  #                                               The extension can  be specified in flag suffix below. The
-  #                                               fasta files are expected to contain only one-line header
-  #                                               followed by same-length sequence in every line.
-  #                                               e.g. chr1.fasta, chr2.fasta, etc. The 
-  # genome.suffix                <string>         An extension name of the fasta files. Compressed file is
-  #                                               supported. e.g. .fasta, .fa, .fa.gz, etc.
-  # DNA.pattern                  <string>         A single or multiple DNA pattern. e.g. "G", "TT", "TC", etc.
-  #                                               It can be set as NULL if no pattern is desired.
-  # k                            <numeric>        The size of a kmer.
-  #                              <string>         "optimum" - Calculate optimum k and use it.
-  # control.relative.position    <vector>         A coordinate in a vector format i.e. c(start, end) pointing
-  #                                               to where the control kmers should be extracted from. The
-  #                                               coordinate is relative to the damage site (upstream and
-  #                                               downstream)
-  # strand.mode                  <string>         Mode of strand: "sensitive" or "insensitive".
-  #                                               In "sensitive" mode, strand information is important. The
-  #                                               kmers are extracted from the sense strand only.
-  #                                               In contrast, in "insensitive" mode, the kmers are extracted
-  #                                               from both plus and minus strands.
+                     genome=NULL, genome.path=NULL, genome.prefix="",
+                     genome.suffix=NULL, shrink.coordinate=FALSE, ncpu=1) {
 
-  # library(data.table)
-  # genomic.coordinate <- c("data/table.csv")
-  # genome.name="hg19";genome.path=NULL;genome.prefix=""; genome.suffix=".fa.gz"
-  # DNA.pattern="TT"; k=10; control.relative.position=c(80,500)
-  # strand.mode="sensitive"; ncpu=1
+  # Kmertone program follows UCSC Genome convention e.g. chromosomes are named
+  # as chr1, chr2, chr3, chr?, ...
+  # However indexing format strictly follows R format i.e. one-based index.
+  # Genomic coordinate table is a BED-like format with only 4 columns in order:
+  # chromosome, start, end, strand.
+
+  # Flag                   Format     Description
+  # genomic.coordinate  <data.table>  A 0-based index genomic coordinate. A list
+  #                                   of data.table denotes multiple replicates.
+  #                                   The table columns must be (in order):
+  #                                   chromosome, start, end, and strand.
+  #                       <string>    A path to genomic coordinate. A vector of
+  #                                   paths denotes multiple replicates. BED
+  #                                   file is supported.
+  #
+  # genome.name           <string>    Name of available genome: "hg19" or "hg38"
+  #
+  # genome.path           <string>    A folder path to user own genome. The
+  #                                   folder must contain separated chromosome
+  #                                   fasta files. The name of the fasta files
+  #                                   should be similar to chromosome name in
+  #                                   the genomic coordinate table.
+  #
+  # genome.suffix         <string>    An extension name of the fasta files.
+  #                                   Compressed file is supported.
+  #
+  # DNA.pattern           <string>    A single or multiple DNA pattern.
+  #                                   e.g. "G", "TT", "TC", etc.
+  #                                   It can be set as NULL.
+  #
+  # k                     <numeric>   The size of a kmer.
+  #                       <string>    User can input "optimum" to calculate and
+  #                                   use optimum k.
+  #
+  # control.relative.     <vector>    A relative position of control regions in
+  #    position                       a vector format i.e. c(start, end).
+  #                                   For example c(80,500) means control
+  #                                   regions are 80-500 bases away from the
+  #                                   the case site (upstream and downstream)
+  #
+  # strand.sensitive       <bool>     Mode of strand. In sensitive mode, case
+  #                                   kmers are extracted from the sense strand
+  #                                   only. In contrast, in insensitive mode,
+  #                                   the case kmers are extracted from both.
+  #
+  # shrink.coordinate      <bool>     To shrink genomic coordinate down to case
+  #                                   coordinate only.
+  #
+  # ncpu                  <numeric>   Number of cpu core to use. Only one core
+  #                                   is supported at the moment.
+  ncpu=1
 
   kmertone.env = environment()
   #setwd("../kmertone/")
-  
+
   # location of the TrantoR library
   TrantoRLib = "lib/TrantoRext/"
-  
-  ## Dependant libraries #########################################################
+
+  ## Dependant libraries #######################################################
   # order is important due to namespace masking effect
-  suppressPackageStartupMessages( library(Biostrings) )
-  suppressPackageStartupMessages( library(  seqLogo ) )
-  suppressPackageStartupMessages( library( venneuler) )
-  suppressPackageStartupMessages( library(  stringi ) )
-  suppressPackageStartupMessages( library(data.table) )
-  
-  ## Dependant functions #########################################################
+  suppressPackageStartupMessages( library(Biostrings)  )
+  suppressPackageStartupMessages( library(  seqLogo )  )
+  suppressPackageStartupMessages( library( venneuler)  )
+  suppressPackageStartupMessages( library(  stringi )  )
+  suppressPackageStartupMessages( library(data.table)  )
+  suppressPackageStartupMessages( library(RColorBrewer))
+
+  ## Dependant functions #######################################################
   source("lib/loadGenomeV3.R")
   source("lib/splitFasta.R")
   source("lib/reverseComplement.R")
@@ -71,10 +85,10 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode, k,
   source("lib/removeAllOverlaps.R")
   source("lib/removeCaseZone.R")
   source("lib/extractGenomeKmers.R")
-  
+
   # Dependant functions from the TrantorR library
-  source("lib/TrantoRext/GEN_getSeqLogo.R", local = TRUE) # dependent on seqlogo from bioconductor
-  
+  source(paste0(TrantoRLib, "GEN_getSeqLogo.R"), local = TRUE)
+
   # Task specific dependant functions
   source("lib/01_inputChecking.R", local = TRUE)
   source("lib/02_prepGenome.R", local = TRUE)
@@ -89,57 +103,55 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode, k,
   source("lib/05_calculateOptimumK.R")
   #source("lib/seqlogo.R", local = TRUE)
 
-  ## Parallel setup ##############################################################
-  # if (ncpu > 1) {
-  #   
-  #   suppressPackageStartupMessages( library(foreach)    )
-  #   suppressPackageStartupMessages( library(doParallel) )
-  #   
-  #   cl <- makeCluster(ncpu)
-  #   registerDoParallel(cl)
-  # 
-  # }
-  
-  ## Directory setup #############################################################
+  ## Parallel setup ############################################################
+  if (ncpu > 1) {
+    suppressPackageStartupMessages( library(foreach)    )
+    suppressPackageStartupMessages( library(doParallel) )
+    cl <- makeCluster(ncpu)
+    registerDoParallel(cl)
+  }
+
+  ## Directory setup ###########################################################
   suppressWarnings(dir.create(output, recursive = TRUE))
 
-  
-  # ---------------- A. INPUT CHECKING -----------------------------------------------------
-  
+
+  # ---------------- A. INPUT CHECKING -----------------------------------------
   cat("[1] Checking inputs...")
-  inputChecking(DNA.pattern, k, control.relative.position, strand.mode)
+  inputChecking(DNA.pattern, k, control.relative.position, strand.sensitive)
   cat("DONE!\n")
-  
-  # ---------------- B. GENOME -------------------------------------------------------------
+
+  # ---------------- B. GENOME -------------------------------------------------
   # 1. Load genome
-  
+
   cat("[2] Loading genome...")
-  prepGenome(genome.name, genome.path, genome.prefix, genome.suffix, genome, kmertone.env)
+  prepGenome(genome.name, genome.path, genome.prefix, genome.suffix, genome,
+             kmertone.env)
   cat("\n")
 
-  # ---------------- C. GENOMIC COORDINATE --------------------------------------------------
+  # ---------------- C. GENOMIC COORDINATE -------------------------------------
   # 1. Rename columns
   # 2. Combine replicates (if any)
 
   cat("[3] Loading genomic coordinate table...\n")
-  prepGenCoordinate("genomic.coordinate", strand.mode, genome, kmertone.env)
+  prepGenCoordinate("genomic.coordinate", strand.sensitive, genome,
+		    kmertone.env)
   gc()
   cat("\n")
-  
+
   # add column sequence if strand sensitive
-  if (strand.mode == "sensitive") {
-    cat("[4] Filtering genomic coordinate table...\n")
-    addColumnSequence("genomic.coordinate", genome, kmertone.env)
-    filterTable("genomic.coordinate", DNA.pattern, strand.mode, output, kmertone.env) # memory spike here
+  if (strand.sensitive){
+    cat("[3a] Filtering genomic coordinate table...\n")
+    addColumnSequence("genomic.coordinate", genome, shrink.coordinate,
+                      kmertone.env)
+    filterTable("genomic.coordinate", DNA.pattern, strand.sensitive, output,
+                kmertone.env) # memory spike here
     fwrite(genomic.coordinate, paste0(output, "/filtered_table.csv"))
   }
-  
-  assign("genomic.coordinate", genomic.coordinate, envir = globalenv())
-  
+
   # Backup original coordinates
   genomic.coordinate[, c("original_start", "original_end") := list(start, end)]
-  
-  # ---------------- 4. PRE-ANALYSIS --------------------------------------------------------
+
+  # ---------------- 4. PRE-ANALYSIS -------------------------------------------
   # Replicate summary
   # GC and G content at various width
 
@@ -151,68 +163,71 @@ kmertone <- function(genomic.coordinate, genome.name, strand.mode, k,
   # Optimum K
   if(k == "optimum"){
     cat("Calculating optimum k...\n")
-    
+
     q <- calculateOptimumK(genomic.coordinate, genome, set.k, DNA.pattern,
-                      strand.mode, env=kmertone.env)
-    
+                      strand.sensitive, env=kmertone.env)
+
     cat("Optimum k is", k)
     # For testing purpose
     return(q)
   }
-  
-  
+
+
   # seqlogos
-  
+
   # G|C and G content
   #GCcontent(env)
 
   # Plot G|C and G density
   #plotDensity() # TBD
-  
+
   # seqlogo
   #drawSeqlogo() # TBD
-  
+
   # volcano plot
   #plotVolcano() # TBD
-  
-  # ---------------- 5. KMER EXTRACTION ------------------------------------------------------
-  
+
+  # ---------------- 5. KMER EXTRACTION ----------------------------------------
+
   cat("[5] Getting case kmers...\n\n")
-  kmers <- getCaseKmers("genomic.coordinate", genome, k, DNA.pattern, strand.mode,
-               remove.overlaps=TRUE, kmertone.env)
+  kmers <- getCaseKmers("genomic.coordinate", genome, k, DNA.pattern,
+			strand.sensitive, remove.overlaps=TRUE, kmertone.env)
   cat("\n")
 
+  genomic.coordinate[, `:=`(start = original_start, end = original_end)]
   if (!is.null(control.relative.position)) {
     cat("[6] Getting control kmers...\n\n")
-    kmers <- getControlKmers("genomic.coordinate", genome, k, DNA.pattern, strand.mode,
-                             "kmers", kmertone.env)
+    kmers <- getControlKmers("genomic.coordinate", genome,
+			     control.relative.position, k, DNA.pattern,
+			     strand.sensitive, "kmers", kmertone.env)
   }
 
-  # # ---------------- 6. UPDATE PRE-ANALYSIS ---------------------------------------------------
-  # 
+  # # ---------------- 6. UPDATE PRE-ANALYSIS ----------------------------------
+  #
   # #GCcontent(dts[1], genome, filename = "GC_after")
   # #Gcontent(dts[1], genome, filename = "G_after")
   # #seqlogo(dts[1], genome, filename = "seqlogo_after")
-  # 
-  # # ---------------- 7. SCORE -----------------------------------------------------------------
+  #
+  # # ---------------- 7. SCORE ------------------------------------------------
 
   cat("\n[7] Calculating z score...")
-  zScore("kmers", kmertone.env)
+  zScore("kmers", DNA.pattern, kmertone.env)
   #pValue("kmers") # TBD
   cat("DONE!\n")
- 
-  # ---------------- THE END ---------------------------------------------------------------
-  
+
+  # ---------------- THE END ---------------------------------------------------
+
   # if (ncpu > 1) {
   #   stopCluster(cl)
   # }
-  
+
   # Save kmers
   if(is.null(DNA.pattern)){
     fwrite(kmers, paste0(output, "/kmers_k-", k, ".csv"))
   } else {
-    fwrite(kmers, paste0(output, "/kmers_k-", k, "_pattern-", DNA.pattern, ".csv"))
+    fwrite(kmers, paste0(output, "/kmers_k-", k, "_pattern-",
+			 paste(DNA.pattern, collapse = "_"), ".csv"))
   }
-   
+
   return(kmers) # kmers table: kmer, count, fold_change, p, z
 }
