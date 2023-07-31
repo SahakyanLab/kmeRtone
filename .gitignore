@@ -8,3 +8,8 @@ data/
 *.csv
 Rprof.out
 output
+*.swp
+*.so
+*.o
+*.Rd
+*/RcppExports.*

@@ -1,5 +1,0 @@
-DNA motifs
-1. GC contents
-2. G contents
-3. CpG islands
-4. G4 motif

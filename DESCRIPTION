@@ -1,0 +1,13 @@
+Package: kmertone
+Version: 0.1
+Date: 2021-11-27
+Title: KMERTONE
+Description: Multi-purpose and transferrable k-meric enrichment/depletion analysis software.
+Authors@R: c(person("Adib", "Abdullah", email = "adib.abdullah@imm.ox.ac.uk", role = c("aut", "cre")),
+             person("Aleksandr", "Sahakyan", email = "aleksandr.sahakyan@imm.ox.ac.uk", role = "aut"))
+SystemRequirements: GNU make
+Imports: data.table, R6, stringi, Rcpp, R.utils, openxlsx, png
+RoxygenNote: 7.2.3
+LinkingTo: Rcpp, stringi, Rhtslib, zlibbioc
+Encoding: UTF-8
+#License: GPL-3
