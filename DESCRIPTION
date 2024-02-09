@@ -1,4 +1,5 @@
 Package: kmertone
+Type: Package
 Version: 0.1
 Date: 2024-02-09
 Title: KMERTONE
@@ -22,5 +23,6 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 LinkingTo: Rcpp, stringi, Rhtslib, zlibbioc
 URL: https://github.com/SahakyanLab/kmertone
+BugReports: https://github.com/SahakyanLab/kmertone/issues
 Encoding: UTF-8
 License: GPL-3 + file LICENSE
