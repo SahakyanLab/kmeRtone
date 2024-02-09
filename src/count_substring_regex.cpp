@@ -1,7 +1,6 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-#include <omp.h>
 #include <regex>
 #include "count_substring_regex.h"
 
@@ -42,7 +41,6 @@ std::vector<int> count_substring_regex(std::string sequence,
     }
   }
 
-  #pragma omp parallel for
   for (int i = 0; i < vec_sz; ++i) {
 
     auto idx_start = sequence.begin() + start[i];

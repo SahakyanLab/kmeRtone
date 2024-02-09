@@ -1,7 +1,6 @@
 #include <Rcpp.h>
 #include <stringi.h>
 #include <random>
-#include <omp.h>
 #include "countRangedKmers.h"
 
 //' Simulate a population given ranges of chromosome sequence to mutate.

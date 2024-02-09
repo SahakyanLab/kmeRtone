@@ -1,7 +1,6 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-#include <omp.h>
 #include "count_substring_fixed.h"
 
 // [[Rcpp::plugins(openmp)]]
@@ -45,7 +44,6 @@ std::vector<int> count_substring_fixed(std::string sequence,
     }
   }
 
-  #pragma omp parallel for
   for (int i = 0; i < vec_sz; ++i) {
 
     //***while ((start[i] = sequence.find(pattern, start[i])) !=
