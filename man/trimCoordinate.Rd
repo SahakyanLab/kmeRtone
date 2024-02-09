@@ -7,19 +7,19 @@
 trimCoordinate(coor, seq.len, genome)
 }
 \value{
-Trimmed coordinate `data.table`.
+Trimmed coordinate \code{data.table}.
 }
 \description{
 It operates in two mode: coordinate table with and without chromosome. The
-   former require `Genome` for the chromosomal sequence length.
+former require \code{Genome} for the chromosomal sequence length.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{coor}}{Coordinate `data.table`.}
+\item{\code{coor}}{Coordinate \code{data.table}.}
 
 \item{\code{seq.len}}{Sequence length to trim end position.}
 
-\item{\code{genome}}{`Genome` class object.}
+\item{\code{genome}}{\code{Genome} class object.}
 }}
 

@@ -9,14 +9,14 @@ readBED(bed, output.filename)
 readBED(bed, output.filename)
 }
 \arguments{
-\item{bed}{A BED `data.table`.}
+\item{bed}{A BED \code{data.table}.}
 
 \item{output.filename}{An output BED filename.}
 
 \item{bed.path}{A path to a BED file.}
 }
 \value{
-A `data.table` of BED.
+A \code{data.table} of BED.
 }
 \description{
 Read a BED file. One-based indexing is enforced.

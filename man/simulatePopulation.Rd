@@ -37,8 +37,8 @@ simulatePopulation(
 }
 \value{
 A count matrix with 4 rows for total top k-mers and susceptible
-   k-mers in sense and antisense. Columns correspond to population
-   individuals.
+k-mers in sense and antisense. Columns correspond to population
+individuals.
 }
 \description{
 This is internal function - not exported.

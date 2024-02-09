@@ -10,8 +10,8 @@ A R6 class wrapper for data.table
 }
 \details{
 A way to grow data.table in different environment but still retaining access
-     to it. A temporary fix until data.table developer develop update row
-     by reference.
+to it. A temporary fix until data.table developer develop update row
+by reference.
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -113,7 +113,7 @@ None.
 \if{latex}{\out{\hypertarget{method-Kmer_Table-update_row}{}}}
 \subsection{Method \code{update_row()}}{
 Add new rows for new k-mers with their respective counts that is not
-     existed yet in the main table.
+existed yet in the main table.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Kmer_Table$update_row(kmers, is.strand.sensitive, strand)}\if{html}{\out{</div>}}
 }

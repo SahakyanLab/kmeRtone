@@ -3,7 +3,7 @@
 \name{buildMidPatternKmerTable}
 \alias{buildMidPatternKmerTable}
 \title{Count k-mers with specified middle pattern from given sequence(s) and build
-   a data.table of k-mer counts.}
+a data.table of k-mer counts.}
 \usage{
 buildMidPatternKmerTable(dna.seqs, k, mid.patterns, remove.N = TRUE)
 }
@@ -17,7 +17,7 @@ buildMidPatternKmerTable(dna.seqs, k, mid.patterns, remove.N = TRUE)
 \item{remove.N}{Remove unknown base? Default is TRUE.}
 }
 \value{
-A `data.table` object with column kmer and N.
+A \code{data.table} object with column kmer and N.
 }
 \description{
 Only existed k-mers are returned in data.table object.

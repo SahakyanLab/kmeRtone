@@ -21,11 +21,11 @@ system3(
 \arguments{
 \item{command}{the system command to be invoked, as a character string.}
 
-\item{args}{a character vector of arguments to `command`.}
+\item{args}{a character vector of arguments to \code{command}.}
 
 \item{stdout, stderr}{where output to ‘stdout’ or ‘stderr’ should be sent.
-Possible values are "", to the R console (the default), `NULL` or `FALSE`
-(discard output), `TRUE` (capture the output in a character vector) or a
+Possible values are "", to the R console (the default), \code{NULL} or \code{FALSE}
+(discard output), \code{TRUE} (capture the output in a character vector) or a
 character string naming a file.}
 
 \item{stdin}{should input be diverted? "" means the default, alternatively a
@@ -38,10 +38,10 @@ to the file.}
 \item{env}{character vector of name=value strings to set environment
 variables.}
 
-\item{wait}{a logical (not `NA`) indicating whether the `R` interpreter
+\item{wait}{a logical (not \code{NA}) indicating whether the \code{R} interpreter
 should wait for the command to finish, or run it asynchronously. This
-will be ignored (and the interpreter will always wait) if stdout = `TRUE`
-or stderr = `TRUE.` When running the command asynchronously, no output
+will be ignored (and the interpreter will always wait) if stdout = \code{TRUE}
+or stderr = \code{TRUE.} When running the command asynchronously, no output
 will be displayed on the Rgui console in Windows (it will be dropped,
 instead).}
 

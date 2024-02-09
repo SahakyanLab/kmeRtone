@@ -22,7 +22,7 @@ getEnsemblRegionFeatures(species, chromosome, start, end, features)
 "peak", "other_regulatory", "array_probe", and "mane".}
 }
 \value{
-A `data.table` of Ensembl features.
+A \code{data.table} of Ensembl features.
 }
 \description{
 GET overlap/region/:species/:region?feature=XXX?feature=XXXX?....

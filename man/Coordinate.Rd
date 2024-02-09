@@ -82,7 +82,7 @@ Create a new Coordinate class
 \describe{
 \item{\code{root.path}}{A path to a directory containing either:
 (1) chromosome-separated coordinate files
-    (assume replicates for subdirectories) OR
+(assume replicates for subdirectories) OR
 (2) bedfile. (assume replicates for bedfiles)}
 
 \item{\code{single.len}}{Single case length e.g. damage length. Default is NULL}
@@ -112,7 +112,7 @@ Default is FALSE.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A new `Coordinate` object.
+A new \code{Coordinate} object.
 }
 }
 \if{html}{\out{<hr>}}
@@ -120,7 +120,7 @@ A new `Coordinate` object.
 \if{latex}{\out{\hypertarget{method-Coordinate-[}{}}}
 \subsection{Method \code{[()}}{
 Calling coordinate table by loading on demand. Maximum load is determine
-    by load_limit field.
+by load_limit field.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Coordinate$[(
   chr.name,
@@ -151,7 +151,7 @@ Default is TRUE.}
 }
 \subsection{Returns}{
 A single or list of data.table coordinate of requested
-    chromosome.
+chromosome.
 }
 }
 \if{html}{\out{<hr>}}
@@ -159,7 +159,7 @@ A single or list of data.table coordinate of requested
 \if{latex}{\out{\hypertarget{method-Coordinate-mark_overlap}{}}}
 \subsection{Method \code{mark_overlap()}}{
 Mark overlapping regions in the coordinate table. A column name
-     is_overlap is added.
+is_overlap is added.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Coordinate$mark_overlap()}\if{html}{\out{</div>}}
 }
@@ -179,13 +179,13 @@ New column is_overlap is added.
 \if{html}{\out{<a id="method-Coordinate-print"></a>}}
 \if{latex}{\out{\hypertarget{method-Coordinate-print}{}}}
 \subsection{Method \code{print()}}{
-Print `Coordinate` object parameters.
+Print \code{Coordinate} object parameters.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Coordinate$print()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-Message of `Coordinate` object parameters.
+Message of \code{Coordinate} object parameters.
 }
 }
 \if{html}{\out{<hr>}}

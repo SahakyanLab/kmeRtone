@@ -13,8 +13,8 @@ countKmers(sequences, k)
 }
 \value{
 A vector of k-mer counts. The counts of multiple sequences are
-   combined, similar to Biostrings::oligonucleotideFrequency simplify.as
-   "collapsed".
+combined, similar to Biostrings::oligonucleotideFrequency simplify.as
+"collapsed".
 }
 \description{
 Count only observed k-mers. Biostrings::oligonucleotideFrequency reports all

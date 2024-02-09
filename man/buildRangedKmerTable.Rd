@@ -3,7 +3,7 @@
 \name{buildRangedKmerTable}
 \alias{buildRangedKmerTable}
 \title{Count kmers from a sequence in given ranges and build a data.table of k-mer
-   counts.}
+counts.}
 \usage{
 buildRangedKmerTable(
   dna.seq,
@@ -34,9 +34,9 @@ is "auto".}
 \item{remove.N}{Remove unknown base N? Default is TRUE.}
 }
 \value{
-A `data.table` object with column kmer and N.
+A \code{data.table} object with column kmer and N.
 }
 \description{
 Count kmers from a sequence in given ranges and build a data.table of k-mer
-   counts.
+counts.
 }

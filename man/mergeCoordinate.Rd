@@ -7,15 +7,15 @@
 mergeCoordinate(coor)
 }
 \value{
-Merged coordinate `data.table`.
+Merged coordinate \code{data.table}.
 }
 \description{
 Table must have start and end columns. The output is exactly similar to the
-   reduce function from GenomicRanges.
+reduce function from GenomicRanges.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{coor}}{Coordinate `data.table`.}
+\item{\code{coor}}{Coordinate \code{data.table}.}
 }}
 

@@ -12,9 +12,9 @@ getCOSMICcancerGeneCensus(email, password)
 \item{password}{Password.}
 }
 \value{
-A `data.table` of CGC.
+A \code{data.table} of CGC.
 }
 \description{
 To access the data for non-commercial usage, you must register with the
-   COSMIC. This function fetch the latest CGC.
+COSMIC. This function fetch the latest CGC.
 }

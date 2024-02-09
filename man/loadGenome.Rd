@@ -36,12 +36,12 @@ is FALSE.}
 fasta files.}
 }
 \value{
-A `UCSC_Genome` or `NCBI_Genome` object.
+A \code{UCSC_Genome} or \code{NCBI_Genome} object.
 }
 \description{
 The Genome object is capable of loading chromosome sequence on demand.
-    UCSC Genomes are included in this kmertone package. Their specific
-    chromosome sequence will be downloaded on demand once.
+UCSC Genomes are included in this kmertone package. Their specific
+chromosome sequence will be downloaded on demand once.
 }
 \examples{
 genome <- loadGenome(...)

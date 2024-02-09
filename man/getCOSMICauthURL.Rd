@@ -18,6 +18,6 @@ An authenticated URL, valid for 1 hour access.
 }
 \description{
 To access the data for non-commercial usage, you must register with the
-   COSMIC. This function fetch the authenticated URL from the public URL
-   given by the COSMIC website.
+COSMIC. This function fetch the authenticated URL from the public URL
+given by the COSMIC website.
 }

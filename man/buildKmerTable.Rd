@@ -17,7 +17,7 @@ Default is "auto"; For k > 8, sliding method is used.}
 \item{remove.N}{Remove unknown base? Default is TRUE.}
 }
 \value{
-A `data.table` object with column kmer and N.
+A \code{data.table} object with column kmer and N.
 }
 \description{
 Only existed k-mers are returned in data.table object.

@@ -12,7 +12,7 @@ getUCSCgenePredTable(genome.name, db)
 \item{UCSC.genome.name}{UCSC genome name e.g. hg38 and mm39.}
 }
 \value{
-genepred `data.table`.
+genepred \code{data.table}.
 }
 \description{
 Study k-mer composition across species.

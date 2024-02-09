@@ -17,9 +17,11 @@ NCBI assembly summary with added column organism.group.
 }
 \description{
 The following filters are applied:
-1) assembly_level: "Complete Genome" or "Chromosome"
-2) genome_rep: "Full"
-3) Unique species_taxid (single representative species)
-4) refseq_category of "reference genome" is prioritised over
-   "representative genome"
+\enumerate{
+\item assembly_level: "Complete Genome" or "Chromosome"
+\item genome_rep: "Full"
+\item Unique species_taxid (single representative species)
+\item refseq_category of "reference genome" is prioritised over
+"representative genome"
+}
 }

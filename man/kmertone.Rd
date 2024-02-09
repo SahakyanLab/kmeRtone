@@ -116,10 +116,10 @@ of k-mer to be used).}
 e.g. sequencing read duplicates. Default is TRUE.}
 
 \item{\code{case.coor.1st.idx}}{Case coordinate indexing format whether
-zero-based [start, end) or one-based [start, end]. Default is 1.}
+zero-based [start, end) or one-based \link{start, end}. Default is 1.}
 
 \item{\code{ctrl.coor.1st.idx}}{Control coordinate indexing format whether
-zero-based [start, end) or one-based [start, end]. Default is 1.}
+zero-based [start, end) or one-based \link{start, end}. Default is 1.}
 
 \item{\code{coor.load.limit}}{Maximum loaded chromosome coordinate data. Default is
 1.}

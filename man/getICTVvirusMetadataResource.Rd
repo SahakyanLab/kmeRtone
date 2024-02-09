@@ -3,7 +3,7 @@
 \name{getICTVvirusMetadataResource}
 \alias{getICTVvirusMetadataResource}
 \title{Get Virus Metadata Resource (VMR) from International Committee on Taxonomy
-  of Viruses (ICTV)}
+of Viruses (ICTV)}
 \usage{
 getICTVvirusMetadataResource()
 }

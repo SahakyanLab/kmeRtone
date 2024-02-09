@@ -15,13 +15,13 @@ extractKmers(
 }
 \description{
 A k-mer table is initialized and updated in every chromosome-loop operation.
-     There are 3 modes of extraction. (1) When k is smaller than 9 or k is
-     larger than 15, the k-mer is extracted in a standard way. A k-mer table
-     with every possible k-mers is created and updated. (2) For k between
-     9 and 13, the k-mer sequence is split to half to reduce memory usage
-     significantly. e.g. ACGTACGTA will become ACGT ACGTA. (3) When k is
-     larger than 14, k-mers are extracted the same way as (1) but the k-mer
-     table is grown or expanded for every new k-mer found.
+There are 3 modes of extraction. (1) When k is smaller than 9 or k is
+larger than 15, the k-mer is extracted in a standard way. A k-mer table
+with every possible k-mers is created and updated. (2) For k between
+9 and 13, the k-mer sequence is split to half to reduce memory usage
+significantly. e.g. ACGTACGTA will become ACGT ACGTA. (3) When k is
+larger than 14, k-mers are extracted the same way as (1) but the k-mer
+table is grown or expanded for every new k-mer found.
 }
 \section{Fields}{
 

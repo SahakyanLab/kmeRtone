@@ -7,15 +7,15 @@
 partitionCoordinate(coor)
 }
 \value{
-Partitioned coordinate `data.table`.
+Partitioned coordinate \code{data.table}.
 }
 \description{
 Table must have start and end columns. The mechanism is similar to the
-   disjoin function from GenomicRanges but the end coordinate is different.
+disjoin function from GenomicRanges but the end coordinate is different.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{coor}}{Coordinate `data.table`.}
+\item{\code{coor}}{Coordinate \code{data.table}.}
 }}
 

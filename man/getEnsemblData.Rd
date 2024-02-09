@@ -3,7 +3,7 @@
 \name{getEnsemblData}
 \alias{getEnsemblData}
 \title{A generic function to get Ensembl data persistently from a URL. This is an
-   internal function used by other getEnsemblXXX functions.}
+internal function used by other getEnsemblXXX functions.}
 \usage{
 getEnsemblData(url, handle, max.attempt = 5)
 }

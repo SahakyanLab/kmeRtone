@@ -18,5 +18,5 @@ data.table with 3 columns: kmer, pos_strand, neg_strand
 }
 \description{
 Initialise k-mer table with the following columns: kmer, pos_strand, and
-   neg_strand
+neg_strand
 }

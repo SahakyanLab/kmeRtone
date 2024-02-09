@@ -3,7 +3,7 @@
 \name{STUDY_ACROSS_POPULATIONS}
 \alias{STUDY_ACROSS_POPULATIONS}
 \title{Study k-mer composition of selected COSMIC causal cancer genes across human
-   populations worldwide.}
+populations worldwide.}
 \usage{
 STUDY_ACROSS_POPULATIONS(
   kmer.table,

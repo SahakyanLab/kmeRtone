@@ -3,7 +3,7 @@
 \name{STUDY_CANCER_GENES}
 \alias{STUDY_CANCER_GENES}
 \title{Study k-mer composition of causal cancer genes from COSMIC Cancer Gene
-   Census (CGC) database.}
+Census (CGC) database.}
 \usage{
 STUDY_CANCER_GENES(
   cosmic.username,
@@ -38,5 +38,5 @@ An output directory containing plots.
 }
 \description{
 Detail of Cancer Gene Census can be accessed and read at
-   https://cancer.sanger.ac.uk/census
+https://cancer.sanger.ac.uk/census
 }

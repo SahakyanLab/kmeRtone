@@ -35,7 +35,7 @@ will not be performed.}
 \item{return.coor.obj}{Output Coordinate object? Default to FALSE.}
 }
 \value{
-Genic element coordinates in `data.table` or `Coordinate` object.
+Genic element coordinates in \code{data.table} or \code{Coordinate} object.
 }
 \description{
 Resolve and generate genic element coordinates from UCSC genePred table.

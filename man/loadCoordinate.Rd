@@ -20,7 +20,7 @@ loadCoordinate(
 \arguments{
 \item{root.path}{A path to a directory containing either:
 (1) chromosome-separated coordinate files
-    (multiple replicates is assumed for sub-folder) or
+(multiple replicates is assumed for sub-folder) or
 (2) bedfile (multiple replicates is assumed for separate bedfiles).}
 
 \item{single.len}{Single case length relevant when all coordinates have the
@@ -51,10 +51,10 @@ Coordinate object.
 }
 \description{
 The Coordinate object is capable of loading genomic coordinates on demand.
-    Chromosome-specific coordinates can be called in a bracket
-    e.g. coor["chr1"] or coor[c("chr1", "chr2")]. The coordinates can also
-    be expanded to k-mer size equally on both flanks
-    e.g. coor["chr1", state = "kmer", k = 9]
+Chromosome-specific coordinates can be called in a bracket
+e.g. coor\link{"chr1"} or coor\link{c("chr1", "chr2")}. The coordinates can also
+be expanded to k-mer size equally on both flanks
+e.g. coor\link{"chr1", state = "kmer", k = 9}
 }
 \examples{
 coor <- loadCoordinate(...)

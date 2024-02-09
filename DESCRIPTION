@@ -7,7 +7,7 @@ Authors@R: c(
             person("Adib", "Abdullah", email = "adib.abdullah@imm.ox.ac.uk", role = c("aut", "cre")),
             person("Patrick", "Pflughaupt", email = "patrick.pflughaupt@imm.ox.ac.uk", role = "aut"),
             person("Aleksandr", "Sahakyan", email = "aleksandr.sahakyan@imm.ox.ac.uk", role = "aut"))
-SystemRequirements: GNU make
+#SystemRequirements: GNU make
 Imports: 
     data.table (>= 1.15.0),
     R6 (>= 2.5.1),
@@ -18,6 +18,7 @@ Imports:
     png (>= 0.1-8)
 Depends: 
     R (>= 4.2.2)
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 LinkingTo: Rcpp, stringi, Rhtslib, zlibbioc
 URL: https://github.com/SahakyanLab/kmertone

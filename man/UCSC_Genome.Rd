@@ -68,7 +68,7 @@ fasta files.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A new `Genome` object.
+A new \code{Genome} object.
 }
 }
 \if{html}{\out{<hr>}}
@@ -76,7 +76,7 @@ A new `Genome` object.
 \if{latex}{\out{\hypertarget{method-UCSC_Genome-[}{}}}
 \subsection{Method \code{[()}}{
 Calling chromosome sequence by loading on demand.
-    Maximum load is determine by load_limit field.
+Maximum load is determine by load_limit field.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{UCSC_Genome$[(chr.names, reload = FALSE)}\if{html}{\out{</div>}}
 }
@@ -99,13 +99,13 @@ A single or list of sequence of requested chromosome.
 \if{html}{\out{<a id="method-UCSC_Genome-print"></a>}}
 \if{latex}{\out{\hypertarget{method-UCSC_Genome-print}{}}}
 \subsection{Method \code{print()}}{
-Print summary of `Genome` object.
+Print summary of \code{Genome} object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{UCSC_Genome$print()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-Message of `Genome` object summary.
+Message of \code{Genome} object summary.
 }
 }
 \if{html}{\out{<hr>}}

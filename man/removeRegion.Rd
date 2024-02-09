@@ -2,25 +2,25 @@
 % Please edit documentation in R/removeRegion.R
 \name{removeRegion}
 \alias{removeRegion}
-\title{Remove overlapping region in coordinate `data.table`.}
+\title{Remove overlapping region in coordinate \code{data.table}.}
 \usage{
 removeRegion(coor, region)
 }
 \value{
-New coordinate `data.table` with the regions removed.
+New coordinate \code{data.table} with the regions removed.
 }
 \description{
 Any "coor" that overlap within the "region" will be removed
-   e.g. region = 10-20 and coor = 1-30
-        The results will be: coor = 1-10, 20-30
-        The coor still overlap one base at the terminal. This is done to
-        produce exact result as the previous MPhil research.
+e.g. region = 10-20 and coor = 1-30
+The results will be: coor = 1-10, 20-30
+The coor still overlap one base at the terminal. This is done to
+produce exact result as the previous MPhil research.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{coor}}{Coordinate `data.table`.}
+\item{\code{coor}}{Coordinate \code{data.table}.}
 
-\item{\code{region}}{A `data.table` of region coordinate to be removed.}
+\item{\code{region}}{A \code{data.table} of region coordinate to be removed.}
 }}
 

@@ -14,7 +14,7 @@ generateIntergenicCoor(
 }
 \arguments{
 \item{genepred}{UCSC genePred table. Either the database used by UCSC to
-generate the table ("refseq" or "gencode") or genePred `data.table` is
+generate the table ("refseq" or "gencode") or genePred \code{data.table} is
 acceptable.}
 
 \item{genome.name}{UCSC genome name e.g. hg38 and mm39.}
@@ -25,10 +25,10 @@ i.e. from 5000 to 7500 bp from the genic regions.}
 \item{igr.min.length}{Minimum length of the intergenic rregion. Default is
 150.}
 
-\item{return.coor.obj}{Return `Coordinate` object? Default is FALSE.}
+\item{return.coor.obj}{Return \code{Coordinate} object? Default is FALSE.}
 }
 \value{
-Intergenic coordinates in `data.table`.
+Intergenic coordinates in \code{data.table}.
 }
 \description{
 Resolve and generate genic element coordinates from UCSC genePred table.

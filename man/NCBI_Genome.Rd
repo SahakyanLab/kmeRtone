@@ -10,8 +10,8 @@ Class constructor - build NCBI Genome object
 }
 \details{
 NCBI FASTA file contain nucleotide accession number at the headers, followed
-   by some information about the sequence whether they are chromosome,
-   plasmid, or mictochondria, their assembly status, etc.
+by some information about the sequence whether they are chromosome,
+plasmid, or mictochondria, their assembly status, etc.
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -90,7 +90,7 @@ user's own FASTA file.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A new `NCBI Genome` object.
+A new \verb{NCBI Genome} object.
 }
 }
 \if{html}{\out{<hr>}}
@@ -98,7 +98,7 @@ A new `NCBI Genome` object.
 \if{latex}{\out{\hypertarget{method-NCBI_Genome-[}{}}}
 \subsection{Method \code{[()}}{
 Calling chromosome sequence by loading on demand.
-    Maximum load is determine by load_limit field.
+Maximum load is determine by load_limit field.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{NCBI_Genome$[(chr.names, reload = FALSE)}\if{html}{\out{</div>}}
 }
@@ -121,13 +121,13 @@ A single or list of sequence of requested chromosome.
 \if{html}{\out{<a id="method-NCBI_Genome-print"></a>}}
 \if{latex}{\out{\hypertarget{method-NCBI_Genome-print}{}}}
 \subsection{Method \code{print()}}{
-Print summary of `Genome` object.
+Print summary of \code{Genome} object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{NCBI_Genome$print()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-Message of `Genome` object summary.
+Message of \code{Genome} object summary.
 }
 }
 \if{html}{\out{<hr>}}
@@ -140,7 +140,7 @@ Get NCBI assembly report for the genome.
 }
 
 \subsection{Returns}{
-Message of `Genome` object summary.
+Message of \code{Genome} object summary.
 }
 }
 \if{html}{\out{<hr>}}

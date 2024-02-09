@@ -14,6 +14,6 @@ Trimmed NCBI assembly summary.
 }
 \description{
 sort.idx is a weight to sort where heavier will be preffered. Any tie weight
-   will be further sorted by organism_name. Only the top unique species_taxid
-   will be retained in the final assembly summary.
+will be further sorted by organism_name. Only the top unique species_taxid
+will be retained in the final assembly summary.
 }
