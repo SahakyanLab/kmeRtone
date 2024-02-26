@@ -55,7 +55,7 @@ STUDY_CANCER_GENES <- function(cosmic.username, cosmic.password,
   cgc[`Gene Symbol` %in% sel.cancer.genes, selected := TRUE]
   cgc[is.na(selected), selected := FALSE]
 
-  fwrite(cgc, paste0(output.dir, "/cancer_gene_census.csv.gz"),
+  fwrite(cgc, paste0(output.dir, "/cancer_gene_census.csv"),
          showProgress = FALSE)
 
   # Mark cancer genes in the count table
@@ -63,7 +63,7 @@ STUDY_CANCER_GENES <- function(cosmic.username, cosmic.password,
   counts[get(gene.name.col) %in% sel.cancer.genes, cancer := "selected"]
   counts[get(gene.name.col) %in% oth.cancer.genes, cancer := "other"]
 
-  fwrite(counts, paste0(output.dir, "/genic_elements_counts_cancer.csv.gz"),
+  fwrite(counts, paste0(output.dir, "/genic_elements_counts_cancer.csv"),
          showProgress = FALSE)
 
   # Check if any cancer genes in CGS is not in genePred

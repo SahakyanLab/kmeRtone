@@ -56,7 +56,7 @@ buildControl <- function(case, ctrl.rel.pos, genome, output.path="control/",
     control <- removeRegion(control, region = buffer)
 
     # Save coordinates
-    fwrite(control, paste0(output.path, "/", chr.name, ".csv.gz"),
+    fwrite(control, paste0(output.path, "/", chr.name, ".csv"),
            showProgress = FALSE)
 
     # Print message

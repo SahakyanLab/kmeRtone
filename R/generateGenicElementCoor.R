@@ -327,7 +327,7 @@ generateGenicElementCoor <- function(genepred, element.names="all",
 
   if (return.coor.obj) {
     tmp.dir <- tempfile()
-    gene[, fwrite(.SD, paste0(tmp.dir, "/", chromosome, ".csv.gz"),
+    gene[, fwrite(.SD, paste0(tmp.dir, "/", chromosome, ".csv"),
                   showProgress = FALSE),
          by = chromosome]
     gene <- loadCoordinate(root.path = tmp.dir,

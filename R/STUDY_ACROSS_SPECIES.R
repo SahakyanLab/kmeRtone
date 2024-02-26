@@ -101,11 +101,11 @@ STUDY_ACROSS_SPECIES <- function(kmer.table, kmer.cutoff=5, k,
   asm <- rbind(asm, extreme.asm)
 
   # Save assembly summary for future reference.
-  fwrite(asm, paste0(output.dir, "/assembly_summary.csv.gz"),
+  fwrite(asm, paste0(output.dir, "/assembly_summary.csv"),
          showProgress = FALSE)
 
   # Remove report_summary, if any
-  unlink(paste0(output.dir, "/assembly_reports.csv.gz"))
+  unlink(paste0(output.dir, "/assembly_reports.csv"))
 
   # Count k-mer composition ----------------------------------------------------
   setorder(kmer.table, -z)
@@ -138,7 +138,7 @@ STUDY_ACROSS_SPECIES <- function(kmer.table, kmer.cutoff=5, k,
                        `Assigned-Molecule-Location/Type`[1]]
 
     # Save filtered assembly report as a reference.
-    fwrite(report, paste0(output.dir, "/assembly_reports.csv.gz"),
+    fwrite(report, paste0(output.dir, "/assembly_reports.csv"),
            append = TRUE, showProgress = FALSE)
 
     sel.chrs <- genome$avail_seqs[genome$avail_seqs %in%
@@ -183,7 +183,7 @@ STUDY_ACROSS_SPECIES <- function(kmer.table, kmer.cutoff=5, k,
   by = seq_len(nrow(asm))]
 
   # Save assembly summary table with count.
-  fwrite(asm, paste0(output.dir, "/assembly_summary.csv.gz"),
+  fwrite(asm, paste0(output.dir, "/assembly_summary.csv"),
          showProgress = FALSE)
 
   # Plot k-mer composition -----------------------------------------------------
@@ -272,7 +272,7 @@ STUDY_ACROSS_SPECIES <- function(kmer.table, kmer.cutoff=5, k,
   asm[organism_group == "other_extremophile", label := letters[1:.N]]
 
   # Save assembly summary table with labels on plot.
-  fwrite(asm, paste0(output.dir, "/assembly_summary.csv.gz"),
+  fwrite(asm, paste0(output.dir, "/assembly_summary.csv"),
          showProgress = FALSE)
 
   # Label extremophiles

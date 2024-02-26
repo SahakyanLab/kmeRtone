@@ -84,11 +84,11 @@ SCORE <- function(
   kmer.table <- getScores(case.kmers = case.kmers,
                           control.kmers = control.kmers)
 
-  fwrite(kmer.table, paste0(output.path, "/score_", k, "-mers.csv.gz"),
+  fwrite(kmer.table, paste0(output.path, "/score_", k, "-mers.csv"),
          showProgress = FALSE)
 
   message("The ", k, "-mer scores are saved at ", output.path, "/score_",
-          k,"-mer.csv.gz")
+          k,"-mer.csv")
 
   # Time
   if (verbose) {

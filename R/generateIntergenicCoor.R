@@ -54,7 +54,7 @@ generateIntergenicCoor <- function(genepred, genome.name,
 
   if (return.coor.obj) {
     tmp.dir <- tempfile()
-    igr[, fwrite(.SD, paste0(tmp.dir, "/", chromosome, ".csv.gz"),
+    igr[, fwrite(.SD, paste0(tmp.dir, "/", chromosome, ".csv"),
                  showProgress = FALSE),
         by = chromosome]
     igr <- loadCoordinate(root.path = tmp.dir,

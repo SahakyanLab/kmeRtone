@@ -14,7 +14,7 @@
 #' @param selected.genes Set of genes to study e.g. skin cancer genes.
 #' @param output.dir A directory for the outputs. Default to
 #'     study_across_populations.
-#' @param add.to.existing.population Add counts to counts.csv.gz? Default is
+#' @param add.to.existing.population Add counts to counts.csv? Default is
 #'     FALSE.
 #' @param population.snv.dt Population SNV table.
 #' @param loop.chr Loop chromosome?. Default is TRUE. If FALSE, beware of a
@@ -102,7 +102,7 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
     warning("The following selected genes are removed after filtering step: ",
             missing.genes)
 
-  fwrite(gene.dt, paste0(output.dir, "/genic_coordinates.csv.gz"),
+  fwrite(gene.dt, paste0(output.dir, "/genic_coordinates.csv"),
          showProgress = FALSE)
 
   # Expand the region to get k-meric context of the terminal base.
@@ -122,8 +122,8 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
 
   # Delete these files if exist because we want to append
   if (is.null(population.snv.dt)) {
-    unlink(paste0(output.dir, "/gnomad_SNV.vcf.gz"))
-    unlink(paste0(output.dir, "/population_SNV.csv.gz"))
+    unlink(paste0(output.dir, "/gnomad_SNV.vcf"))
+    unlink(paste0(output.dir, "/population_SNV.csv"))
   }
 
   # Create table for k-mer counts in elements for each populations.
@@ -166,11 +166,11 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
       setorder(vcf, CHROM, POS)
 
       # Somehow set(vcf, j = "INFO", value = NULL) caused a segfault
-      # writeVCF(vcf, paste0(output.dir, "/gnomad_SNV.vcf.gz"), append = TRUE,
+      # writeVCF(vcf, paste0(output.dir, "/gnomad_SNV.vcf"), append = TRUE,
       #           tabix = FALSE)
 
       # The reason I want to writeVCF is because I want to explore, so these
-      # filter will be excluded in population_SNV.csv.gz
+      # filter will be excluded in population_SNV.csv
       # # Only select single base variant in REF and at least one in ALT
       # vcf <- vcf[stri_length(REF) == 1 &
       #              sapply(ALT, function(alt) any(stri_length(alt) == 1),
@@ -212,7 +212,7 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
       rm(vcf)
 
       setorder(pop.freq, chromosome, position)
-      fwrite(pop.freq, paste0(output.dir, "/population_SNV.csv.gz"),
+      fwrite(pop.freq, paste0(output.dir, "/population_SNV.csv"),
              append = TRUE, showProgress = FALSE)
     } else {
 
@@ -230,7 +230,7 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
     # Remove duplicates (count prioritised) because it will throw off the
     # probabilities. It seems the major allele raw number are about the same?
     # Hmmmm.... Are they from the same study? Need more investigation from the
-    # saved population_SNV.csv.gz.
+    # saved population_SNV.csv.
     setorder(pop.freq, population, chromosome, position, base, -count)
     pop.freq <- pop.freq[
 
@@ -403,7 +403,7 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
     NULL
   }, by = element]
 
-  fwrite(counts, paste0(output.dir, "/counts.csv.gz"),
+  fwrite(counts, paste0(output.dir, "/counts.csv"),
          append = add.to.existing.population,
          showProgress = FALSE)
 
@@ -421,7 +421,7 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
   if (is.data.table(population.snv.dt)) {
     pop.freq <- population.snv.dt
   } else {
-    pop.freq <- fread(paste0(output.dir, "/population_SNV.csv.gz"),
+    pop.freq <- fread(paste0(output.dir, "/population_SNV.csv"),
                     showProgress = FALSE)
   }
   setorder(pop.freq, population, chromosome, position, base, -count)
@@ -458,7 +458,7 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
   # Venn diagram of population SNV position
 
   # Plot count distribution
-  counts <- fread(paste0(output.dir, "/counts.csv.gz"), showProgress = FALSE)
+  counts <- fread(paste0(output.dir, "/counts.csv"), showProgress = FALSE)
 
   # Add both strand count
   sense.cols <- names(counts)[grep("_sense_", names(counts))]

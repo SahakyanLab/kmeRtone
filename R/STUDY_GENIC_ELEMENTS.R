@@ -164,7 +164,7 @@ STUDY_GENIC_ELEMENTS <- function(kmer.table, kmer.cutoff=5, k,
   counts[, strand := NULL]
   setnames(counts, "X", "strand")
 
-  fwrite(counts, paste0(output.dir, "/genic_elements_counts.csv.gz"),
+  fwrite(counts, paste0(output.dir, "/genic_elements_counts.csv"),
          showProgress = FALSE)
 
   # Plot -----------------------------------------------------------------------

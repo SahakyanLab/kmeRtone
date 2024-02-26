@@ -11,7 +11,7 @@ loadGenomicContents <- function(genome) {
   chr.names <- fread(genome$info_file)$chromosome |> unique()
   chr.names <- chr.names[!grepl("chrM", chr.names)]
 
-  win.file <- paste0(genome$root_path, "/window.csv.gz")
+  win.file <- paste0(genome$root_path, "/window.csv")
   if (file.exists(win.file)) {
     win.dt <- fread(win.file)
     return(win.dt)
