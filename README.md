@@ -174,11 +174,12 @@ for(chr in 1:22){
         seqnames = paste0("chr", chr),
         start = sample(
             x = 10000:10000000, 
-            size = 10000, 
+            size = 100000, 
             replace = FALSE
         ),
         width = 2
     )
+    setorder(genomic_coor, -start)
 
     data.table::fwrite(
         genomic_coor, 
@@ -194,11 +195,11 @@ kmertone::kmertone(
     k=2,
     ctrl.rel.pos=c(80, 500),
     case.pattern=NULL,
+    single.case.len=2,
     output.dir="output",
     module="score",
     rm.case.kmer.overlaps=FALSE,
     merge.replicate=TRUE, 
-    kmer.table=NULL,
     verbose=TRUE
 )
 ```
