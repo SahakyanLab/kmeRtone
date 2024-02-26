@@ -169,7 +169,7 @@ library(kmertone)
 dir.create("./data", showWarnings = FALSE)
 
 set.seed(1234)
-for(chr in 1:22){
+for(chr in 1){
     genomic_coor <- data.table::data.table(
         seqnames = paste0("chr", chr),
         start = sample(
@@ -192,7 +192,7 @@ kmertone::kmertone(
     case.coor.path="./data", 
     genome.name="hg19", 
     strand.sensitive=FALSE, 
-    k=2,
+    k=4,
     ctrl.rel.pos=c(80, 500),
     case.pattern=NULL,
     single.case.len=2,
