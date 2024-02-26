@@ -163,6 +163,7 @@ Below is an example code that generates random genomic coordinates and runs the 
 
 ```R
 library(data.table)
+library(kmertone)
 
 #' 1. Randomly generate genomic positions and save results
 dir.create("./data", showWarnings = FALSE)
