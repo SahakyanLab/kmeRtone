@@ -1,13 +1,11 @@
 # ignore
 *.DS_Store
-data/
 .Rhistory
 .DS_Store
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-*.csv
 Rprof.out
 output
 *.swp
