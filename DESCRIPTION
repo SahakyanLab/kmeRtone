@@ -5,9 +5,9 @@ Date: 2024-02-09
 Title: KMERTONE
 Description: Multi-purpose and transferrable k-meric enrichment/depletion analysis software.
 Authors@R: c(
-            person("Adib", "Abdullah", email = "adib.abdullah@imm.ox.ac.uk", role = c("aut", "cre")),
+            person("Adib", "Abdullah", email = "adib.abdullah@imm.ox.ac.uk", role = "aut"),
             person("Patrick", "Pflughaupt", email = "patrick.pflughaupt@imm.ox.ac.uk", role = "aut"),
-            person("Aleksandr", "Sahakyan", email = "aleksandr.sahakyan@imm.ox.ac.uk", role = "aut"))
+            person("Aleksandr", "Sahakyan", email = "sahakyanlab@cantab.net", role = c("aut", "cre")))
 #SystemRequirements: GNU make
 Imports: 
     data.table (>= 1.15.0),
