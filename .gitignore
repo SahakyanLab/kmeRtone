@@ -1,10 +1,12 @@
 # ignore
+*.DS_Store
 data/
-*.Rproj
 .Rhistory
 .DS_Store
-.Rproj.user/
 .Rproj.user
+.Rhistory
+.RData
+.Ruserdata
 *.csv
 Rprof.out
 output
