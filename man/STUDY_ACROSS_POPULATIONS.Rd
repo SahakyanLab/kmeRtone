@@ -39,7 +39,7 @@ STUDY_ACROSS_POPULATIONS(
 
 \item{selected.genes}{Set of genes to study e.g. skin cancer genes.}
 
-\item{add.to.existing.population}{Add counts to counts.csv.gz? Default is
+\item{add.to.existing.population}{Add counts to counts.csv? Default is
 FALSE.}
 
 \item{output.dir}{A directory for the outputs. Default to

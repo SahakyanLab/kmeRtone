@@ -27,3 +27,6 @@ BugReports: https://github.com/SahakyanLab/kmertone/issues
 Encoding: UTF-8
 License: GPL-3 + file LICENSE
 LazyData: true
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
