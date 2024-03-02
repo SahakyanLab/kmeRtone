@@ -4,7 +4,7 @@
 #' Below is an example code that generates random genomic coordinates.
 #' 
 #' library(data.table)
-#' library(kmertone)
+#' library(kmeRtone)
 #' 
 #' 1. Randomly generate genomic positions and save results
 #' dir.create("./data", showWarnings = FALSE)
@@ -33,6 +33,6 @@
 #'   \item{start}{5' start position of the recorded biological event}
 #'   \item{width}{Sequence width of the recorded biological event, e.g. 2 for a DNA strand break}
 #' }
-#' @source \url{https://github.com/SahakyanLab/kmertone/tree/master/README.md}
+#' @source \url{https://github.com/SahakyanLab/kmeRtone/tree/master/README.md}
 #'
 "example_genome_coor"

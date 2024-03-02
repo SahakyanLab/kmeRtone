@@ -71,7 +71,7 @@ Create a new NCBI Genome class
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{genome.name}}{A genome name. NCBI genome is included with kmertone.}
+\item{\code{genome.name}}{A genome name. NCBI genome is included with kmeRtone.}
 
 \item{\code{db}}{NCBI database: "refseq" or "genbank".}
 

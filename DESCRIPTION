@@ -1,8 +1,8 @@
-Package: kmertone
+Package: kmeRtone
 Type: Package
-Version: 0.1
+Version: 1.0
 Date: 2024-02-09
-Title: KMERTONE
+Title: kmeRtone
 Description: Multi-purpose and transferrable k-meric enrichment/depletion analysis software.
 Authors@R: c(
             person("Adib", "Abdullah", email = "adib.abdullah@imm.ox.ac.uk", role = "aut"),
@@ -22,8 +22,8 @@ Depends:
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 LinkingTo: Rcpp, stringi, Rhtslib, zlibbioc
-URL: https://github.com/SahakyanLab/kmertone
-BugReports: https://github.com/SahakyanLab/kmertone/issues
+URL: https://github.com/SahakyanLab/kmeRtone
+BugReports: https://github.com/SahakyanLab/kmeRtone/issues
 Encoding: UTF-8
 License: GPL-3 + file LICENSE
 LazyData: true

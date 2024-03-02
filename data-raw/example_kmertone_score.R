@@ -1,5 +1,5 @@
-## code to prepare `example_kmertone_score` dataset goes here
+## code to prepare `example_kmeRtone_score` dataset goes here
 
-example_kmertone_score <- read.csv("data-raw/score_2-mers.csv")
+example_kmeRtone_score <- read.csv("data-raw/score_2-mers.csv")
 
-usethis::use_data(example_kmertone_score, overwrite = TRUE)
+usethis::use_data(example_kmeRtone_score, overwrite = TRUE)

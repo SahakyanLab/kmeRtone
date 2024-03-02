@@ -2,11 +2,11 @@
 #' 
 #' @description 
 #' Below is an example code that generates random genomic coordinates 
-#' and runs the default kmertone `SCORE` function to quantify the 
+#' and runs the default kmeRtone `SCORE` function to quantify the 
 #' k-meric enrichment and depletion. 
 #' 
 #' library(data.table)
-#' library(kmertone)
+#' library(kmeRtone)
 #' 
 #' 1. Randomly generate genomic positions and save results
 #' dir.create("./data", showWarnings = FALSE)
@@ -29,8 +29,8 @@
 #'     )
 #' }
 #' 
-#' #' 2. Run kmertone `score` function
-#' kmertone::kmertone(
+#' #' 2. Run kmeRtone `score` function
+#' kmeRtone::kmeRtone(
 #'     case.coor.path="./data", 
 #'     genome.name="hg19", 
 #'     strand.sensitive=FALSE, 
@@ -52,6 +52,6 @@
 #'   \item{start}{5' start position of the recorded biological event}
 #'   \item{width}{Sequence width of the recorded biological event, e.g. 2 for a DNA strand break}
 #' }
-#' @source \url{https://github.com/SahakyanLab/kmertone/tree/master/README.md}
+#' @source \url{https://github.com/SahakyanLab/kmeRtone/tree/master/README.md}
 #'
-"example_kmertone_score"
+"example_kmeRtone_score"

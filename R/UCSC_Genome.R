@@ -36,7 +36,7 @@ UCSC_Genome <- R6::R6Class(
 
     #' @description
     #' Create a new Genome class
-    #' @param genome.name A genome name. UCSC genome is included with kmertone.
+    #' @param genome.name A genome name. UCSC genome is included with kmeRtone.
     #' @param root.path A path to a directory containing chromosome-separated
     #'     fasta files.
     #' @param load.limit Maximum chromosome sequences loaded. Default is 1.
@@ -52,7 +52,7 @@ UCSC_Genome <- R6::R6Class(
       if (!missing(mask)) self$mask <- mask
 
       if (is.null(self$root_path)) {
-        home.path <- path.expand(kmertone.data.path)
+        home.path <- path.expand(kmeRtone.data.path)
         self$root_path <- paste0(home.path, "/genome/", self$genome_name, "/")
       }
 
@@ -205,7 +205,7 @@ UCSC_Genome <- R6::R6Class(
     # @field fasta_pattern. A csv extension pattern.
     fasta_pattern = "\\.(fa|fna|fasta)($|\\.gz$)",
 
-    # @field available_genomes Available genomes in kmertone package)
+    # @field available_genomes Available genomes in kmeRtone package)
     #     i.e. UCSC database.
     available_genomes = "^(hg|mm|sacCer)[0-9IVX]+",
 

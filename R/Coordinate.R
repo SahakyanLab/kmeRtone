@@ -127,7 +127,7 @@ Coordinate <- R6::R6Class(
     #'     coordinate.
     #' @param reload Reload the coordinate table from the root.path.
     #'     Default is TRUE.
-    #' @param rm.other.cols Remove unnecessary columns for kmertone operation.
+    #' @param rm.other.cols Remove unnecessary columns for kmeRtone operation.
     #' @return A single or list of data.table coordinate of requested
     #'     chromosome.
     `[` = function(chr.name, state="current", k, reload=FALSE,

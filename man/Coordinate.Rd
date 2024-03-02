@@ -145,7 +145,7 @@ coordinate.}
 \item{\code{reload}}{Reload the coordinate table from the root.path.
 Default is TRUE.}
 
-\item{\code{rm.other.cols}}{Remove unnecessary columns for kmertone operation.}
+\item{\code{rm.other.cols}}{Remove unnecessary columns for kmeRtone operation.}
 }
 \if{html}{\out{</div>}}
 }

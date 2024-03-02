@@ -1,9 +1,9 @@
-#' Kmertone all-in-one user interface
+#' kmeRtone all-in-one user interface
 #'
 #' @field case.coor.path A path to a folder containing either (1) chromosome-
 #'      separated coordinate files (assume replicates for subfolder) or (2)
 #'      bedfile. (assume replicates for bedfiles).
-#' @field genome.name Name of genome. Kmertone include UCSC genome e.g. "hg19"
+#' @field genome.name Name of genome. kmeRtone include UCSC genome e.g. "hg19"
 #'      and "hg38". Default is "unknown".
 #' @field strand.sensitive Does strand polarity matters? Default is TRUE. In
 #'      sensitive strand, case k-mers are extracted from the sense strand only.
@@ -37,8 +37,8 @@
 #'      unique individual point. Not merging replicate will result in weighted
 #'      k-mer counts. Default is TRUE.
 #' @field kmer.table K-mer table with pre-calculated scores. It can be directly
-#'      used in other kmertone module.
-#' @field module Kmertone module. Options are: "score" (calculate z-score),
+#'      used in other kmeRtone module.
+#' @field module kmeRtone module. Options are: "score" (calculate z-score),
 #'      "explore" (perform exploratory analysis), "tune" (find the best length
 #'      of k-mer to be used).
 #' @field rm.dup Remove duplicate coordinate? Remove duplicates within replicate
@@ -88,7 +88,7 @@
 #'    based on chromosome name? Default is FALSE.
 
 #' @export
-kmertone <- function(case.coor.path, genome.name, strand.sensitive, k,
+kmeRtone <- function(case.coor.path, genome.name, strand.sensitive, k,
                      ctrl.rel.pos=c(80, 500), case.pattern,
                      output.dir="output/", case, genome, control, control.path,
                      genome.path, rm.case.kmer.overlaps, single.case.len,

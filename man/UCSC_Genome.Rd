@@ -55,7 +55,7 @@ Create a new Genome class
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{genome.name}}{A genome name. UCSC genome is included with kmertone.}
+\item{\code{genome.name}}{A genome name. UCSC genome is included with kmeRtone.}
 
 \item{\code{root.path}}{A path to a directory containing chromosome-separated
 fasta files.}

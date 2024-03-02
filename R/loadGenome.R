@@ -1,13 +1,13 @@
 #' Build Genome object.
 #'
 #' The Genome object is capable of loading chromosome sequence on demand.
-#'     UCSC Genomes are included in this kmertone package. Their specific
+#'     UCSC Genomes are included in this kmeRtone package. Their specific
 #'     chromosome sequence will be downloaded on demand once.
 #'
 #' @param root.path A path to a directory containing chromosome-separated
 #'     fasta files.
 #' @param genome.name A genome name. UCSC and NCBI genome is included with
-#'    kmertone. Input their name e.g. hg19 or GRCh37.
+#'    kmeRtone. Input their name e.g. hg19 or GRCh37.
 #' @param fasta.style FASTA version: "UCSC" or "NCBI".
 #' @param ncbi.db NCBI database: "refseq" or "genbank".
 #' @param ncbi.asm NCBI assembly table.

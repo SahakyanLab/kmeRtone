@@ -1,4 +1,4 @@
-kmertone::kmertone(
+kmeRtone::kmeRtone(
     case.coor.path="../../data-raw/", 
     genome.name="hg19", 
     strand.sensitive=FALSE, 

@@ -11,5 +11,5 @@ A data.table of taxonomy classification.
 }
 \description{
 NCBI provides taxonomy for all life domains in rankedlineage.dmp file.
-This function download and store the file in kmertone_data path.
+This function download and store the file in kmeRtone_data path.
 }

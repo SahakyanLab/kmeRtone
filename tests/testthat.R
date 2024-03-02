@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(kmertone)
+library(kmeRtone)
 
-test_check("kmertone")
+test_check("kmeRtone")

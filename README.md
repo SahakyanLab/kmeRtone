@@ -4,17 +4,17 @@
 
 ``` r
 # The easiest way is to install from CRAN:
-install.packages('kmertone')
+install.packages('kmeRtone')
 
 # Otherwise, install directly by cloning this GitHub repo
-devtools::install_github('SahakyanLab/kmertone', ref = 'master')
+devtools::install_github('SahakyanLab/kmeRtone', ref = 'master')
 ```
 
-## Kmertone Operation
+## kmeRtone Operation
 
-Kmertone contains many modules. The core module (SCORE) is calculating z-score of k-meric enrichment and depletion. Draw the flowchart.
+kmeRtone contains many modules. The core module (SCORE) is calculating z-score of k-meric enrichment and depletion. Draw the flowchart.
 
-## Kmertone Input Flags - Overview
+## kmeRtone Input Flags - Overview
 
 1.  Case coordinate
 
@@ -55,7 +55,7 @@ Kmertone contains many modules. The core module (SCORE) is calculating z-score o
     |------------|----------------|------------------------------------------------------------------|
     | kmer.table | `<data.table>` | Pre-loaded k-mer table with calculated score. Default is `NULL`. |
 
-6.  Kmertone module
+6.  kmeRtone module
 
     | Flag   | Class         | Description                                                                                |
     |--------|---------------|--------------------------------------------------------------------------------------------|
@@ -68,20 +68,20 @@ Kmertone contains many modules. The core module (SCORE) is calculating z-score o
     | ncpu        | `<int>`       | Number of CPU cores. Default is 1.                 |
     | output.path | `<character>` | A path to an output **folder**. Default is "data/" |
 
-## Kmertone Input Flags - Additional Description
+## kmeRtone Input Flags - Additional Description
 
 | Flag           | Description                                                                                                                                                                                                                                                                                                                                                                                                  |
 |----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | case.length    | The case length unit is number of nucleotide. In an event where case happens in between two nucleotide e.g. DNA breakage, the case.length is 2 nt.                                                                                                                                                                                                                                                           |
 | case.coor.path | Three situations can happen. (1) A folder containing a BED file. A second or more BED files indicates a presence of replicates. (2) A folder containing chromosome-separated files. The file name must be the name of chromosome. (3) A folder containing sub-folders of chromosome-separated files, indicating a presence of replicates. In situation (2) and (3), the coordinates must be a 1-based index. |
 
-## Kmertone Objects
+## kmeRtone Objects
 
-Kmertone introduce two class objects: `<genome>` and `<genomic.coordinate>`
+kmeRtone introduce two class objects: `<genome>` and `<genomic.coordinate>`
 
 ### `<genome>`
 
-Kmertone comes with two pre-built `<genome>`: hg19 and hg38. The `<genome>`s are saved as uncompressed RDS binary object for fast loading. `print.genome` function is built to print the `<genome>` object. It will show the genome name (e.g. hg19) and genome length by chromosome. The default `base::print` showing the very long sequence will crash the R console.
+kmeRtone comes with two pre-built `<genome>`: hg19 and hg38. The `<genome>`s are saved as uncompressed RDS binary object for fast loading. `print.genome` function is built to print the `<genome>` object. It will show the genome name (e.g. hg19) and genome length by chromosome. The default `base::print` showing the very long sequence will crash the R console.
 
 `<genome>` is an S3-class object with the following contents:
 
@@ -106,7 +106,7 @@ $name
 
 ### `<genomic.coordinate>`
 
-`<genomic.coordinate>` is an S3-class object. The reason for building this class is to reduce data redundancy in genomic coordinate table (e.g. repeated number of chromosome name and unnecessary column end when case length is fixed). It also helps with organisation of kmertone configuration (e.g. k-mer size, case length, etc.) as the `<genomic.coordinate>` object will carry and contain those information. It utilises `<data.table>` to use its inherent feature to update by reference (instead of memory copy) for genomic coordinate table and coordinate status (case vs. k-mer coordinate). This will help to reduce memory (RAM) consumption and keep track what the coordinates refer to (whether the case itself or k-mer). The contents of the `<genomic.coordinate>` object are as follow:
+`<genomic.coordinate>` is an S3-class object. The reason for building this class is to reduce data redundancy in genomic coordinate table (e.g. repeated number of chromosome name and unnecessary column end when case length is fixed). It also helps with organisation of kmeRtone configuration (e.g. k-mer size, case length, etc.) as the `<genomic.coordinate>` object will carry and contain those information. It utilises `<data.table>` to use its inherent feature to update by reference (instead of memory copy) for genomic coordinate table and coordinate status (case vs. k-mer coordinate). This will help to reduce memory (RAM) consumption and keep track what the coordinates refer to (whether the case itself or k-mer). The contents of the `<genomic.coordinate>` object are as follow:
 
 ``` r
 $chr1
@@ -159,11 +159,11 @@ $case.pattern
 
 ## Quick example
 
-Below is an example code that generates random genomic coordinates and runs the default kmertone `SCORE` function to quantify the k-meric enrichment and depletion.
+Below is an example code that generates random genomic coordinates and runs the default kmeRtone `SCORE` function to quantify the k-meric enrichment and depletion.
 
 ```R
 library(data.table)
-library(kmertone)
+library(kmeRtone)
 
 #' 1. Randomly generate genomic positions and save results
 dir.create("./data", showWarnings = FALSE)
@@ -187,8 +187,8 @@ for(chr in 1){
     )
 }
 
-#' 2. Run kmertone `score` function
-kmertone::kmertone(
+#' 2. Run kmeRtone `score` function
+kmeRtone::kmeRtone(
     case.coor.path="./data", 
     genome.name="hg19", 
     strand.sensitive=FALSE, 

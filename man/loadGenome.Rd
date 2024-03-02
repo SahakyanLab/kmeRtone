@@ -17,7 +17,7 @@ loadGenome(
 }
 \arguments{
 \item{genome.name}{A genome name. UCSC and NCBI genome is included with
-kmertone. Input their name e.g. hg19 or GRCh37.}
+kmeRtone. Input their name e.g. hg19 or GRCh37.}
 
 \item{fasta.style}{FASTA version: "UCSC" or "NCBI".}
 
@@ -40,7 +40,7 @@ A \code{UCSC_Genome} or \code{NCBI_Genome} object.
 }
 \description{
 The Genome object is capable of loading chromosome sequence on demand.
-UCSC Genomes are included in this kmertone package. Their specific
+UCSC Genomes are included in this kmeRtone package. Their specific
 chromosome sequence will be downloaded on demand once.
 }
 \examples{

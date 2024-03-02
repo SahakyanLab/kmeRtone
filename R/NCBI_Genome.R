@@ -45,7 +45,7 @@ NCBI_Genome <- R6::R6Class(
 
     #' @description
     #' Create a new NCBI Genome class
-    #' @param genome.name A genome name. NCBI genome is included with kmertone.
+    #' @param genome.name A genome name. NCBI genome is included with kmeRtone.
     #' @param db NCBI database: "refseq" or "genbank".
     #' @param fasta.file A path to the NCBI-style fasta files. This is for
     #'    user's own FASTA file.
@@ -237,7 +237,7 @@ NCBI_Genome <- R6::R6Class(
     # @param db NCBI database: "refseq" or "genbank"
     # @return fasta.file path
     get_fasta_path = function(genome.name, db) {
-      genome.dir <- paste0(path.expand(kmertone.data.path), "/genome/", db)
+      genome.dir <- paste0(path.expand(kmeRtone.data.path), "/genome/", db)
       fasta.file <- list.files(genome.dir, genome.name,
                                full.names = TRUE)
       fasta.file <- fasta.file[grepl("_genomic.fna.gz", fasta.file)]
