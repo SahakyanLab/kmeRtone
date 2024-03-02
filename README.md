@@ -10,6 +10,8 @@ install.packages('kmeRtone')
 devtools::install_github('SahakyanLab/kmeRtone', ref = 'master')
 ```
 
+Alternatively, download and install using the [latest release files from here.](https://github.com/SahakyanLab/kmertone/releases/)
+
 ## kmeRtone Operation
 
 kmeRtone contains many modules. The core module (SCORE) is calculating z-score of k-meric enrichment and depletion. Draw the flowchart.
