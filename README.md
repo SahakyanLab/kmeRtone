@@ -1,4 +1,6 @@
-# Multi-purpose and transferrable k-meric enrichment/depletion analysis software.
+# KmeRtone: multi-purpose and transferrable k-meric enrichment/depletion analysis software.
+
+![alt text](man/figures/KmeRtone_logo.png)
 
 ## Installation
 
