@@ -13,6 +13,23 @@ extractKmers(
   verbose = TRUE
 )
 }
+\arguments{
+\item{coor}{Coordinate class object.}
+
+\item{genome}{Genome class object.}
+
+\item{k}{Length of k-mer.}
+
+\item{central.pattern}{Central pattern of the k-mer, if applicable.}
+
+\item{rm.overlap.region}{Boolean indicating if overlapping regions should be
+removed. Default is TRUE.}
+
+\item{verbose}{Boolean indicating if verbose output is enabled.}
+}
+\value{
+A k-mer table with counts for each k-mer.
+}
 \description{
 A k-mer table is initialized and updated in every chromosome-loop operation.
 There are 3 modes of extraction. (1) When k is smaller than 9 or k is
@@ -23,15 +40,3 @@ significantly. e.g. ACGTACGTA will become ACGT ACGTA. (3) When k is
 larger than 14, k-mers are extracted the same way as (1) but the k-mer
 table is grown or expanded for every new k-mer found.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{coor}}{Coordinate class object.}
-
-\item{\code{genome}}{Genome class object.}
-
-\item{\code{k}}{Length of k-mer.}
-
-\item{\code{central.pattern}}{Central pattern of the k-mer.}
-}}
-

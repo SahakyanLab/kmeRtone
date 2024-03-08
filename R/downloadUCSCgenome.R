@@ -1,13 +1,18 @@
-#' Download chromosome-separated fasta genome sequence from UCSC database.
+#' Function downloads chromosome-separated fasta genome sequences from the UCSC
+#' database. Users can specify a genome name, an output folder, and a specific
+#' chromosome or chromosomes. There's an option to choose the download method as well.
 #'
-#' @param genome.name Genome name e.g. hg19, hg38, mm19, etc.
-#' @param output.path Output folder.
-#' @param chr.name Specific chromosome to download. If not specified, default
-#'    is all.
-#' @param method Download method for base::download.file function.
+#' @param genome.name Genome name (e.g., hg19, hg38, mm19).
+#' @param output.path Output folder for the downloaded sequences.
+#' @param chr.name Specific chromosome to download; defaults to all if unspecified.
+#' @param method Download method for the `download.file` function.
 #'
 #' @return An output folder containing chromosome-separated fasta files.
 #'
+#' @importFrom utils download.file
+#' @importFrom data.table fread fwrite
+#' @importFrom stringi stri_extract_all_regex
+#' 
 #' @export
 downloadUCSCgenome <- function(genome.name, output.path, chr.name,
                                method = "curl") {

@@ -4,7 +4,11 @@
 #' This function download and store the file in kmeRtone_data path.
 #'
 #' @return A data.table of taxonomy classification.
-#'
+#' 
+#' @importFrom tools md5sum
+#' @importFrom data.table fread set setnames
+#' @importFrom utils head tail untar
+#' 
 #' @export
 getNCBItaxonomy <- function() {
 

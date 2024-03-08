@@ -16,6 +16,12 @@
 #'
 #' @return An output directory containing plots.
 #'
+#' @importFrom data.table fread fwrite setorder setnames rbindlist
+#' @importFrom stringi stri_sub stri_count_regex stri_length stri_paste stri_sub_replace_all stri_replace_all_regex stri_split_fixed
+#' @importFrom Biostrings reverseComplement
+#' @importFrom graphics layout boxplot plot points legend arrows axis mtext barplot
+#' @importFrom grDevices pdf png
+#' 
 #' @export
 STUDY_ACROSS_SPECIES <- function(kmer.table, kmer.cutoff=5, k,
                                  central.pattern=NULL, selected.extremophiles,

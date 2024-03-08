@@ -10,6 +10,11 @@
 #' @param INFO.filter Parse only filtered INFO ID. Default is to parse all IDs.
 #'
 #' @return A data.table of VCF.
+#' 
+#' @importFrom data.table fread fwrite setalloccol set
+#' @importFrom stringi stri_replace_first_fixed stri_split_fixed stri_extract_first_regex
+#'   stri_replace_all_regex stri_locate_first_regex stri_sub stri_replace_first_regex
+#'   stri_replace_last_fixed
 #'
 #' @export
 readVCF <- function(vcf.file, chr.names, starts, ends, INFO.filter=NULL) {

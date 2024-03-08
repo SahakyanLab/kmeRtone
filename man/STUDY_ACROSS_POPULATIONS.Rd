@@ -50,6 +50,8 @@ study_across_populations.}
 \item{loop.chr}{Loop chromosome?. Default is TRUE. If FALSE, beware of a
 memory spike because of VCF content. VCF contains zero counts for every
 population. Input pre-computed trimmed-version population.snv.dt.}
+
+\item{plot}{Boolean. Default is FALSE. If TRUE, will plot results.}
 }
 \value{
 An output directory containing plots.

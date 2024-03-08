@@ -11,7 +11,9 @@ writeFASTA(seqs, fasta.path, append = FALSE)
 it must only contain one single sequence string for every element e.g.
 list(chr1 = "NNNNNNNN") not list(chr1 = c("NNNNNN", "AAAAAA"))}
 
-\item{out.path}{A path to a FASTA file to be saved.}
+\item{fasta.path}{A path to a FASTA file.}
+
+\item{append}{Boolean. Default is FALSE. If TRUE, will append the results to existing file.}
 }
 \value{
 None

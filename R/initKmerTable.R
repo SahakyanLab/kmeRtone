@@ -7,9 +7,12 @@
 #'     .Machine$integer.max. For 9- to 15-mer, the kmer sequence is separated to
 #'     two columns (kmer_part1 and kmer_part2) to reduce memory significantly.
 #' @param central.pattern Central pattern(s) of the k-mer. Default is NULL.
+#' @param split.kmer Whether to split the k-mer sequence into two parts for large k values. Default is FALSE.
 #'
 #' @return data.table with 3 columns: kmer, pos_strand, neg_strand
 #'
+#' @importFrom data.table CJ rbindlist setkeyv
+#' 
 #' @export
 initKmerTable <- function (k, central.pattern=NULL, split.kmer=FALSE) {
 

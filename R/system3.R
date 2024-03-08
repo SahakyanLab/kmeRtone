@@ -26,7 +26,7 @@
 #' @param timeout timeout in seconds, ignored if 0. This is a limit for the
 #'    elapsed time running command in a separate process. Fractions of seconds
 #'    are ignored.
-#'
+#' 
 system3 <- function(command, args = character(), stdout = "", stderr = "", 
                     stdin = "", input = NULL, env = character(), wait = TRUE, 
                     minimized, invisible, timeout = 0) {

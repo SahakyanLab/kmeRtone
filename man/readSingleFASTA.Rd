@@ -9,7 +9,7 @@ readSingleFASTA(file_path, mask = "none")
 \arguments{
 \item{file_path}{A path to FASTA file.}
 
-\item{unmask}{Capitalize all base letters?}
+\item{mask}{Capitalize all base letters?}
 }
 \value{
 A single sequence string without header.

@@ -12,6 +12,8 @@
 #'    is "auto". 
 #' @param remove.N Remove unknown base N? Default is TRUE.
 #' @return A `data.table` object with column kmer and N.
+#' 
+#' @importFrom data.table setorder
 #'
 #' @export
 buildRangedKmerTable <- function(dna.seq, starts, ends, k, method="sliding",

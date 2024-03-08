@@ -5,6 +5,9 @@
 #'
 #' @return Virus Metadata Resource data.table.
 #'
+#' @importFrom data.table setDT
+#' @importFrom openxlsx read.xlsx
+#' 
 #' @export
 getICTVvirusMetadataResource <- function() {
 

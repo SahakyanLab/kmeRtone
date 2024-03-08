@@ -5,11 +5,14 @@
 #'    given by the COSMIC website.
 #'
 #' @param email Email registered with COSMIC.
-#' @param password Password.
-#' @param url URL given by COSMIC website to access data.
+#' @param password Password associated with the registered email.
+#' @param url Public URL provided by the COSMIC website for data access.
 #'
-#' @return An authenticated URL, valid for 1 hour access.
+#' @return Authenticated URL valid for 1-hour access to COSMIC data.
 #'
+#' @importFrom jsonlite fromJSON base64_enc
+#' @importFrom curl new_handle handle_setheaders curl_fetch_memory
+#' 
 #' @export
 getCOSMICauthURL <- function(email, password, url) {
   

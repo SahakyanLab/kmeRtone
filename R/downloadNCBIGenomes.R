@@ -1,6 +1,7 @@
-#' Download genomes from NCBI FTP database.
-#'
-#' Provide either organism names or assembly summary table.
+#' Function downloads genome fasta files from the NCBI FTP database. Users can
+#' provide either organism names or an assembly summary data table. 
+#' 
+#' Supports options for splitting multi-header fasta files and overwriting existing files.
 #'
 #' @param species Species names.
 #' @param asm NCBI assembly summary data.table
@@ -11,8 +12,11 @@
 #' @param overwrite Overwrite any existed genome file? Default is FALSE to skip
 #'    the download.
 #'
-#' @return Genome fasta file(s). The filename(s) follows the FTP database.
+#' @return Genome fasta file(s) named according to the FTP database convention.
 #'
+#' @importFrom data.table data.table
+#' @importFrom stringi stri_split_regex
+#' 
 #' @export
 downloadNCBIGenomes <- function(asm, species, db, output.dir="./",
                                 split.fasta=FALSE, overwrite=FALSE) {

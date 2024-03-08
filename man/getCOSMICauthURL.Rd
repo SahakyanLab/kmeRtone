@@ -9,12 +9,12 @@ getCOSMICauthURL(email, password, url)
 \arguments{
 \item{email}{Email registered with COSMIC.}
 
-\item{password}{Password.}
+\item{password}{Password associated with the registered email.}
 
-\item{url}{URL given by COSMIC website to access data.}
+\item{url}{Public URL provided by the COSMIC website for data access.}
 }
 \value{
-An authenticated URL, valid for 1 hour access.
+Authenticated URL valid for 1-hour access to COSMIC data.
 }
 \description{
 To access the data for non-commercial usage, you must register with the

@@ -48,9 +48,12 @@
 #' 
 #' @format A data frame with 1001 rows and 3 columns
 #' \describe{
-#'   \item{seqnames}{Chromosome number of the recorded biological event, e.g. DNA strand breaks}
-#'   \item{start}{5' start position of the recorded biological event}
-#'   \item{width}{Sequence width of the recorded biological event, e.g. 2 for a DNA strand break}
+#'      \item{case}{Case k-mers, e.g. damage k-mer counts}
+#'      \item{case_skew}{Case k-mers skews, e.g. skew of the damage k-mers counts}
+#'      \item{control}{control k-mers, e.g. damage k-mer counts}
+#'      \item{control_skew}{control k-mers skews, e.g. skew of the damage k-mers counts}
+#'      \item{kmer}{K-meric sequence}
+#'      \item{z}{Intrinsic susceptibility z-score for each k-mer}
 #' }
 #' @source \url{https://github.com/SahakyanLab/kmeRtone/tree/master/README.md}
 #'

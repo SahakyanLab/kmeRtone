@@ -31,5 +31,8 @@ is random.}
 A data.table of VCF.
 }
 \description{
-Require tabix in PATH
+Function retrieves variant data from gnomAD VCF files using tabix for a
+specified set of genomic regions. It allows users to select the gnomAD
+version and server location (Google, Amazon, or Microsoft) for fetching the
+data.
 }

@@ -7,8 +7,12 @@
 #' reading a bit.
 #'
 #' @param fasta.file A path to a FASTA file.
+#' @param output.dir A path to save the output results. Default is current working directory.
 #'
 #' @return A splitted fasta files by its headers.
+#' 
+#' @importFrom stringi stri_extract_first_regex stri_replace_first_fixed stri_startswith_fixed
+#' @importFrom data.table fwrite
 #'
 #' @export
 splitFASTA <- function(fasta.file, output.dir="./") {

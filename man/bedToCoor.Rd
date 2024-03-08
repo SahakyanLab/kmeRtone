@@ -9,8 +9,10 @@ bedToCoor(bed.path, output.path = "coordinate/", compress = TRUE)
 \arguments{
 \item{bed.path}{A path to a BED file.}
 
-\item{output.path}{Output directory path. It should be empty directory.
+\item{output.path}{Output directory path. It should be an empty directory.
 Default to coordinate/}
+
+\item{compress}{Logical. If TRUE, compress the output CSV files. Default to TRUE.}
 }
 \value{
 None

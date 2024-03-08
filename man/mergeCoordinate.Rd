@@ -6,6 +6,9 @@
 \usage{
 mergeCoordinate(coor)
 }
+\arguments{
+\item{coor}{Coordinate \code{data.table}.}
+}
 \value{
 Merged coordinate \code{data.table}.
 }
@@ -13,9 +16,3 @@ Merged coordinate \code{data.table}.
 Table must have start and end columns. The output is exactly similar to the
 reduce function from GenomicRanges.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{coor}}{Coordinate \code{data.table}.}
-}}
-

@@ -7,14 +7,18 @@
 getNCBIassemblySummary(organism.group, db = "refseq")
 }
 \arguments{
-\item{db}{Database record to use: refseq or genbank}
+\item{organism.group}{A string specifying the taxonomic group for which the
+assembly summary is requested. Options include 'archaea', 'bacteria', 'fungi',
+'invertebrate', 'plant', 'protozoa', 'vertebrate_mammalian', 'vertebrate_other',
+'viral', or 'all'.}
 
-\item{taxonomic.group}{Options are archaea, bacteria, fungi, invertebrate,
-plant, protozoa, vertebrate_mammalian, vertebrate_other, viral, or all.}
+\item{db}{A string specifying the database to use, either 'refseq' or 'genbank'.}
 }
 \value{
-Assembly summary data.table.
+A data.table containing the assembly summary for the specified taxonomic group.
 }
 \description{
-Get NCBI assembly summary.
+Retrieves the assembly summary from NCBI for a specified taxonomic group.
+This function allows users to obtain genome assembly information from either
+RefSeq or GenBank databases for various taxonomic groups.
 }

@@ -6,9 +6,15 @@
 #'         The coor still overlap one base at the terminal. This is done to
 #'         produce exact result as the previous MPhil research.
 #' 
-#' @field coor Coordinate `data.table`.
-#' @field region A `data.table` of region coordinate to be removed.
+#' @param coor Coordinate `data.table`.
+#' @param region A `data.table` of region coordinate to be removed.
+#' 
 #' @return New coordinate `data.table` with the regions removed.
+#' 
+#' @importFrom data.table rbindlist setkeyv .N
+#' @importFrom stringi stri_replace_first_fixed stri_replace_all_regex 
+#'  stri_split_fixed stri_sub stri_locate_first_regex stri_replace_first_regex
+#'  stri_match_all_regex
 #'
 #' @export
 removeRegion <- function(coor, region) {

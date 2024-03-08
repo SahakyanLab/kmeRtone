@@ -3,6 +3,10 @@
 #' NCBI FASTA file contain nucleotide accession number at the headers, followed
 #'    by some information about the sequence whether they are chromosome,
 #'    plasmid, or mictochondria, their assembly status, etc.
+#' 
+#' @importFrom data.table fread fwrite setkeyv setkey
+#' @importFrom stringi stri_length stri_paste stri_locate_all_regex stri_trans_toupper
+#' @importFrom R6 R6Class
 NCBI_Genome <- R6::R6Class(
 
   classname = "NCBI_Genome",

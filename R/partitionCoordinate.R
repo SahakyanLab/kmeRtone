@@ -3,9 +3,11 @@
 #' Table must have start and end columns. The mechanism is similar to the
 #'    disjoin function from GenomicRanges but the end coordinate is different.
 #'
-#' @field coor Coordinate `data.table`.
+#' @param coor Coordinate `data.table`.
 #' @return Partitioned coordinate `data.table`.
-#'
+#' 
+#' @importFrom data.table setorderv
+#' 
 #' @export
 partitionCoordinate <- function(coor) {
 

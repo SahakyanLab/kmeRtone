@@ -7,26 +7,25 @@
 getEnsemblRegionFeatures(species, chromosome, start, end, features)
 }
 \arguments{
-\item{species}{A species name or alias e.g. homo_sapiens, human, etc.}
+\item{species}{Species name or alias (e.g., homo_sapiens, human).}
 
-\item{chromosome}{Ensembl chromosome name. Unlike UCSC, no prefix chr.}
+\item{chromosome}{Chromosome name in Ensembl format (without 'chr' prefix).}
 
-\item{start}{Start position.}
+\item{start}{Start position of the region.}
 
-\item{end}{End position.}
+\item{end}{End position of the region.}
 
-\item{features}{Region features. Options are "band", "gene", "transcript",
-"cds", "exon", "repeat", "simple", "misc", "variation",
-"somatic_variation", "structural_variation",
-"somatic_structural_variation", "constrained", "regulatory", "motif",
-"peak", "other_regulatory", "array_probe", and "mane".}
+\item{features}{List of region features to retrieve from Ensembl. Valid
+options include "band", "gene", "transcript", "cds", "exon", "repeat",
+"simple", "misc", "variation", "somatic_variation",
+"structural_variation", "somatic_structural_variation", "constrained",
+"regulatory", "motif", "peak", "other_regulatory", "array_probe", "mane".}
 }
 \value{
-A \code{data.table} of Ensembl features.
+A \code{data.table} containing the requested Ensembl features.
 }
 \description{
-GET overlap/region/:species/:region?feature=XXX?feature=XXXX?....
-}
-\details{
-somatic_variation is from COSMIC
+Function fetches various genomic features for a specified region from the
+Ensembl database. It allows specifying the species, chromosome, region range,
+and types of features to query.
 }

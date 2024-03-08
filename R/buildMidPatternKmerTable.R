@@ -8,6 +8,8 @@
 #' @param mid.patterns Middle patterns.
 #' @param remove.N Remove unknown base? Default is TRUE.
 #' @return A `data.table` object with column kmer and N.
+#' 
+#' @importFrom data.table setorder
 #'
 #' @export
 buildMidPatternKmerTable <- function(dna.seqs, k, mid.patterns, remove.N=TRUE) {

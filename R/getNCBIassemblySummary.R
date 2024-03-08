@@ -1,11 +1,20 @@
 #' Get NCBI assembly summary.
 #'
-#' @param db Database record to use: refseq or genbank
-#' @param taxonomic.group Options are archaea, bacteria, fungi, invertebrate,
-#'    plant, protozoa, vertebrate_mammalian, vertebrate_other, viral, or all.
+#' Retrieves the assembly summary from NCBI for a specified taxonomic group.
+#' This function allows users to obtain genome assembly information from either
+#' RefSeq or GenBank databases for various taxonomic groups.
 #'
-#' @return Assembly summary data.table.
+#' @param organism.group A string specifying the taxonomic group for which the 
+#'    assembly summary is requested. Options include 'archaea', 'bacteria', 'fungi', 
+#'    'invertebrate', 'plant', 'protozoa', 'vertebrate_mammalian', 'vertebrate_other', 
+#'    'viral', or 'all'.
+#' @param db A string specifying the database to use, either 'refseq' or 'genbank'.
 #'
+#' @return A data.table containing the assembly summary for the specified taxonomic group.
+#'
+#' @importFrom data.table fread set setnames
+#' @importFrom stringi stri_trans_tolower
+#' 
 #' @export
 getNCBIassemblySummary <- function(organism.group, db = "refseq") {
 

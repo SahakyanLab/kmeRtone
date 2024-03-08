@@ -2,11 +2,14 @@
 % Please edit documentation in R/Coordinate.R
 \name{Coordinate}
 \alias{Coordinate}
-\title{Class constructor - build Coordinate object}
+\title{Function constructs an R6 object for handling coordinate data.
+The object includes methods for loading, manipulating, and analyzing coordinate data.}
 \description{
-Class constructor - build Coordinate object
+Function constructs an R6 object for handling coordinate data.
+The object includes methods for loading, manipulating, and analyzing coordinate data.
 
-Class constructor - build Coordinate object
+Function constructs an R6 object for handling coordinate data.
+The object includes methods for loading, manipulating, and analyzing coordinate data.
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

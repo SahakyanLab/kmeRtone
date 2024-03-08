@@ -1,3 +1,13 @@
+#' Function calculates scores for k-mers based on case and control k-mer counts.
+#' 
+#' @param case.kmers A data.table containing k-mer counts in case samples.
+#' @param control.kmers A data.table containing k-mer counts in control samples.
+#' 
+#' @return A data.table containing scores for each k-mer.
+#' 
+#' @importFrom data.table set setcolorder setkeyv setnames
+#' 
+#' @export
 getScores <- function(case.kmers, control.kmers) {
   
   # Calculate k-mer skew

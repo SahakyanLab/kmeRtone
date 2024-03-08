@@ -43,6 +43,10 @@ Default is FALSE.}
 
 \item{k}{Length of k-mer relevant only when is.kmer is TRUE.}
 
+\item{ori.first.index}{Indexing format of the coordinate:
+0 for zero-based (start, end) and 1 for one-based (start, end).
+Default is 1.}
+
 \item{load.limit}{Maximum number of coordinate data.table loaded on RAM.
 Default is 1.}
 }
@@ -51,15 +55,6 @@ Coordinate object.
 }
 \description{
 The Coordinate object is capable of loading genomic coordinates on demand.
-Chromosome-specific coordinates can be called in a bracket
-e.g. coor\link{"chr1"} or coor\link{c("chr1", "chr2")}. The coordinates can also
-be expanded to k-mer size equally on both flanks
-e.g. coor\link{"chr1", state = "kmer", k = 9}
-}
-\examples{
-coor <- loadCoordinate(...)
-coor["chr1"]
-coor[c("chr1", "chr2")]
-coor["chr1", state = "kmer", k = 8]
-
+Chromosome-specific coordinates can be called in a bracket.
+The coordinates can also be expanded to k-mer size equally on both flanks
 }

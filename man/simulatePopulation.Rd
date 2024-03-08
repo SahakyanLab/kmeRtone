@@ -19,6 +19,10 @@ simulatePopulation(
 \arguments{
 \item{chrom_seq}{A chromosome sequence.}
 
+\item{starts}{Start positions.}
+
+\item{ends}{End positions.}
+
 \item{strand}{Strand type: "+" or "-".}
 
 \item{snv_df}{A table of SNV frequency. Columns: position, base, count.}
@@ -30,10 +34,6 @@ simulatePopulation(
 \item{central_pattern}{K-mer central pattern.}
 
 \item{k}{K-mer size.}
-
-\item{start}{Start positions.}
-
-\item{end}{End positions.}
 }
 \value{
 A count matrix with 4 rows for total top k-mers and susceptible
@@ -41,5 +41,5 @@ k-mers in sense and antisense. Columns correspond to population
 individuals.
 }
 \description{
-This is internal function - not exported.
+Simulate a population given ranges of chromosome sequence to mutate.
 }

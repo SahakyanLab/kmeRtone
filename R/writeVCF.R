@@ -8,6 +8,8 @@
 #' @param append To append or not? Default is FALSE.
 #' @param tabix To tabix or not? Default is FALSE.
 #'
+#' @importFrom data.table set setorder fwrite setalloccol
+#' @importFrom stringi stri_paste stri_sub_replace stri_split_fixed stri_extract_first_regex stri_replace_first_fixed stri_replace_all_regex
 #'
 #' @export
 writeVCF <- function(vcf, output.vcf.gz, append=FALSE, tabix=FALSE) {

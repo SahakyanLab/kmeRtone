@@ -8,6 +8,8 @@ splitFASTA(fasta.file, output.dir = "./")
 }
 \arguments{
 \item{fasta.file}{A path to a FASTA file.}
+
+\item{output.dir}{A path to save the output results. Default is current working directory.}
 }
 \value{
 A splitted fasta files by its headers.

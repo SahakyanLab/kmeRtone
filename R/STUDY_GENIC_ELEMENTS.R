@@ -11,6 +11,12 @@
 #'
 #' @return An output directory containing plots.
 #'
+#' @importFrom data.table fread fwrite setorder setnames rbindlist
+#' @importFrom stringi stri_sub stri_count_regex stri_length stri_paste stri_sub_replace_all stri_replace_all_regex stri_split_fixed
+#' @importFrom Biostrings reverseComplement
+#' @importFrom graphics layout boxplot plot points legend arrows axis mtext barplot
+#' @importFrom grDevices pdf
+#' 
 #' @export
 STUDY_GENIC_ELEMENTS <- function(kmer.table, kmer.cutoff=5, k,
                                  genome.name="hg38", central.pattern=NULL,

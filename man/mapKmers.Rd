@@ -2,32 +2,33 @@
 % Please edit documentation in R/mapKmers.R
 \name{mapKmers}
 \alias{mapKmers}
-\title{Map k-mers of a given sequence and coordinate.}
+\title{Map k-mers of a given sequence and coordinate}
 \usage{
 mapKmers(seq, start, end = NULL, len = NULL, k, rm.trunc.kmer = TRUE)
 }
+\arguments{
+\item{seq}{A single sequence string in which k-mers are to be mapped.}
+
+\item{start}{A vector of start coordinates for mapping k-mers.
+If only start positions are provided, exact k-mer extraction is performed.}
+
+\item{end}{A vector of end coordinates corresponding to the start positions.
+If NULL, all regions are assumed to have the same length.
+Used for varied region lengths to perform a sliding window.}
+
+\item{len}{An integer specifying the fixed length of regions.
+Used when regions have a uniform length greater than k.
+End coordinates are assumed NULL in this case.}
+
+\item{k}{An integer specifying the length of k-mers to be mapped.}
+
+\item{rm.trunc.kmer}{Logical indicating whether to remove truncated k-mers
+resulting from out-of-bound regions. Default is TRUE.}
+}
 \value{
-Mapped k-mers.
+A vector of mapped k-mers.
 }
 \description{
-Map k-mers of a given sequence and coordinate.
+This function maps k-mers within a specified sequence based on provided start
+and end coordinates, or based on a fixed length.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{seq}}{A single sequence string.}
-
-\item{\code{start}}{A single of vector of start coordinates where k-mers are mapped.}
-
-\item{\code{end}}{A single of vector of end coordinates where k-mers are mapped. It
-is NULL when all regions have the same length.}
-
-\item{\code{len}}{A single integer for specifying fixed length of regions. The end
-is NULL in this case.}
-
-\item{\code{k}}{Length of k-mer to be mapped.}
-
-\item{\code{rm.trunc.kmer}}{Remove truncated k-mers as a result of out-of-bound
-region. Default is TRUE.}
-}}
-

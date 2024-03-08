@@ -3,11 +3,12 @@
 #' It operates in two mode: coordinate table with and without chromosome. The
 #'    former require `Genome` for the chromosomal sequence length.
 #'
-#' @field coor Coordinate `data.table`.
-#' @field seq.len Sequence length to trim end position.
-#' @field genome `Genome` class object.
+#' @param coor Coordinate `data.table`.
+#' @param seq.len Sequence length to trim end position.
+#' @param genome `Genome` class object.
+#' 
 #' @return Trimmed coordinate `data.table`.
-#'
+#' 
 #' @export
 trimCoordinate <- function(coor, seq.len, genome) {
 

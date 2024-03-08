@@ -4,17 +4,23 @@
 #' Error is handled based on their rule as set out at
 #' https://github.com/Ensembl/ensembl-rest/wiki/HTTP-Response-Codes
 #' 
-#' @param url Pre-built Ensembl REST URL.
-#' @param handle Curl handle object.
-#' @param max.attempt Maximum number of attempt. Default to 5.
-#' @return A parsed json data. Could be data.frame or list of lists.
+#' @param url Pre-built Ensembl REST API URL.
+#' @param handle `curl` handle object configured for the Ensembl REST API.
+#' @param max.attempt Maximum number of attempts to fetch the data, default is 5.
+#'
+#' @return Parsed JSON data, which could be in the form of a data.frame or
+#'         a list of lists, depending on the API response.
+#'
+#' @importFrom jsonlite fromJSON
+#' @importFrom curl curl_fetch_memory parse_headers_list
 #' 
+#' @export
 getEnsemblData <- function(url, handle, max.attempt=5) {
   
   attempt.no <- 1
   while (TRUE) {
     
-    response <<- curl::curl_fetch_memory(url, handle)
+    response <- curl::curl_fetch_memory(url, handle)
     
     if (response$status_code == 200) {
       

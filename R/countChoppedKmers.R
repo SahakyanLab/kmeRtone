@@ -1,4 +1,6 @@
-#' Chop k-mers in given ranges of a sequence.
+#' Function chops k-mers within specified ranges of a sequence and counts 
+#' them. It uses either a substring method or functionalities from the 
+#' Biostrings package.
 #' 
 #' @param dna.seq A string of sequence.
 #' @param starts Start positions.
@@ -7,6 +9,9 @@
 #' @param method Method: "Biostrings" or "substring". Default is Biostrings.
 #' @return A k-mer-named vector of counts.
 #'
+#' @importFrom stringi stri_sub
+#' @importFrom Biostrings DNAStringSet oligonucleotideFrequency
+#' 
 #' @export
 countChoppedKmers <- function(dna.seq, starts, ends, k, method="auto") {
   

@@ -16,28 +16,29 @@ getEnsemblVariantFeatures(
 )
 }
 \arguments{
-\item{species}{Species name or alias e.g. homo_sapiens, human, etc.}
+\item{species}{Species name or alias (e.g., homo_sapiens, human).}
 
-\item{variant.ids}{A vector of variant IDs. e.g. rs56116432, COSM476, etc.}
+\item{variant.ids}{A vector of variant IDs (e.g., rs56116432, COSM476).}
 
-\item{include.genotypes}{Include genotypes? Default is FALSE.}
+\item{include.genotypes}{Include genotypes in the response? Default FALSE.}
 
-\item{include.phenotypes}{Include phenotypes? Default is FALSE.}
+\item{include.phenotypes}{Include phenotypes in the response? Default FALSE.}
 
-\item{include.allele.frequencies}{Include allele frequencies? Default is
-FALSE.}
+\item{include.allele.frequencies}{Include allele frequencies? Default FALSE.}
 
-\item{include.genotype.frequencies}{Include genotype frequencies? Default is
-FALSE.}
+\item{include.genotype.frequencies}{Include genotype frequencies? Default FALSE.}
 
-\item{curl.max.con}{Curl max connection. Default is 100.}
+\item{curl.max.con}{Maximum number of concurrent connections for curl requests.
+Default is 100.}
 
-\item{verbose}{Option: 1 for showing error only and 2 for showing every
-request number made. Default is 1.}
+\item{verbose}{Verbosity level: 1 for error only, 2 for all requests. Default 1.}
 }
 \value{
-A variant-named list of list of variation features.
+A variant-named list containing lists of variant features.
 }
 \description{
-POST variation/:species
+Function retrieves features for given variant IDs from the Ensembl
+database. It handles requests asynchronously in batches due to server limits
+and includes options to fetch additional variant information. Error handling
+for different HTTP response statuses is implemented to manage request failures.
 }

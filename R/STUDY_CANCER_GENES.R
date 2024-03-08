@@ -17,6 +17,14 @@
 #'
 #' @return An output directory containing plots.
 #'
+#' @importFrom data.table fread fwrite setorder setnames rbindlist
+#' @importFrom stringi stri_sub stri_count_regex stri_length stri_paste stri_sub_replace_all stri_replace_all_regex stri_split_fixed
+#' @importFrom Biostrings reverseComplement
+#' @importFrom graphics layout boxplot plot points legend arrows axis mtext barplot abline box grconvertX grconvertY
+#'    matlines matplot polygon rasterImage rect text title
+#' @importFrom grDevices pdf png
+#' @importFrom stats C end median runif sd start wilcox.test
+#' 
 #' @export
 STUDY_CANCER_GENES <- function(cosmic.username, cosmic.password,
                                tumour.type.regex=NULL, tumour.type.exact=NULL,

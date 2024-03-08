@@ -2,18 +2,29 @@
 % Please edit documentation in R/getUCSCgenePredTable.R
 \name{getUCSCgenePredTable}
 \alias{getUCSCgenePredTable}
-\title{Study k-mer composition across species.}
+\title{Retrieve Gene Prediction Table from UCSC for a Given Genome}
 \usage{
 getUCSCgenePredTable(genome.name, db)
 }
 \arguments{
-\item{db}{Database used by UCSC to generate the table: "refseq" or "gencode"}
+\item{genome.name}{A string specifying the UCSC genome name for which the gene
+prediction table is to be retrieved, e.g., 'hg38', 'mm39'.}
 
-\item{UCSC.genome.name}{UCSC genome name e.g. hg38 and mm39.}
+\item{db}{A string specifying the database used by UCSC to generate the table.
+Options are 'refseq' or 'gencode'.}
 }
 \value{
-genepred \code{data.table}.
+A \code{data.table} containing the gene prediction table from the specified
+UCSC genome and database.
 }
 \description{
-Study k-mer composition across species.
+This function retrieves the gene prediction table from the UCSC genome database
+for a specified genome. It can fetch data from either the RefSeq or GENCODE databases.
+}
+\examples{
+\dontrun{
+   Example usage:
+   Retrieve the RefSeq gene prediction table for the human genome (hg38)
+   genePredTable <- getUCSCgenePredTable(genome.name = "hg38", db = "refseq")
+ }
 }

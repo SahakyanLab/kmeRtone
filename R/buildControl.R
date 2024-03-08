@@ -1,12 +1,17 @@
 #' Build control regions
 #'
-#' @field case Case in Coordinate class object format.
-#' @field ctrl.rel.pos Control reltive position.
-#' @field genome Genome class object.
-#' @field output.path Output directory path to save control coordinate.
+#' @param case Case in Coordinate class object format.
+#' @param ctrl.rel.pos Control relative position.
+#' @param genome Genome class object.
+#' @param output.path Output directory path to save control coordinate.
+#' @param verbose Boolean. Default is TRUE and will print progress updates. 
 #'
 #' @return Control in Coordinate class object format.
 #'
+#' @importFrom data.table fwrite
+#' @importFrom future nbrOfWorkers
+#' @importFrom progressr progressor
+#' 
 #' @export
 buildControl <- function(case, ctrl.rel.pos, genome, output.path="control/",
                          verbose=TRUE) {

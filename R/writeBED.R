@@ -3,8 +3,10 @@
 #' @param bed A BED `data.table`.
 #' @param output.filename An output BED filename.
 #'
+#' @importFrom data.table set fwrite setcolorder
+#' 
 #' @export
-readBED <- function(bed, output.filename) {
+writeBED <- function(bed, output.filename) {
 
   # By convention, these are BedFile columns in a strict order.
   bed.cols <- c("chrom", "chromStart", "chromEnd", "name", "score",

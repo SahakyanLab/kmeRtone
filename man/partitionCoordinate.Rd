@@ -6,6 +6,9 @@
 \usage{
 partitionCoordinate(coor)
 }
+\arguments{
+\item{coor}{Coordinate \code{data.table}.}
+}
 \value{
 Partitioned coordinate \code{data.table}.
 }
@@ -13,9 +16,3 @@ Partitioned coordinate \code{data.table}.
 Table must have start and end columns. The mechanism is similar to the
 disjoin function from GenomicRanges but the end coordinate is different.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{coor}}{Coordinate \code{data.table}.}
-}}
-

@@ -1,10 +1,13 @@
 #' Convert a BED file to chromosome-separated csv files.
 #'
 #' @param bed.path A path to a BED file.
-#' @param output.path Output directory path. It should be empty directory.
+#' @param output.path Output directory path. It should be an empty directory.
 #'     Default to coordinate/
-#'
+#' @param compress Logical. If TRUE, compress the output CSV files. Default to TRUE.
 #' @return None
+#'
+#' @importFrom data.table fread setnames fwrite data.table
+#' @importFrom utils count.fields
 #'
 #' @export
 bedToCoor <- function(bed.path, output.path="coordinate/", compress = TRUE) {
@@ -27,7 +30,7 @@ bedToCoor <- function(bed.path, output.path="coordinate/", compress = TRUE) {
 
   for (skip.len in skip.lens) {
 
-    bed <- fread(bed.path, skip = skip.len, nrow = lim, showProgress = FALSE)
+    bed <- fread(bed.path, skip = skip.len, nrows = lim, showProgress = FALSE)
     setnames(bed, names(bed), bed.cols[1:ncol(bed)])
     bed[, chromStart := chromStart + 1]
 

@@ -9,6 +9,9 @@
 #'    Default is "auto"; For k > 8, sliding method is used.
 #' @return A `data.table` object with column kmer and N.
 #'
+#' @importFrom Biostrings oligonucleotideFrequency DNAStringSet
+#' @importFrom data.table setorder
+#' 
 #' @export
 buildKmerTable <- function(dna.seqs, k, method="auto", remove.N=TRUE) {
   

@@ -3,7 +3,7 @@
 #' @param fasta.file A path to a FASTA file.
 #'
 #' @return A sequence vector with header names
-#'
+#' 
 #' @export
 readFASTA <- function(fasta.file) {
   # Read fasta files and return sequence named with its header. Multiple headers

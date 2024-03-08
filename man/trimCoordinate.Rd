@@ -6,6 +6,13 @@
 \usage{
 trimCoordinate(coor, seq.len, genome)
 }
+\arguments{
+\item{coor}{Coordinate \code{data.table}.}
+
+\item{seq.len}{Sequence length to trim end position.}
+
+\item{genome}{\code{Genome} class object.}
+}
 \value{
 Trimmed coordinate \code{data.table}.
 }
@@ -13,13 +20,3 @@ Trimmed coordinate \code{data.table}.
 It operates in two mode: coordinate table with and without chromosome. The
 former require \code{Genome} for the chromosomal sequence length.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{coor}}{Coordinate \code{data.table}.}
-
-\item{\code{seq.len}}{Sequence length to trim end position.}
-
-\item{\code{genome}}{\code{Genome} class object.}
-}}
-

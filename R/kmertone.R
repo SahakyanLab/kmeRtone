@@ -1,92 +1,72 @@
 #' kmeRtone all-in-one user interface
 #'
-#' @field case.coor.path A path to a folder containing either (1) chromosome-
-#'      separated coordinate files (assume replicates for subfolder) or (2)
-#'      bedfile. (assume replicates for bedfiles).
-#' @field genome.name Name of genome. kmeRtone include UCSC genome e.g. "hg19"
-#'      and "hg38". Default is "unknown".
-#' @field strand.sensitive Does strand polarity matters? Default is TRUE. In
-#'      sensitive strand, case k-mers are extracted from the sense strand only.
-#'      In contrast, in insensitive strand, the case k-mers are extracted from
-#'      both strands.
-#' @field k Length of k-mer to be investigated. Recommended is 7 or 8.
-#' @field ctrl.rel.pos A relative range position of control regions. For example
-#'      c(80,500) means control regions are 80-500 bases away from the the case
-#'      site (upstream and downstream).
-#' @field case.pattern Case pattern(s). Default is NULL for no pattern. Only
-#'      applicable to module other than study_cancer_genes.
-#' @field output.dir An output directory name. Default is output/.
-#' @field case Optional pre-built Coordinate object. Option for
-#'      strand.sensitive and single.case.len will be ignored.
-#' @field genome Optional pre-built Genome object. Option genome.name and
-#'      genome.path will be ignored.
-#' @field control Optional pre-built control Coordinate object. Option
-#'      ctrl.rel.pos will be ignored.
-#' @field control.path A path for pre-built control Coordinate object. Option
-#'      ctrl.rel.pos will be ignored.
-#' @field genome.path A path to a directory of user own genome. The directory
-#'      must contain chromosome-separated fasta files. The name of the fasta
-#'      files must be similar to chromosome name in the coordinate table.
-#' @field rm.case.kmer.overlaps Remove overlapping case k-mers? This is useful
-#'      to completely obliterate potential neighboring effects.
-#' @field single.case.len If the case is in uniform length, only start positions
-#'      are considered. This is to remove redundancy of the coordinates and
-#'      reduce memory usage.
-#' @field merge.replicates Merge the replicates if exist? Merging will remove
-#'      all duplicate positions from multiple replicates, resulting in a single
-#'      unique individual point. Not merging replicate will result in weighted
-#'      k-mer counts. Default is TRUE.
-#' @field kmer.table K-mer table with pre-calculated scores. It can be directly
-#'      used in other kmeRtone module.
-#' @field module kmeRtone module. Options are: "score" (calculate z-score),
-#'      "explore" (perform exploratory analysis), "tune" (find the best length
-#'      of k-mer to be used).
-#' @field rm.dup Remove duplicate coordinate? Remove duplicates within replicate
-#'      e.g. sequencing read duplicates. Default is TRUE.
-#' @field case.coor.1st.idx Case coordinate indexing format whether
-#'      zero-based [start, end) or one-based [start, end]. Default is 1.
-#' @field ctrl.coor.1st.idx Control coordinate indexing format whether
-#'      zero-based [start, end) or one-based [start, end]. Default is 1.
-#' @field coor.load.limit Maximum loaded chromosome coordinate data. Default is
-#'      1.
-#' @field genome.load.limit Maximum loaded chromosome sequence data. Default is
-#'      1.
-#' @field genome.fasta.style Genome FASTA style: "UCSC" or "NCBI". Default
-#'      is "UCSC"
-#' @field genome.ncbi.db For NCBI Genome, select database to use: "refseq" or
-#'      "genbank". Default is "refseq".
-#' @field use.UCSC.chr.name For NCBI Genome, use UCSC chromosome name?
-#' @field verbose Print message? Default is TRUE.
-#' @field kmer.cutoff Percent kmer cutoff for the case studies. Default is 5.
-#' @field selected.extremophiles A vector of selected extremophile species. e.g.
-#'    c("Deinococcus soli", "Deinococcus deserti")
-#'    The best representative will be selected from the assembly summary.
-#' @field other.extremophiles A vector of other extremophile species. These are
-#'    used as a control to compare with the selected extremophiles.
-#' @field cosmic.username COSMIC username (email). This is used to get cancer
-#'    gene census.
-#' @field cosmic.password COSMIC password.
-#' @field tumour.type.regex Tumour-type regular expression to filter the cancer
-#'    gene census table.
-#' @field tumour.type.exact Exact tumour type to be included in the cancer gene
-#'    census table.
-#' @field cell.type Cell type to be included in the cancer gene census table.
-#'    Default is somatic cell.
-#' @field genic.elements.counts.dt Counts of susceptible k-mers in the genic
-#'    elements, generated from STUDY_GENIC_ELEMENTS.
-#' @field population.size Size of population in STUDY_ACROSS_POPULATION. Default
-#'    is 1 million.
-#' @field selected.genes Selected genes to be mutated based on SNVs in
-#'    STUDY_ACROSS_POPULATION.
-#' @field add.to.existing.population STUDY_ACROSS_POPULATION can be run multiple
-#'    times to add to the existing simulated individuals. Default is FALSE to
-#'    overwrite.
-#' @field population.snv.dt SNVs used in the population simulation.
-#' @field pop.plot To plot the outcome of STUDY_ACROSS_POPULATION. Default is
-#'    TRUE.
-#' @field pop.loop.chr In STUDY_ACROSS_POPULATION, should the operation loop
-#'    based on chromosome name? Default is FALSE.
-
+#' @description
+#' This function serves as an all-in-one interface for various genomic data analyses
+#' leveraging k-mer based techniques.
+#'
+#' @param case.coor.path Path to a folder containing chromosome-separated coordinate
+#'        files or bedfiles. Assumed replicates for subfolder or bedfiles.
+#' @param genome.name Name of the genome (e.g., "hg19", "hg38"). Default is "unknown".
+#' @param strand.sensitive Logical value indicating whether strand polarity matters. 
+#'        Default is TRUE.
+#' @param k Length of k-mer to be investigated. Recommended values are 7 or 8.
+#' @param ctrl.rel.pos A vector of two integers specifying the relative range positions 
+#'        of control regions.
+#' @param case.pattern Regular expression pattern for identifying case regions.
+#'        Default is NULL.
+#' @param output.dir Directory path for saving output files. Default is "output/".
+#' @param case Optional pre-built Coordinate object.
+#' @param genome Optional pre-built Genome object.
+#' @param control Optional pre-built control Coordinate object.
+#' @param control.path Path for pre-built control Coordinate object.
+#' @param genome.path Path to a directory of user-provided genome FASTA files.
+#' @param rm.case.kmer.overlaps Logical indicating whether to remove overlapping 
+#'        k-mers in case regions. Default is FALSE.
+#' @param single.case.len Integer indicating uniform length of case regions.
+#' @param merge.replicates Logical indicating whether to merge replicates. 
+#'        Default is TRUE.
+#' @param kmer.table Pre-calculated k-mer score table.
+#' @param module Selected kmeRtone module to run. Possible values include "score", 
+#'        "explore", "tune", among others.
+#' @param rm.dup Logical indicating whether to remove duplicate coordinates.
+#'        Default is TRUE.
+#' @param case.coor.1st.idx Integer specifying indexing format for case coordinates.
+#' @param ctrl.coor.1st.idx Integer specifying indexing format for control coordinates.
+#' @param coor.load.limit Maximum number of coordinates to load. Default is 1.
+#' @param genome.load.limit Maximum number of genome sequences to load. Default is 1.
+#' @param genome.fasta.style String specifying the style of the genome FASTA. 
+#'        Possible values are "UCSC", "NCBI". Default is "UCSC".
+#' @param genome.ncbi.db String specifying the NCBI database to use. Possible values
+#'        are "refseq", "genbank". Default is "refseq".
+#' @param use.UCSC.chr.name Logical indicating whether to use UCSC chromosome names.
+#' @param verbose Logical indicating whether to display progress messages.
+#'        Default is TRUE.
+#' @param kmer.cutoff Cutoff percentage for k-mer selection in case studies.
+#'        Default is 5.
+#' @param selected.extremophiles Vector of selected extremophile species for study.
+#' @param other.extremophiles Vector of other extremophile species for control.
+#' @param cosmic.username COSMIC username for accessing the cancer gene census.
+#' @param cosmic.password COSMIC password for accessing the cancer gene census.
+#' @param tumour.type.regex Regular expression pattern for filtering tumour types.
+#' @param tumour.type.exact Exact tumour type to be included in the cancer gene census.
+#' @param cell.type Cell type to be included in the cancer gene census. Default is
+#'        "somatic".
+#' @param genic.elements.counts.dt Data table of susceptible k-mer counts in genic
+#'        elements.
+#' @param population.size Size of the population for cross-population studies. 
+#'        Default is 1 million.
+#' @param selected.genes Selected genes for mutation in cross-population studies.
+#' @param add.to.existing.population Logical indicating whether to add to the existing
+#'        simulated population. Default is FALSE.
+#' @param population.snv.dt Data table of single nucleotide variants used in 
+#'        population simulations.
+#' @param pop.plot Logical indicating whether to plot the outcome of the cross-population
+#'        study. Default is TRUE.
+#' @param pop.loop.chr Logical indicating whether to loop based on chromosome name 
+#'        in cross-population studies. Default is FALSE.
+#'
+#' @return Depends on the selected module.
+#'
 #' @export
 kmeRtone <- function(case.coor.path, genome.name, strand.sensitive, k,
                      ctrl.rel.pos=c(80, 500), case.pattern,

@@ -2,21 +2,29 @@
 % Please edit documentation in R/RcppExports.R
 \name{countMidPatternKmers}
 \alias{countMidPatternKmers}
-\title{Count relavent k-mers with specified middle pattern from sequence string(s)
-using a simple hash table.}
+\title{Count Relevant K-mers with Specified Middle Pattern from Sequence String(s)}
 \usage{
 countMidPatternKmers(sequences, k, mid_pattern)
 }
 \arguments{
-\item{k}{K-mer size.}
+\item{sequences}{A vector of strings, each representing a sequence to be analyzed.}
 
-\item{mid_pattern}{A middle pattern to search for.}
+\item{k}{An integer specifying the size of the k-mers to be extracted and counted.}
 
-\item{sequence}{A sequence to slide.}
+\item{mid_pattern}{A string representing the middle pattern to search for within each sequence.}
 }
 \value{
-A k-mer-named vector of count.
+A std::unordered_map with k-mers as keys and their counts as values.
 }
 \description{
-Locate a middle sequence pattern and register and count k-mer.
+This function scans through each sequence in the provided vector, locating a specified middle pattern.
+For each occurrence of the middle pattern, the function extracts and counts the surrounding k-mers.
+The k-mers are identified based on the given k-mer size and centered around the middle pattern.
+}
+\examples{
+sequences <- c("ATCGATCGA", "GCGCATGCA")
+k <- 5
+mid_pattern <- "CG"
+countMidPatternKmers(sequences, k, mid_pattern)
+
 }

@@ -1,17 +1,25 @@
-#' Map k-mers of a given sequence and coordinate.
+#' Map k-mers of a given sequence and coordinate
+#'
+#' This function maps k-mers within a specified sequence based on provided start 
+#' and end coordinates, or based on a fixed length.
+#'
+#' @param seq A single sequence string in which k-mers are to be mapped.
+#' @param start A vector of start coordinates for mapping k-mers. 
+#'        If only start positions are provided, exact k-mer extraction is performed.
+#' @param end A vector of end coordinates corresponding to the start positions. 
+#'        If NULL, all regions are assumed to have the same length. 
+#'        Used for varied region lengths to perform a sliding window.
+#' @param len An integer specifying the fixed length of regions. 
+#'        Used when regions have a uniform length greater than k. 
+#'        End coordinates are assumed NULL in this case.
+#' @param k An integer specifying the length of k-mers to be mapped.
+#' @param rm.trunc.kmer Logical indicating whether to remove truncated k-mers 
+#'        resulting from out-of-bound regions. Default is TRUE.
+#'
+#' @return A vector of mapped k-mers.
 #' 
-#' @field seq A single sequence string.
-#' @field start A single of vector of start coordinates where k-mers are mapped.
-#' @field end A single of vector of end coordinates where k-mers are mapped. It
-#'      is NULL when all regions have the same length.
-#' @field len A single integer for specifying fixed length of regions. The end
-#'      is NULL in this case.
-#' @field k Length of k-mer to be mapped.
-#' @field rm.trunc.kmer Remove truncated k-mers as a result of out-of-bound
-#'      region. Default is TRUE.
-#'
-#' @return Mapped k-mers.
-#'
+#' @importFrom stringi stri_sub stri_length
+#' 
 #' @export
 mapKmers <- function(seq, start, end=NULL, len=NULL, k, rm.trunc.kmer=TRUE) {
   

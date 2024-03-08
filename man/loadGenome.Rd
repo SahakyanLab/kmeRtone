@@ -23,6 +23,8 @@ kmeRtone. Input their name e.g. hg19 or GRCh37.}
 
 \item{mask}{Genome mask: "none", "soft", or "hard". Default is "none".}
 
+\item{fasta.path}{Path to the fasta file as a character vector.}
+
 \item{ncbi.db}{NCBI database: "refseq" or "genbank".}
 
 \item{ncbi.asm}{NCBI assembly table.}
@@ -31,9 +33,6 @@ kmeRtone. Input their name e.g. hg19 or GRCh37.}
 is FALSE.}
 
 \item{load.limit}{Maximum chromosome sequences loaded. Default is 1.}
-
-\item{root.path}{A path to a directory containing chromosome-separated
-fasta files.}
 }
 \value{
 A \code{UCSC_Genome} or \code{NCBI_Genome} object.
@@ -44,8 +43,9 @@ UCSC Genomes are included in this kmeRtone package. Their specific
 chromosome sequence will be downloaded on demand once.
 }
 \examples{
-genome <- loadGenome(...)
-genome["chr1"]
-genome[c("chr1", "chr2")]
-
+\dontrun{
+   genome <- loadGenome(...)
+   genome["chr1"]
+   genome[c("chr1", "chr2")]
+ }
 }

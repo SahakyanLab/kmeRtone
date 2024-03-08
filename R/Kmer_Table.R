@@ -4,6 +4,10 @@
 #'      to it. A temporary fix until data.table developer develop update row
 #'      by reference.
 #' 
+#' @importFrom data.table setkey setnames 
+#' @importFrom stringi stri_detect_fixed stri_length
+#'
+#' @export
 Kmer_Table <- R6::R6Class(
   
   classname = "Kmer_Table",

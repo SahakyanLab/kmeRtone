@@ -9,7 +9,7 @@ splitFASTA2(file_path, output_dir)
 \arguments{
 \item{file_path}{A path to FASTA file.}
 
-\item{unmask}{Capitalize all base letters?}
+\item{output_dir}{A path to save the output results.}
 }
 \value{
 A single sequence string without header.

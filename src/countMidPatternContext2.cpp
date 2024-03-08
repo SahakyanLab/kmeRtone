@@ -4,11 +4,24 @@ using namespace Rcpp;
 // [[Rcpp::plugins(cpp11)]]
 //' Locate a middle sequence pattern and count its sequence context.
 //'
-//' @param sequence A sequence to slide.
-//' @param mid_pattern A middle pattern to search for.
-//' @param window Size of a surrounding window.
-//' @param context_pattern A context pattern to search for.
-//' @return A numeric named vector of frequencies with counts as their names.
+//' This function searches for a specified middle pattern within a given sequence. 
+//' It then counts the occurrences of specific context patterns within a defined window
+//' size around the middle pattern. The function returns a map where keys are the 
+//' counts of context patterns found and values are the frequencies of these counts.
+//'
+//' @param sequence A string representing the sequence to be analyzed.
+//' @param mid_pattern A string representing the middle pattern to search for within the sequence.
+//' @param window An integer specifying the size of the surrounding window around the middle pattern.
+//' @param context_patterns A vector of strings representing the context patterns to search for within the window.
+//' @return A std::unordered_map<int,int> where keys are the counts of context patterns found 
+//'         and values are the frequencies of these counts.
+//'
+//' @examples
+//' sequence <- "ATCGATCGA"
+//' mid_pattern <- "CG"
+//' window <- 5
+//' context_patterns <- c("AT", "GA")
+//' countMidPatternContext2(sequence, mid_pattern, window, context_patterns)
 //'
 //' @export
 // [[Rcpp::export]]

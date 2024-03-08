@@ -6,6 +6,9 @@
 #'
 #' @param asm NCBI assembly summary.
 #' @return Trimmed NCBI assembly summary.
+#' 
+#' @importFrom data.table setorder set
+#' 
 #' @export
 selectRepresentativeFromASM <- function(asm) {
 

@@ -12,21 +12,20 @@ buildControl(
   verbose = TRUE
 )
 }
+\arguments{
+\item{case}{Case in Coordinate class object format.}
+
+\item{ctrl.rel.pos}{Control relative position.}
+
+\item{genome}{Genome class object.}
+
+\item{output.path}{Output directory path to save control coordinate.}
+
+\item{verbose}{Boolean. Default is TRUE and will print progress updates.}
+}
 \value{
 Control in Coordinate class object format.
 }
 \description{
 Build control regions
 }
-\section{Fields}{
-
-\describe{
-\item{\code{case}}{Case in Coordinate class object format.}
-
-\item{\code{ctrl.rel.pos}}{Control reltive position.}
-
-\item{\code{genome}}{Genome class object.}
-
-\item{\code{output.path}}{Output directory path to save control coordinate.}
-}}
-

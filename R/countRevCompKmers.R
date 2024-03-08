@@ -1,5 +1,4 @@
-#' Count reverse complement sequence from its opposite strand
-#'
+#' Count reverse complement sequence from its opposite strand.
 #' Build for k-mer table generated from initKmerTable function but applicable to
 #' others with the same format.
 #'
@@ -9,6 +8,10 @@
 #'
 #' @return Updated k-mer table.
 #'
+#' @importFrom data.table setkey
+#' @importFrom stringi stri_sub
+#' @importFrom Biostrings reverseComplement
+#' 
 #' @export
 countRevCompKmers <- function(kmer.table) {
 

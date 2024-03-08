@@ -19,8 +19,9 @@ Reverse complementary sequence
 Get reverse complement sequence of DNA
 }
 \examples{
-reverseComplement("AAAAA")
-reverseComplement(c("AAAAA", "CCCCC"))
-reverseComplement(c("A", "A", "A", "A"), form = "vector")
-
+\dontrun{
+   reverseComplement("AAAAA")
+   reverseComplement(c("AAAAA", "CCCCC"))
+   reverseComplement(c("A", "A", "A", "A"), form = "vector")
+ }
 }

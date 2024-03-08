@@ -14,23 +14,24 @@ getEnsemblVariantFeatures_serial(
 )
 }
 \arguments{
-\item{species}{Species name or alias e.g. homo_sapiens, human, etc.}
+\item{species}{Species name or alias (e.g., homo_sapiens, human).}
 
-\item{variant.ids}{A vector of variant IDs. e.g. rs56116432, COSM476, etc.}
+\item{variant.ids}{A vector of variant IDs (e.g., rs56116432, COSM476).}
 
-\item{include.genotypes}{Include genotypes? Default is FALSE.}
+\item{include.genotypes}{Include genotypes in the response? Default FALSE.}
 
-\item{include.phenotypes}{Include phenotypes? Default is FALSE.}
+\item{include.phenotypes}{Include phenotypes in the response? Default FALSE.}
 
-\item{include.allele.frequencies}{Include allele frequencies? Default is
-FALSE.}
+\item{include.allele.frequencies}{Include allele frequencies? Default FALSE.}
 
-\item{include.genotype.frequencies}{Include genotype frequencies? Default is
-FALSE.}
+\item{include.genotype.frequencies}{Include genotype frequencies? Default FALSE.}
 }
 \value{
-A variant-named list of list of variation features.
+A list, named by variant IDs, containing lists of variant features.
 }
 \description{
-POST variation/:species
+Function fetches variant features from the Ensembl database for a set
+of variant IDs. It handles variant IDs in batches to comply with server limits
+and can include additional information like genotypes, phenotypes, allele
+frequencies, and genotype frequencies.
 }

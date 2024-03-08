@@ -1,17 +1,22 @@
 #' Get features of given variant IDs.
 #' 
-#' POST variation/:species
+#' Function fetches variant features from the Ensembl database for a set
+#' of variant IDs. It handles variant IDs in batches to comply with server limits 
+#' and can include additional information like genotypes, phenotypes, allele
+#' frequencies, and genotype frequencies.
 #'
-#' @param species Species name or alias e.g. homo_sapiens, human, etc.
-#' @param variant.ids A vector of variant IDs. e.g. rs56116432, COSM476, etc.
-#' @param include.genotypes Include genotypes? Default is FALSE.
-#' @param include.phenotypes Include phenotypes? Default is FALSE.
-#' @param include.allele.frequencies Include allele frequencies? Default is
-#'    FALSE.
-#' @param include.genotype.frequencies Include genotype frequencies? Default is
-#'    FALSE.
-#' @return A variant-named list of list of variation features.
+#' @param species Species name or alias (e.g., homo_sapiens, human).
+#' @param variant.ids A vector of variant IDs (e.g., rs56116432, COSM476).
+#' @param include.genotypes Include genotypes in the response? Default FALSE.
+#' @param include.phenotypes Include phenotypes in the response? Default FALSE.
+#' @param include.allele.frequencies Include allele frequencies? Default FALSE.
+#' @param include.genotype.frequencies Include genotype frequencies? Default FALSE.
+#' 
+#' @return A list, named by variant IDs, containing lists of variant features.
 #'
+#' @importFrom curl new_handle handle_setheaders handle_setopt
+#' 
+#' @export
 getEnsemblVariantFeatures_serial <- function(species, variant.ids,
                                       include.genotypes=FALSE,
                                       include.phenotypes=FALSE,

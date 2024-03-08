@@ -1,3 +1,12 @@
+#' Function calculates various genomic content metrics based on the provided genome object.
+#'
+#' @param genome An object of class 'NCBI_Genome' containing genomic information.
+#'
+#' @return A data.table containing calculated genomic content metrics.
+#'
+#' @importFrom data.table fread fwrite set
+#'
+#' @export
 loadGenomicContents <- function(genome) {
 
   # Support

@@ -8,14 +8,15 @@ internal function used by other getEnsemblXXX functions.}
 getEnsemblData(url, handle, max.attempt = 5)
 }
 \arguments{
-\item{url}{Pre-built Ensembl REST URL.}
+\item{url}{Pre-built Ensembl REST API URL.}
 
-\item{handle}{Curl handle object.}
+\item{handle}{\code{curl} handle object configured for the Ensembl REST API.}
 
-\item{max.attempt}{Maximum number of attempt. Default to 5.}
+\item{max.attempt}{Maximum number of attempts to fetch the data, default is 5.}
 }
 \value{
-A parsed json data. Could be data.frame or list of lists.
+Parsed JSON data, which could be in the form of a data.frame or
+a list of lists, depending on the API response.
 }
 \description{
 Error is handled based on their rule as set out at

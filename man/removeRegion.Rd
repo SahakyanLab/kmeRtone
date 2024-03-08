@@ -6,6 +6,11 @@
 \usage{
 removeRegion(coor, region)
 }
+\arguments{
+\item{coor}{Coordinate \code{data.table}.}
+
+\item{region}{A \code{data.table} of region coordinate to be removed.}
+}
 \value{
 New coordinate \code{data.table} with the regions removed.
 }
@@ -16,11 +21,3 @@ The results will be: coor = 1-10, 20-30
 The coor still overlap one base at the terminal. This is done to
 produce exact result as the previous MPhil research.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{coor}}{Coordinate \code{data.table}.}
-
-\item{\code{region}}{A \code{data.table} of region coordinate to be removed.}
-}}
-

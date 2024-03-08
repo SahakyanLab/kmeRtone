@@ -7,17 +7,29 @@
 countMidPatternContext2(sequence, mid_pattern, window, context_patterns)
 }
 \arguments{
-\item{sequence}{A sequence to slide.}
+\item{sequence}{A string representing the sequence to be analyzed.}
 
-\item{mid_pattern}{A middle pattern to search for.}
+\item{mid_pattern}{A string representing the middle pattern to search for within the sequence.}
 
-\item{window}{Size of a surrounding window.}
+\item{window}{An integer specifying the size of the surrounding window around the middle pattern.}
 
-\item{context_pattern}{A context pattern to search for.}
+\item{context_patterns}{A vector of strings representing the context patterns to search for within the window.}
 }
 \value{
-A numeric named vector of frequencies with counts as their names.
+A std::unordered_map<int,int> where keys are the counts of context patterns found
+and values are the frequencies of these counts.
 }
 \description{
-Locate a middle sequence pattern and count its sequence context.
+This function searches for a specified middle pattern within a given sequence.
+It then counts the occurrences of specific context patterns within a defined window
+size around the middle pattern. The function returns a map where keys are the
+counts of context patterns found and values are the frequencies of these counts.
+}
+\examples{
+sequence <- "ATCGATCGA"
+mid_pattern <- "CG"
+window <- 5
+context_patterns <- c("AT", "GA")
+countMidPatternContext2(sequence, mid_pattern, window, context_patterns)
+
 }

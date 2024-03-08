@@ -1,12 +1,28 @@
+#' Function performs an analysis of the distribution of genomic cases, including:
+#' A) Check case distribution in:
+#'    1. replicates
+#'    2. chromosomes
+#'    3. strands
+#' B) Check case base composition and filter out other case.patterns
+#'    1. draw seqLogo in 100 or 101 base context
+#'    2. calculate G+C percentage
+#' Then, it generates various plots like bar plots and Venn/Euler diagrams.
+#'
+#' @param case A Coordinate class object or similar structure for genomic data.
+#' @param genome Genome class object or similar structure.
+#' @param case.pattern String patterns to consider in the analysis.
+#' @param output.path Output path for saving the analysis results.
+#'
+#' @importFrom data.table rbindlist setorder setorderv
+#' @importFrom graphics barplot plot legend par mtext
+#' @importFrom grDevices cairo_pdf dev.off
+#' @importFrom stringi stri_sub
+#' @importFrom future.apply future_lapply
+#' @importFrom progressr progressor
+#' @importFrom venneuler venneuler
+#' 
+#' @export
 countDistribution <- function(case, genome, case.pattern, output.path="./") {
-  # A) Check case distribution in:
-  #    1. replicates
-  #    2. chromosomes
-  #    3. strands
-  # B) Check case base composition and filter out other case.patterns
-  #    1. draw seqLogo in 100 or 101 base context
-  #    2. calculate G+C percentage
-
   if (!is.null(output.path)) {
     dir.create(output.path, recursive = TRUE, showWarnings = FALSE)
     cairo_pdf(paste0(output.path, "/exploration.pdf"), width = 10, height = 8,

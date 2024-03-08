@@ -2,23 +2,26 @@
 % Please edit documentation in R/downloadUCSCgenome.R
 \name{downloadUCSCgenome}
 \alias{downloadUCSCgenome}
-\title{Download chromosome-separated fasta genome sequence from UCSC database.}
+\title{Function downloads chromosome-separated fasta genome sequences from the UCSC
+database. Users can specify a genome name, an output folder, and a specific
+chromosome or chromosomes. There's an option to choose the download method as well.}
 \usage{
 downloadUCSCgenome(genome.name, output.path, chr.name, method = "curl")
 }
 \arguments{
-\item{genome.name}{Genome name e.g. hg19, hg38, mm19, etc.}
+\item{genome.name}{Genome name (e.g., hg19, hg38, mm19).}
 
-\item{output.path}{Output folder.}
+\item{output.path}{Output folder for the downloaded sequences.}
 
-\item{chr.name}{Specific chromosome to download. If not specified, default
-is all.}
+\item{chr.name}{Specific chromosome to download; defaults to all if unspecified.}
 
-\item{method}{Download method for base::download.file function.}
+\item{method}{Download method for the \code{download.file} function.}
 }
 \value{
 An output folder containing chromosome-separated fasta files.
 }
 \description{
-Download chromosome-separated fasta genome sequence from UCSC database.
+Function downloads chromosome-separated fasta genome sequences from the UCSC
+database. Users can specify a genome name, an output folder, and a specific
+chromosome or chromosomes. There's an option to choose the download method as well.
 }

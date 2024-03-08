@@ -1,6 +1,9 @@
 #' Get gnomAD VCF file using tabix.
-#'
-#' Require tabix in PATH
+#' 
+#' Function retrieves variant data from gnomAD VCF files using tabix for a
+#' specified set of genomic regions. It allows users to select the gnomAD
+#' version and server location (Google, Amazon, or Microsoft) for fetching the
+#' data.
 #'
 #' @param chr.names Chromosome names.
 #' @param starts Start positions.
@@ -11,6 +14,8 @@
 #'    is random.
 #'
 #' @return A data.table of VCF.
+#' 
+#' @importFrom data.table rbindlist
 #'
 #' @export
 getGnomADvariants <- function(chr.names, starts, ends, INFO.filter=NULL,
@@ -44,7 +49,7 @@ getGnomADvariants <- function(chr.names, starts, ends, INFO.filter=NULL,
     } else if (server == "random") {
       vcf.url <- sample(c(google.vcf.url, aws.vcf.url), 1)
     }
-    vcf.file <<- vcf.url <- sub("XXX", chr.name, vcf.url)
+    vcf.file <- vcf.url <- sub("XXX", chr.name, vcf.url)
 
     idx <- which(chr.names == chr.name)
     vcf.dt <- readVCF(vcf.url, chr.name, starts[idx], ends[idx], INFO.filter)

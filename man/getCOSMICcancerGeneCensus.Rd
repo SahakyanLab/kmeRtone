@@ -9,10 +9,10 @@ getCOSMICcancerGeneCensus(email, password)
 \arguments{
 \item{email}{Email registered with COSMIC.}
 
-\item{password}{Password.}
+\item{password}{Password associated with the registered email.}
 }
 \value{
-A \code{data.table} of CGC.
+A \code{data.table} containing the Cancer Gene Census data.
 }
 \description{
 To access the data for non-commercial usage, you must register with the

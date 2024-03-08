@@ -1,3 +1,19 @@
+#' Function performs an analysis of base composition including sequence 
+#' frequency, PWM calculations, and G/C content at various window sizes.
+#'
+#' @param case A Coordinate class object or similar structure.
+#' @param genome Genome class object or similar structure.
+#' @param case.pattern String patterns to consider in the analysis.
+#' @param output.path Output path for saving the analysis results.
+#'
+#' @importFrom data.table data.table rbindlist setnafill
+#' @importFrom graphics barplot par plot lines legend
+#' @importFrom grDevices cairo_pdf dev.off
+#' @importFrom stringi stri_sub
+#' @importFrom seqLogo makePWM seqLogo
+#' @importFrom stats density
+#' 
+#' @export
 countBaseComposition <- function(case, genome, case.pattern, output.path="./") {
 
   if (!is.null(output.path)) {

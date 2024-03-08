@@ -5,11 +5,9 @@
 
 //' Simulate a population given ranges of chromosome sequence to mutate.
 //'
-//' This is internal function - not exported.
-//'
 //' @param chrom_seq A chromosome sequence.
-//' @param start Start positions.
-//' @param end End positions.
+//' @param starts Start positions.
+//' @param ends End positions.
 //' @param strand Strand type: "+" or "-".
 //' @param snv_df A table of SNV frequency. Columns: position, base, count.
 //' @param pop_size Size of population.
@@ -122,7 +120,7 @@ Rcpp::NumericMatrix simulatePopulation(Rcpp::CharacterVector chrom_seq,
       counts(3,i) = counts(3,i) + susc_cnt_ref;
 
     }
-    std::cout << i << std::endl;
+    Rcpp::Rcout << i << std::endl;
   }
   
   return counts;

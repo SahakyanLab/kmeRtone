@@ -1,3 +1,13 @@
+#' Function retrieves the latest version information of the COSMIC database 
+#' and the associated genome version by scraping data from the COSMIC website.
+#'
+#' @return A named vector containing the latest COSMIC version (`cosmic`) and 
+#'         genome version (`genome`).
+#'
+#' @importFrom data.table fread
+#' @importFrom stringi stri_extract_first_regex
+#' 
+#' @export
 getCOSMIClatestVersion <- function() {
   
   scrap <- fread("https://cancer.sanger.ac.uk/census", header = FALSE,

@@ -3,6 +3,8 @@
 #' @param cols Colors in hex format or R color code e.g. "red", "black", etc.
 #' @param alpha Alpha value.
 #' @return Colors with alpha value in hex format.
+#' 
+#' @importFrom grDevices col2rgb rgb
 #'
 #' @export
 addAlphaCol <- function(cols, alpha) {

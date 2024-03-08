@@ -9,7 +9,7 @@ using namespace Rcpp;
 //' Slower than data.table::fread
 //' 
 //' @param file_path A path to FASTA file.
-//' @param unmask Capitalize all base letters?
+//' @param output_dir A path to save the output results.
 //' @return A single sequence string without header.
 //'
 //' @export

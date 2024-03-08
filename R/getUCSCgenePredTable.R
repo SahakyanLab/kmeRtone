@@ -1,10 +1,26 @@
-#' Study k-mer composition across species.
+#' Retrieve Gene Prediction Table from UCSC for a Given Genome
 #'
-#' @param UCSC.genome.name UCSC genome name e.g. hg38 and mm39.
-#' @param db Database used by UCSC to generate the table: "refseq" or "gencode"
+#' This function retrieves the gene prediction table from the UCSC genome database
+#' for a specified genome. It can fetch data from either the RefSeq or GENCODE databases.
 #'
-#' @return genepred `data.table`.
+#' @param genome.name A string specifying the UCSC genome name for which the gene 
+#'    prediction table is to be retrieved, e.g., 'hg38', 'mm39'.
+#' @param db A string specifying the database used by UCSC to generate the table. 
+#'    Options are 'refseq' or 'gencode'.
 #'
+#' @return A `data.table` containing the gene prediction table from the specified
+#'    UCSC genome and database.
+#'
+#' @importFrom curl curl_fetch_memory
+#' @importFrom jsonlite fromJSON
+#' @importFrom data.table setDT rbindlist
+#'
+#' @examples
+#' \dontrun{
+#'    Example usage:
+#'    Retrieve the RefSeq gene prediction table for the human genome (hg38)
+#'    genePredTable <- getUCSCgenePredTable(genome.name = "hg38", db = "refseq")
+#'  }
 #' @export
 getUCSCgenePredTable <- function(genome.name, db) {
   

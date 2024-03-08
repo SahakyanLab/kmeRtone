@@ -1,3 +1,31 @@
+#' Function generates various exploratory analyses.
+#'
+#' @param case.coor.path Path to case coordinates.
+#' @param genome.name Genome name (e.g., hg19, hg38).
+#' @param strand.sensitive Boolean indicating if strand sensitivity is considered.
+#' @param k K-mer size.
+#' @param case.pattern String patterns to consider in the analysis.
+#' @param output.path Output directory path for exploration plots.
+#' @param case Coordinate class object or similar structure for case data.
+#' @param genome Genome class object or similar structure.
+#' @param control Control class object or similar structure.
+#' @param genome.path Path to genome fasta files.
+#' @param single.case.len Length of single cases.
+#' @param rm.dup Boolean indicating if duplicates should be removed.
+#' @param case.coor.1st.idx Indexing of case coordinates.
+#' @param coor.load.limit Maximum number of coordinates to load.
+#' @param genome.load.limit Maximum number of genome data to load.
+#' @param genome.fasta.style Fasta file style for genome data.
+#' @param genome.ncbi.db NCBI database for genome data.
+#' @param use.UCSC.chr.name Boolean indicating if UCSC chromosome naming is used.
+#' @param verbose Boolean indicating if verbose output is enabled.
+#'
+#' @return Output directory containing exploration plots.
+#'
+#' @importFrom R6 R6Class
+#' @importFrom grDevices cairo_pdf dev.off
+#' 
+#' @export
 EXPLORE <- function(
   case.coor.path, genome.name, strand.sensitive, k, case.pattern, output.path,
   case, genome, control, genome.path, single.case.len, rm.dup,

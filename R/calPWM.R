@@ -1,6 +1,5 @@
 #' Calculate position weight matrix of overlapping sequences.
-#'
-#' Simulation of human population is based on single nucleotide variantion.
+#' Simulation of human population is based on single nucleotide variation.
 #'
 #' @param kmers A vector of k-mers to overlap.
 #' @param pseudo.num Pseudo-number to avoid numerical instability due to lack of
@@ -12,6 +11,9 @@
 #'
 #' @return A position count/probability/weight matrix.
 #'
+#' @importFrom data.table set
+#' @importFrom stringi stri_split_boundaries stri_trans_tolower
+#' 
 #' @export
 calPWM <- function(kmers, pseudo.num=0,
   bg.prop=c(a = 0.295, c = 0.205, g = 0.205, t = 0.295), output="PWM") {

@@ -6,11 +6,14 @@
 #'
 #' @return Reverse complementary sequence
 #'
+#' @importFrom stringi stri_trans_char stri_reverse
+#' 
 #' @examples
-#' reverseComplement("AAAAA")
-#' reverseComplement(c("AAAAA", "CCCCC"))
-#' reverseComplement(c("A", "A", "A", "A"), form = "vector")
-#'
+#' \dontrun{
+#'    reverseComplement("AAAAA")
+#'    reverseComplement(c("AAAAA", "CCCCC"))
+#'    reverseComplement(c("A", "A", "A", "A"), form = "vector")
+#'  }
 #' @export
 reverseComplement <- function(DNA.sequence, form="string") {
 

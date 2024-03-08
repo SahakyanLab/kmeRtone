@@ -2,7 +2,8 @@
 % Please edit documentation in R/calPWM.R
 \name{calPWM}
 \alias{calPWM}
-\title{Calculate position weight matrix of overlapping sequences.}
+\title{Calculate position weight matrix of overlapping sequences.
+Simulation of human population is based on single nucleotide variation.}
 \usage{
 calPWM(
   kmers,
@@ -27,5 +28,6 @@ to position count/probability/weight matrix. Default is PWM.}
 A position count/probability/weight matrix.
 }
 \description{
-Simulation of human population is based on single nucleotide variantion.
+Calculate position weight matrix of overlapping sequences.
+Simulation of human population is based on single nucleotide variation.
 }

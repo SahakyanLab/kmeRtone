@@ -5,7 +5,9 @@
 #' @param cols Colors in hex format or R color code e.g. "red", "black", etc.
 #' @param alpha Add alpha transparency value.
 #' @return New mixed colors in hex format.
-#'
+#' 
+#' @importFrom grDevices col2rgb rgb
+#' 
 #' @export
 mixColors <- function(cols, alpha) {
   rgb.vals <- col2rgb(cols) / 255

@@ -12,6 +12,8 @@ initKmerTable(k, central.pattern = NULL, split.kmer = FALSE)
 two columns (kmer_part1 and kmer_part2) to reduce memory significantly.}
 
 \item{central.pattern}{Central pattern(s) of the k-mer. Default is NULL.}
+
+\item{split.kmer}{Whether to split the k-mer sequence into two parts for large k values. Default is FALSE.}
 }
 \value{
 data.table with 3 columns: kmer, pos_strand, neg_strand

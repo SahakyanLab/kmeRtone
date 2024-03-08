@@ -2,7 +2,9 @@
 #'
 #' @param bed.path A path to a BED file.
 #'
-#' @return A `data.table` of BED.
+#' @return data.table.
+#' 
+#' @importFrom data.table setnames set fread
 #'
 #' @export
 readBED <- function(bed.path) {

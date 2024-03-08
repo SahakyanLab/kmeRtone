@@ -4,10 +4,13 @@
 #'    COSMIC. This function fetch the latest CGC.
 #'
 #' @param email Email registered with COSMIC.
-#' @param password Password.
+#' @param password Password associated with the registered email.
 #'
-#' @return A `data.table` of CGC.
+#' @return A `data.table` containing the Cancer Gene Census data.
 #'
+#' @importFrom data.table fread
+#' @importFrom utils download.file
+#' 
 #' @export
 getCOSMICcancerGeneCensus <- function(email, password) {
   

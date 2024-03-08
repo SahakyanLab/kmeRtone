@@ -1,16 +1,19 @@
 #' Resolve and generate genic element coordinates from UCSC genePred table.
 #'
-#' @param genepred UCSC genePred table. Either the database used by UCSC to
-#'    generate the table ("refseq" or "gencode") or genePred `data.table` is
-#'    acceptable.
-#' @param genome.name UCSC genome name e.g. hg38 and mm39.
-#' @param igr.rel.pos Intergenic relative position. Default is c(5000, 7500)
-#'    i.e. from 5000 to 7500 bp from the genic regions.
-#' @param igr.min.length Minimum length of the intergenic rregion. Default is
-#'    150.
-#' @param return.coor.obj Return `Coordinate` object? Default is FALSE.
-#' @return Intergenic coordinates in `data.table`.
+#' Function generates intergenic coordinates from a UCSC genePred table. 
+#' It allows users to specify the genePred data source, the relative position 
+#' and minimum length for intergenic regions, and whether to return the results 
+#' as a `Coordinate` object or a `data.table`.
 #'
+#' @param genepred UCSC genePred table or database name ("refseq" or "gencode").
+#' @param genome.name UCSC genome name (e.g., hg38, mm39).
+#' @param igr.rel.pos Intergenic relative position, defaults to c(5000, 7500).
+#' @param igr.min.length Minimum length for intergenic regions, default is 150.
+#' @param return.coor.obj Return results as a `Coordinate` object? Default FALSE.
+#' @return Intergenic coordinates as a `data.table` or `Coordinate` object.
+#'
+#' @importFrom data.table data.table fwrite
+#' 
 #' @export
 generateIntergenicCoor <- function(genepred, genome.name,
                                    igr.rel.pos=c(5000, 7500),

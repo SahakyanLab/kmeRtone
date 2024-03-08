@@ -12,6 +12,8 @@
 #' @param db Database record to use: refseq or genbank
 #'
 #' @return NCBI assembly summary with added column organism.group.
+#' 
+#' @importFrom data.table setorder
 selectGenomesForCrossSpeciesStudy <- function(organism.group = "bacteria",
                                               db = "refseq") {
 

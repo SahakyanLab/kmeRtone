@@ -9,11 +9,21 @@
 #'      larger than 14, k-mers are extracted the same way as (1) but the k-mer
 #'      table is grown or expanded for every new k-mer found.
 #'
-#' @field coor Coordinate class object.
-#' @field genome Genome class object.
-#' @field k Length of k-mer.
-#' @field central.pattern Central pattern of the k-mer.
+#' @param coor Coordinate class object.
+#' @param genome Genome class object.
+#' @param k Length of k-mer.
+#' @param central.pattern Central pattern of the k-mer, if applicable.
+#' @param rm.overlap.region Boolean indicating if overlapping regions should be 
+#'    removed. Default is TRUE.
+#' @param verbose Boolean indicating if verbose output is enabled.
 #'
+#' @return A k-mer table with counts for each k-mer.
+#'
+#' @importFrom Biostrings reverseComplement
+#' @importFrom data.table setkey
+#' @importFrom progressr progressor
+#' @importFrom stringi stri_sub
+#' 
 #' @export
 extractKmers <- function(coor, genome, k, central.pattern=NULL,
                          rm.overlap.region=TRUE, verbose=TRUE) {

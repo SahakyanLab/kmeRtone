@@ -13,23 +13,22 @@ generateIntergenicCoor(
 )
 }
 \arguments{
-\item{genepred}{UCSC genePred table. Either the database used by UCSC to
-generate the table ("refseq" or "gencode") or genePred \code{data.table} is
-acceptable.}
+\item{genepred}{UCSC genePred table or database name ("refseq" or "gencode").}
 
-\item{genome.name}{UCSC genome name e.g. hg38 and mm39.}
+\item{genome.name}{UCSC genome name (e.g., hg38, mm39).}
 
-\item{igr.rel.pos}{Intergenic relative position. Default is c(5000, 7500)
-i.e. from 5000 to 7500 bp from the genic regions.}
+\item{igr.rel.pos}{Intergenic relative position, defaults to c(5000, 7500).}
 
-\item{igr.min.length}{Minimum length of the intergenic rregion. Default is
-150.}
+\item{igr.min.length}{Minimum length for intergenic regions, default is 150.}
 
-\item{return.coor.obj}{Return \code{Coordinate} object? Default is FALSE.}
+\item{return.coor.obj}{Return results as a \code{Coordinate} object? Default FALSE.}
 }
 \value{
-Intergenic coordinates in \code{data.table}.
+Intergenic coordinates as a \code{data.table} or \code{Coordinate} object.
 }
 \description{
-Resolve and generate genic element coordinates from UCSC genePred table.
+Function generates intergenic coordinates from a UCSC genePred table.
+It allows users to specify the genePred data source, the relative position
+and minimum length for intergenic regions, and whether to return the results
+as a \code{Coordinate} object or a \code{data.table}.
 }

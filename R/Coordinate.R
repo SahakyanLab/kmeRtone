@@ -1,5 +1,11 @@
-#' Class constructor - build Coordinate object
+#' Function constructs an R6 object for handling coordinate data.
+#' The object includes methods for loading, manipulating, and analyzing coordinate data.
 #'
+#' @importFrom R6 R6Class
+#' @importFrom data.table data.table setorderv setkeyv merge.data.table rbindlist fread
+#' @importFrom stringi stri_extract_first_regex stri_replace_all_regex stri_sub
+#' 
+#' @export
 Coordinate <- R6::R6Class(
 
   classname = "Coordinate",

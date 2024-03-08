@@ -20,8 +20,15 @@
 #' @param loop.chr Loop chromosome?. Default is TRUE. If FALSE, beware of a
 #'     memory spike because of VCF content. VCF contains zero counts for every
 #'     population. Input pre-computed trimmed-version population.snv.dt.
+#' @param plot Boolean. Default is FALSE. If TRUE, will plot results.
 #'
 #' @return An output directory containing plots.
+#' 
+#' @importFrom data.table fread fwrite setorder setnames rbindlist
+#' @importFrom stringi stri_sub stri_count_regex stri_length stri_paste stri_sub_replace_all stri_replace_all_regex stri_split_fixed
+#' @importFrom Biostrings reverseComplement
+#' @importFrom graphics layout boxplot plot points legend arrows axis mtext barplot
+#' @importFrom grDevices pdf
 #'
 #' @export
 STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
@@ -48,7 +55,7 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
   dir.create(output.dir, recursive = TRUE, showWarnings = FALSE)
 
   # Filter genePred to include only chromosome references.
-  genepred <- genepred[chrom %in% paste0("chr", c(1:22, "X", "Y"))]
+  genepred <- genepred[paste0("chr", c(1:22, "X", "Y")) %in% chrom]
 
   # Only select selected genes
   genepred <- genepred[get(gene.name.col) %in% selected.genes]

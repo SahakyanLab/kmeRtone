@@ -2,7 +2,9 @@
 % Please edit documentation in R/countChoppedKmers.R
 \name{countChoppedKmers}
 \alias{countChoppedKmers}
-\title{Chop k-mers in given ranges of a sequence.}
+\title{Function chops k-mers within specified ranges of a sequence and counts
+them. It uses either a substring method or functionalities from the
+Biostrings package.}
 \usage{
 countChoppedKmers(dna.seq, starts, ends, k, method = "auto")
 }
@@ -21,5 +23,7 @@ countChoppedKmers(dna.seq, starts, ends, k, method = "auto")
 A k-mer-named vector of counts.
 }
 \description{
-Chop k-mers in given ranges of a sequence.
+Function chops k-mers within specified ranges of a sequence and counts
+them. It uses either a substring method or functionalities from the
+Biostrings package.
 }

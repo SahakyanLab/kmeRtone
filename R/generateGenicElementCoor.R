@@ -1,63 +1,62 @@
-#' Resolve and generate genic element coordinates from UCSC genePred table.
+#' Function processes UCSC genePred tables to generate coordinates for
+#' various genic elements like introns, exons, CDS, UTRs, and upstream and
+#' downstream regions. It handles these coordinates with consideration for
+#' strand sensitivity and genome information.
 #'
-#' @param genepred UCSC genome name e.g. hg38 and mm39.
-#' @param element.names Output genic element type: "all", "intron", "exon",
-#'    "CDS", or "UTR". Default is to output "all" type of genic element.names.
-#' @param upstream Length of upstream sequence. It can overlap other gene.
-#'    Default is NULL i.e. not to output upstream.
-#' @param downstream Length of downstream sequence. It can overlap other
-#'    gene. Default is NULL i.e. not to output downstream.
-#' @param genome.name UCSC genome name. This is used to truncate overflowing
-#'    downstream and upstream coordinates. If genome is not supplied, trimming
-#'    will not be performed.
-#' @param genome Genome object.
-#' @param return.coor.obj Output Coordinate object? Default to FALSE.
-#' @return Genic element coordinates in `data.table` or `Coordinate` object.
+#' All the operations in here are vectorized. If the table is big, expect a
+#' spike in memory. Using ncbiRefSeq table and genome hg38, the memory is
+#' stable at 4-5 GB. I can utilise data.table package to process by chunk if
+#' needed.
+#' Original table is zero-based open-end index. The indexing system is changed
+#' temporarily to follow Rs system. The output coordinate table is one-based
+#' close-end index. Critical information based on UCSC Genome website:
+#'    Column        Explanation
+#'    bin           Indexing field to speed chromosome range queries. (Only
+#'                  relevant to UCSC program)
+#'    name 	     Name of gene (usually transcript_id from GTF)
+#'    chrom 	     Reference sequence chromosome or scaffold
+#'    strand 	     + or - for strand
+#'    txStart 	     Transcription start position (or end position for minus
+#'                  strand item)
+#'    txEnd 	     Transcription end position (or start position for minus
+#'                  strand item)
+#'    cdsStart      Coding region start (or end position for minus strand item)
+#'    cdsEnd 	     Coding region end (or start position for minus strand item)
+#'    exonCount     Number of exons
+#'    exonEnds      Exon end positions (or start positions for minus strand
+#'                  item)
+#'    exonStart     Exon start positions (or end positions for minus strand
+#'                  item)
+#'    name2 	     Alternate name (e.g. gene_id from GTF)
+#'    cdsStartStat  Status of CDS start annotation (none, unknown, incomplete,
+#'                  or complete) = ('none','unk','incmpl','cmpl')
+#'    cdsEndStat    Status of CDS end annotation (none, unknown, incomplete,
+#'                  or complete)
+#'    exonFrames    Exon frame {0,1,2}, or -1 if no frame for exon (Related to
+#'                  codon. Number represents extra bases (modulus of 3) from
+#'                  previous exon block brought to a current exon block.)
+#' If cdsStart == cdsEnd, that means non-coding sequence.
+#'    - maybe cdsStartStat and cdsEndStat == "none" mean the same thing.
+#'      maybe exonFrames == "-1," means the same thing.
+#' 
+#' @param genepred UCSC genome name (e.g., hg19, mm39).
+#' @param element.names Types of genic elements to output: "all", "intron",
+#'     "exon", "CDS", or "UTR". Default is "all".
+#' @param upstream Length of upstream sequence (can overlap other genes).
+#' @param downstream Length of downstream sequence (can overlap other genes).
+#' @param genome.name UCSC genome name for trimming overflowing coordinates.
+#' @param genome Genome object for coordinate resolution.
+#' @param return.coor.obj Whether to return a `Coordinate` object (default: FALSE).
+#' @return Genic element coordinates in a `data.table` or `Coordinate` object.
 #'
+#' @importFrom data.table data.table fwrite
+#' @importFrom stringi stri_split_fixed
+#' 
 #' @export
 generateGenicElementCoor <- function(genepred, element.names="all",
                                      upstream=NULL, downstream=NULL,
                                      genome.name=NULL, genome=NULL,
                                      return.coor.obj=FALSE) {
-
-  # All the operations in here are vectorized. If the table is big, expect a
-  # spike in memory. Using ncbiRefSeq table and genome hg38, the memory is
-  # stable at 4-5 GB. I can utilise data.table package to process by chunk if
-  # needed.
-
-  # Original table is zero-based open-end index. The indexing system is changed
-  # temporarily to follow R's system. The output coordinate table is one-based
-  # close-end index. Critical information based on UCSC Genome website:
-  #    Column        Explanation
-  #    bin           Indexing field to speed chromosome range queries. (Only
-  #                  relevant to UCSC program)
-  #    name 	     Name of gene (usually transcript_id from GTF)
-  #    chrom 	     Reference sequence chromosome or scaffold
-  #    strand 	     + or - for strand
-  #    txStart 	     Transcription start position (or end position for minus
-  #                  strand item)
-  #    txEnd 	     Transcription end position (or start position for minus
-  #                  strand item)
-  #    cdsStart      Coding region start (or end position for minus strand item)
-  #    cdsEnd 	     Coding region end (or start position for minus strand item)
-  #    exonCount     Number of exons
-  #    exonEnds      Exon end positions (or start positions for minus strand
-  #                  item)
-  #    exonStart     Exon start positions (or end positions for minus strand
-  #                  item)
-  #    name2 	     Alternate name (e.g. gene_id from GTF)
-  #    cdsStartStat  Status of CDS start annotation (none, unknown, incomplete,
-  #                  or complete) = ('none','unk','incmpl','cmpl')
-  #    cdsEndStat    Status of CDS end annotation (none, unknown, incomplete,
-  #                  or complete)
-  #    exonFrames    Exon frame {0,1,2}, or -1 if no frame for exon (Related to
-  #                  codon. Number represents extra bases (modulus of 3) from
-  #                  previous exon block brought to a current exon block.)
-  #
-  # If cdsStart == cdsEnd, that means non-coding sequence.
-  #    - maybe cdsStartStat and cdsEndStat == "none" mean the same thing.
-  #      maybe exonFrames == "-1," means the same thing.
-
   if (all(is.null(genome) & is.null(genome.name)) &
       (!is.null(upstream) | !is.null(downstream)))
     warning("No genome information. Upstream or downstream can overflow.")

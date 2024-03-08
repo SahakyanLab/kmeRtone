@@ -8,7 +8,7 @@ using namespace Rcpp;
 //' Read fast single-header FASTA file.
 //'
 //' @param file_path A path to FASTA file.
-//' @param unmask Capitalize all base letters?
+//' @param mask Capitalize all base letters?
 //' @return A single sequence string without header.
 //'
 //' @export

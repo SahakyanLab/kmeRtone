@@ -3,8 +3,11 @@
 #' Table must have start and end columns. The output is exactly similar to the
 #'    reduce function from GenomicRanges.
 #'
-#' @field coor Coordinate `data.table`.
+#' @param coor Coordinate `data.table`.
+#' 
 #' @return Merged coordinate `data.table`.
+#' 
+#' @importFrom data.table setorderv
 #'
 #' @export
 mergeCoordinate <- function(coor) {

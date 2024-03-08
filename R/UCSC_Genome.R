@@ -1,5 +1,7 @@
 #' Class constructor - build Genome object
-#'
+#' @importFrom R6 R6Class
+#' @importFrom data.table fread fwrite setorder 
+#' @importFrom stringi stri_length stri_count_fixed stri_sub
 UCSC_Genome <- R6::R6Class(
 
   classname = "UCSC_Genome",

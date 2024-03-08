@@ -2,7 +2,8 @@
 % Please edit documentation in R/downloadNCBIGenomes.R
 \name{downloadNCBIGenomes}
 \alias{downloadNCBIGenomes}
-\title{Download genomes from NCBI FTP database.}
+\title{Function downloads genome fasta files from the NCBI FTP database. Users can
+provide either organism names or an assembly summary data table.}
 \usage{
 downloadNCBIGenomes(
   asm,
@@ -29,8 +30,8 @@ FALSE.}
 the download.}
 }
 \value{
-Genome fasta file(s). The filename(s) follows the FTP database.
+Genome fasta file(s) named according to the FTP database convention.
 }
 \description{
-Provide either organism names or assembly summary table.
+Supports options for splitting multi-header fasta files and overwriting existing files.
 }

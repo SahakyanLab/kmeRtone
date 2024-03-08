@@ -2,7 +2,9 @@
 % Please edit documentation in R/countRevCompKmers.R
 \name{countRevCompKmers}
 \alias{countRevCompKmers}
-\title{Count reverse complement sequence from its opposite strand}
+\title{Count reverse complement sequence from its opposite strand.
+Build for k-mer table generated from initKmerTable function but applicable to
+others with the same format.}
 \usage{
 countRevCompKmers(kmer.table)
 }
@@ -15,6 +17,7 @@ kmer_part2 is supported.}
 Updated k-mer table.
 }
 \description{
+Count reverse complement sequence from its opposite strand.
 Build for k-mer table generated from initKmerTable function but applicable to
 others with the same format.
 }

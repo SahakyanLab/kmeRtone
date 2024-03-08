@@ -10,6 +10,8 @@
 #' @param header A named list or vector of curl header.
 #'
 #' @return A downloaded file.
+#' 
+#' @importFrom curl new_handle handle_setheaders curl_fetch_disk
 #'
 #' @export
 persistentDownload <- function(file.url, output.name, max.attempt = 5,

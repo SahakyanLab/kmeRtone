@@ -1,20 +1,24 @@
 #' Get features of a given region.
 #' 
-#' GET overlap/region/:species/:region?feature=XXX?feature=XXXX?....
+#' Function fetches various genomic features for a specified region from the 
+#' Ensembl database. It allows specifying the species, chromosome, region range, 
+#' and types of features to query.
+#'
+#' @param species Species name or alias (e.g., homo_sapiens, human).
+#' @param chromosome Chromosome name in Ensembl format (without 'chr' prefix).
+#' @param start Start position of the region.
+#' @param end End position of the region.
+#' @param features List of region features to retrieve from Ensembl. Valid
+#'        options include "band", "gene", "transcript", "cds", "exon", "repeat",
+#'        "simple", "misc", "variation", "somatic_variation",
+#'        "structural_variation", "somatic_structural_variation", "constrained",
+#'        "regulatory", "motif", "peak", "other_regulatory", "array_probe", "mane".
 #' 
-#' somatic_variation is from COSMIC
+#' @return A `data.table` containing the requested Ensembl features.
 #'
-#' @param species A species name or alias e.g. homo_sapiens, human, etc.
-#' @param chromosome Ensembl chromosome name. Unlike UCSC, no prefix chr.
-#' @param start Start position.
-#' @param end End position.
-#' @param features Region features. Options are "band", "gene", "transcript",
-#'    "cds", "exon", "repeat", "simple", "misc", "variation",
-#'    "somatic_variation", "structural_variation",
-#'    "somatic_structural_variation", "constrained", "regulatory", "motif",
-#'    "peak", "other_regulatory", "array_probe", and "mane".
-#' @return A `data.table` of Ensembl features.
-#'
+#' @importFrom data.table data.table setDT
+#' @importFrom curl new_handle handle_setheaders
+#' 
 #' @export
 getEnsemblRegionFeatures <- function(species, chromosome, start, end,
                                      features) {
