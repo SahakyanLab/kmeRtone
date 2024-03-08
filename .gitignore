@@ -13,3 +13,4 @@ output
 *.o
 *.Rd
 */RcppExports.*
+inst/doc
