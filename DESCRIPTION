@@ -8,17 +8,26 @@ Authors@R: c(
             person("Adib", "Abdullah", email = "adib.abdullah@imm.ox.ac.uk", role = "aut"),
             person("Patrick", "Pflughaupt", email = "patrick.pflughaupt@imm.ox.ac.uk", role = "aut"),
             person("Aleksandr", "Sahakyan", email = "sahakyanlab@cantab.net", role = c("aut", "cre")))
-#SystemRequirements: GNU make
+SystemRequirements: GNU make
 Imports: 
     data.table (>= 1.15.0),
     R6 (>= 2.5.1),
-    stringi (>= 1.8.3),
     Rcpp (>= 1.0.12),
     R.utils (>= 2.12.3),
     openxlsx (>= 4.2.5.2),
-    png (>= 0.1-8)
+    png (>= 0.1-8),
+    RcppSimdJson (>= 0.1.11),
+    venneuler (>= 1.1-4),
+    stringi,
+    curl,
+    future,
+    future.apply,
+    jsonlite,
+    progressr,
+    Biostrings,
+    seqLogo
 Depends: 
-    R (>= 4.2.2)
+    R (>= 4.2)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 LinkingTo: Rcpp, stringi, Rhtslib, zlibbioc
@@ -28,5 +37,8 @@ Encoding: UTF-8
 License: GPL-3 + file LICENSE
 LazyData: true
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+VignetteBuilder: knitr
