@@ -37,7 +37,6 @@ Encoding: UTF-8
 License: GPL-3 + file LICENSE
 LazyData: true
 Suggests: 
-    BiocStyle,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
