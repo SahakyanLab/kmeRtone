@@ -68,7 +68,7 @@ knitr::include_graphics("../man/figures/KmeRtone_logo.png")
 \newpage
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(eval=FALSE, tidy = FALSE)
+knitr::opts_chunk$set(eval=FALSE)
 ```
 
 # Installation
