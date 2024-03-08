@@ -60,7 +60,7 @@ references:
     day: 05
 ---
 
-```{r, tidy = TRUE, eval = TRUE, echo = FALSE, fig.align='center', out.width='100%'}
+```{r, eval = TRUE, echo = FALSE, fig.align='center', out.width='100%'}
 knitr::include_graphics("../man/figures/KmeRtone_logo.png")
 ```
 
