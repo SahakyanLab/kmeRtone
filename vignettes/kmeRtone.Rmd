@@ -1,7 +1,6 @@
 ---
 title: 
   "**KmeRtone User Manual**"
-author: "Adib A. Abdullah^[University of Oxford], Claudia Feng$^*$, Patrick Pflughaupt$^*$, Aleksandr B. Sahakyan$^*$"
 urlcolor: blue
 output:
   pdf_document: default
