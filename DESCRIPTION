@@ -2,7 +2,7 @@ Package: kmeRtone
 Type: Package
 Version: 1.0
 Date: 2024-02-09
-Title: kmeRtone
+Title: kmeRtone: a Multi-Purpose and Transferrable k-Meric Enrichment Analysis Software.
 Description: Multi-purpose and transferrable k-meric enrichment/depletion analysis software.
 Authors@R: c(
             person("Adib", "Abdullah", email = "adib.abdullah@imm.ox.ac.uk", role = "aut"),
