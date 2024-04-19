@@ -55,6 +55,6 @@
 #'      \item{kmer}{K-meric sequence}
 #'      \item{z}{Intrinsic susceptibility z-score for each k-mer}
 #' }
-#' @source \url{https://github.com/SahakyanLab/kmeRtone/tree/master/README.md}
+#' @source \url{https://github.com/SahakyanLab/kmeRtone/blob/master/README.md}
 #'
 "example_kmeRtone_score"
