@@ -8,8 +8,8 @@
 # The easiest way is to install from CRAN:
 install.packages('kmeRtone')
 
-# Otherwise, install directly by cloning this GitHub repo
-devtools::install_github('SahakyanLab/kmeRtone', ref = 'master')
+# Otherwise, please download the latest release, then install with
+R CMD INSTALL kmeRtone_1.0.tar.gz
 ```
 
 Alternatively, download and install using the [latest release files from here.](https://github.com/SahakyanLab/kmertone/releases/)
