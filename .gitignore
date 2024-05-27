@@ -6,6 +6,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.vscode*
 Rprof.out
 output
 *.swp
