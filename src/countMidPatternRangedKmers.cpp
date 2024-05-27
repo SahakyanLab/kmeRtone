@@ -49,7 +49,7 @@ std::unordered_map<std::string,int> countMidPatternRangedKmers(
     while (it != coor.end()) {
       if (mid_idx < it->first) {
         break;
-      } else if ((mid_idx >= it->first) & (mid_idx < it->second)) {
+      } else if ((mid_idx >= it->first) && (mid_idx < it->second)) {
         std::string kmer = sequence.substr(mid_idx - len_flank, k);
         counts[kmer]++;
         ++it;

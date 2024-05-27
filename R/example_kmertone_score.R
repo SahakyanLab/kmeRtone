@@ -5,10 +5,11 @@
 #' and runs the default kmeRtone `SCORE` function to quantify the 
 #' k-meric enrichment and depletion. 
 #' 
+#' @examples 
 #' library(data.table)
 #' library(kmeRtone)
 #' 
-#' 1. Randomly generate genomic positions and save results
+#' # Randomly generate genomic positions and save results
 #' dir.create("./data", showWarnings = FALSE)
 #' 
 #' set.seed(1234)
@@ -29,7 +30,7 @@
 #'     )
 #' }
 #' 
-#' #' 2. Run kmeRtone `score` function
+#' # 2. Run kmeRtone `score` function
 #' kmeRtone::kmeRtone(
 #'     case.coor.path="./data", 
 #'     genome.name="hg19", 

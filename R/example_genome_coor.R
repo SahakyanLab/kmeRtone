@@ -3,10 +3,11 @@
 #' @description 
 #' Below is an example code that generates random genomic coordinates.
 #' 
+#' @examples
 #' library(data.table)
 #' library(kmeRtone)
 #' 
-#' 1. Randomly generate genomic positions and save results
+#' # Randomly generate genomic positions and save results
 #' dir.create("./data", showWarnings = FALSE)
 #' 
 #' set.seed(1234)

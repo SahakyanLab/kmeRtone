@@ -48,7 +48,7 @@ std::unordered_map<std::string,int> countRangedKmers(std::string sequence,
     while (it != coor.end()) {
       if (i < it->first) {
         break;
-      } else if ((i >= it->first) & (i < it->second - k + 1)) {
+      } else if ((i >= it->first) && (i < it->second - k + 1)) {
         std::string kmer = sequence.substr(i, k);
         counts[kmer]++;
         ++it;

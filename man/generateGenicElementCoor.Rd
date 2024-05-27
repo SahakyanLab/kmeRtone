@@ -66,7 +66,7 @@ cdsStartStat  Status of CDS start annotation (none, unknown, incomplete,
 or complete) = ('none','unk','incmpl','cmpl')
 cdsEndStat    Status of CDS end annotation (none, unknown, incomplete,
 or complete)
-exonFrames    Exon frame {0,1,2}, or -1 if no frame for exon (Related to
+exonFrames    Exon frame (0,1,2), or -1 if no frame for exon (Related to
 codon. Number represents extra bases (modulus of 3) from
 previous exon block brought to a current exon block.)
 If cdsStart == cdsEnd, that means non-coding sequence.

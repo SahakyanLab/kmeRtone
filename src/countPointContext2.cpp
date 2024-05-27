@@ -19,7 +19,7 @@ std::unordered_map<int,int> countPointContext2(std::string sequence,
 
   // Error checking
   for (int i = 0; i < int(points.size()); ++i) {
-    if ((points[i] < 1) | (points[i] > int(sequence.length()))) {
+    if ((points[i] < 1) || (points[i] > int(sequence.length()))) {
       stop("Input points are out of range.");
     }
   }
