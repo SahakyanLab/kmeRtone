@@ -9,9 +9,6 @@ using namespace Rcpp;
 //' @param window Size of a surrounding window.
 //' @param context_pattern A context pattern to search for.
 //' @return A numeric vector of count.
-//'
-//' @export
-// [[Rcpp::export]]
 std::vector<int> countPointContext(std::string sequence,
     std::vector<int> points, int len, int window,
     std::string context_pattern) {

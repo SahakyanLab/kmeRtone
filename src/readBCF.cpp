@@ -8,8 +8,6 @@
 //' @param regions A string specifying the regions to be read from the BCF file.
 //' @param is_file Boolean indicating if the regions parameter is a file.
 //' @return A list containing chromosome information.
-//' @export
-// [[Rcpp::export]]
 Rcpp::List readBCF(const std::string& fname, const std::string& regions, int is_file) {
   
   bcf_srs_t *sr = bcf_sr_init();

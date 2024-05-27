@@ -11,8 +11,6 @@
 #'
 #' @importFrom Biostrings oligonucleotideFrequency DNAStringSet
 #' @importFrom data.table setorder
-#' 
-#' @export
 buildKmerTable <- function(dna.seqs, k, method="auto", remove.N=TRUE) {
   
   if (!remove.N & method == "Biostrings") {

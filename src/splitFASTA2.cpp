@@ -11,9 +11,6 @@ using namespace Rcpp;
 //' @param file_path A path to FASTA file.
 //' @param output_dir A path to save the output results.
 //' @return A single sequence string without header.
-//'
-//' @export
-// [[Rcpp::export]]
 void splitFASTA2(std::string file_path, std::string output_dir) {
   
   std::ofstream outfile;

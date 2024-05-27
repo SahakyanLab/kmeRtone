@@ -10,9 +10,6 @@
 //' @param k K-mer size.
 //' @param mid_pattern A middle pattern to search for.
 //' @return A k-mer-named vector of count.
-//'
-//' @export
-// [[Rcpp::export]]
 std::unordered_map<std::string,int> countMidPatternRangedKmers(
     std::string sequence, std::vector<int> starts, std::vector<int> ends, int k,
     std::string mid_pattern) {
