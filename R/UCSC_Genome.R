@@ -276,8 +276,11 @@ UCSC_Genome <- R6::R6Class(
         }
       }
 
-      seq <- lapply(seq.paths, readSingleFASTA, mask = mask)
-
+      seq <- lapply(seq.paths, function(x){
+        seq.file <- Biostrings::readDNAStringSet(filepath = x)
+        return(paste0(seq.file))
+      })
+      
       return(seq)
     },
 

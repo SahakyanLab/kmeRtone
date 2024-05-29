@@ -4,10 +4,11 @@
 #' Below is an example code that generates random genomic coordinates.
 #' 
 #' @examples
+#' \dontrun{
 #' library(data.table)
 #' library(kmeRtone)
 #' 
-#' # Randomly generate genomic positions and save results
+#' # 1. Randomly generate genomic positions and save results
 #' dir.create("./data", showWarnings = FALSE)
 #' 
 #' set.seed(1234)
@@ -26,6 +27,7 @@
 #'         genomic_coor, 
 #'         paste0("./data/chr", chr, ".csv")
 #'     )
+#' }
 #' }
 #' 
 #' @format A data frame with 1001 rows and 3 columns
