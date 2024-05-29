@@ -5,9 +5,9 @@ urlcolor: blue
 output:
   pdf_document: default
 vignette: >
-  %\VignetteIndexEntry{kmeRtone}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{KmeRtone User Manual}
+  \usepackage[utf8]{inputenc}
 references:
 - id: UV_paper
   title: "Dynamic maps of UV damage formation and repair for the human genome"
