@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 ^documentation$
 ^data-raw$
+^doc$
+^Meta$

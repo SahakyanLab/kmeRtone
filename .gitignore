@@ -6,7 +6,6 @@
 .Rhistory
 .RData
 .Ruserdata
-.vscode*
 Rprof.out
 output
 *.swp
@@ -14,4 +13,11 @@ output
 *.o
 *.Rd
 */RcppExports.*
-inst/doc
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+/doc/
+/Meta/
