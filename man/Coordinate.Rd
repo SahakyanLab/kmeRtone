@@ -2,14 +2,11 @@
 % Please edit documentation in R/Coordinate.R
 \name{Coordinate}
 \alias{Coordinate}
-\title{Function constructs an R6 object for handling coordinate data.
-The object includes methods for loading, manipulating, and analyzing coordinate data.}
+\title{Loading, manipulating, and analyzing coordinate data.}
 \description{
-Function constructs an R6 object for handling coordinate data.
-The object includes methods for loading, manipulating, and analyzing coordinate data.
+Loading, manipulating, and analyzing coordinate data.
 
-Function constructs an R6 object for handling coordinate data.
-The object includes methods for loading, manipulating, and analyzing coordinate data.
+Loading, manipulating, and analyzing coordinate data.
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -53,7 +50,6 @@ either starting from zero or one.}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-Coordinate-new}{\code{Coordinate$new()}}
-\item \href{#method-Coordinate-[}{\code{Coordinate$[()}}
 \item \href{#method-Coordinate-mark_overlap}{\code{Coordinate$mark_overlap()}}
 \item \href{#method-Coordinate-print}{\code{Coordinate$print()}}
 \item \href{#method-Coordinate-map_sequence}{\code{Coordinate$map_sequence()}}

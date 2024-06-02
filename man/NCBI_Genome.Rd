@@ -45,7 +45,6 @@ fasta files.}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-NCBI_Genome-new}{\code{NCBI_Genome$new()}}
-\item \href{#method-NCBI_Genome-[}{\code{NCBI_Genome$[()}}
 \item \href{#method-NCBI_Genome-print}{\code{NCBI_Genome$print()}}
 \item \href{#method-NCBI_Genome-get_assembly_report}{\code{NCBI_Genome$get_assembly_report()}}
 \item \href{#method-NCBI_Genome-clone}{\code{NCBI_Genome$clone()}}
