@@ -1,11 +1,7 @@
-#' Function performs an analysis of the distribution of genomic cases, including:
-#' A) Check case distribution in:
-#'    1. replicates
-#'    2. chromosomes
-#'    3. strands
-#' B) Check case base composition and filter out other case.patterns
-#'    1. draw seqLogo in 100 or 101 base context
-#'    2. calculate G+C percentage
+#' Function performs an analysis of the distribution of genomic cases.
+#' 
+#' Check case distribution in replicates, chromosomes, and strands. 
+#' Check case base composition and filter out other case.patterns. 
 #' Then, it generates various plots like bar plots and Venn/Euler diagrams.
 #'
 #' @param case A Coordinate class object or similar structure for genomic data.
