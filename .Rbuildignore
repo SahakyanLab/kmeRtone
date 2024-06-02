@@ -1,6 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^documentation$
-^data-raw$
-^doc$
+^random$
 ^Meta$
+^data-raw$
+^LICENSE\.md$
+^cran-comments\.md$
+^doc$
