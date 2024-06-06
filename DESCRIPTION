@@ -35,7 +35,7 @@ LinkingTo: Rcpp, stringi
 URL: https://github.com/SahakyanLab/kmeRtone
 BugReports: https://github.com/SahakyanLab/kmeRtone/issues
 Encoding: UTF-8
-License: GPL-3 + file LICENSE
+License: GPL-3
 LazyData: true
 Suggests: 
     rmarkdown,
