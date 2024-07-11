@@ -171,43 +171,44 @@ For a detailed explanation, please refer to the `kmeRtone.pdf` in the `vignettes
 ```R
 library(data.table)
 library(kmeRtone)
+temp_dir <- tempdir()
 
 #' 1. Randomly generate genomic positions and save results
 dir.create("./data", showWarnings = FALSE)
 
 set.seed(1234)
-for(chr in 1){
-    genomic_coor <- data.table::data.table(
+temp_files <- character(22)
+for(chr in 1:22){
+    genomic_coor <- data.table(
         seqnames = paste0("chr", chr),
         start = sample(
-            x = 10000:10000000, 
-            size = 100000, 
+            x = 10000:100000, 
+            size = 1000, 
             replace = FALSE
         ),
         width = 2
     )
-    setorder(genomic_coor, -start)
 
-    data.table::fwrite(
-        genomic_coor, 
-        paste0("./data/chr", chr, ".csv")
-    )
+    f <- file.path(temp_dir, paste0("chr", chr, ".csv"))
+    fwrite(genomic_coor, f)
+    temp_files[chr] <- f
 }
 
 #' 2. Run kmeRtone `score` function
 kmeRtone::kmeRtone(
-    case.coor.path="./data", 
-    genome.name="hg19", 
-    strand.sensitive=FALSE, 
-    k=4,
-    ctrl.rel.pos=c(80, 500),
-    case.pattern=NULL,
-    single.case.len=2,
-    output.dir="output",
-    module="score",
-    rm.case.kmer.overlaps=FALSE,
-    merge.replicate=TRUE, 
-    verbose=TRUE
+    case.coor.path = temp_dir, 
+    genome.name = "hg19", 
+    strand.sensitive = FALSE, 
+    k = 2,
+    ctrl.rel.pos = c(80, 500),
+    case.pattern = NULL,
+    single.case.len = 2,
+    output.dir = temp_dir,
+    module = "score",
+    rm.case.kmer.overlaps = FALSE,
+    merge.replicate = TRUE, 
+    kmer.table = NULL,
+    verbose = TRUE
 )
 ```
 
@@ -295,7 +296,7 @@ Total time taken: 36.97 secs
 ------------------------------------------------------------
             Calculation of K-mer Susceptibility            
 ------------------------------------------------------------
-The 2-mer scores are saved at output/score_2-mer.csv
+The 2-mer scores are saved at {temp_dir}/score_2-mer.csv
 
 FINISH! Total time taken: 1.85 mins 
 ```
