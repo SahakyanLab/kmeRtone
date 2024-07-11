@@ -17,12 +17,6 @@
 #' 
 #' @return A `UCSC_Genome` or `NCBI_Genome` object.
 #'
-#' @examples
-#' \dontrun{
-#'    genome <- loadGenome(...)
-#'    genome["chr1"]
-#'    genome[c("chr1", "chr2")]
-#'  }
 #' @export
 loadGenome <- function(genome.name, fasta.style, mask="none", fasta.path,
                        ncbi.db, ncbi.asm, use.UCSC.name=FALSE, load.limit=1) {

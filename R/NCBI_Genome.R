@@ -180,7 +180,7 @@ NCBI_Genome <- R6::R6Class(
       # Growing column
       # dt.headers <- data.table(column.name = c("chromosome", "header",
       #                                          "line_number"))
-      #cat("Indexing the fasta file...\n")
+      #message(paste("Indexing the fasta file...\n"))
       # Assume the genome is large, so process by chunk.
       max.row <- 12000000
       skip.len <- 0
@@ -246,12 +246,12 @@ NCBI_Genome <- R6::R6Class(
                                full.names = TRUE)
       fasta.file <- fasta.file[grepl("_genomic.fna.gz", fasta.file)]
       if (length(fasta.file) > 1) {
-        cat("More than one fasta files are found:\n", basename(fasta.file),
-            "\nThis version is used:", basename(fasta.file[1]), "\n")
+        message(paste("More than one fasta files are found:\n", basename(fasta.file),
+            "\nThis version is used:", basename(fasta.file[1]), "\n"))
         fasta.file <- fasta.file[1]
       } else if (length(fasta.file) == 0) {
-        cat(genome.name, "is not found in local database. Looking up in remote",
-            db, "database...\n")
+        message(paste(genome.name, "is not found in local database. Looking up in remote",
+            db, "database...\n"))
         if (is.null(self$asm)) {
           self$asm <- getNCBIassemblySummary(organism.group = "all", db = db)
         }
@@ -260,7 +260,7 @@ NCBI_Genome <- R6::R6Class(
         if (nrow(self$asm) == 0) {
           stop(genome.name, " not found in ", db, " database.")
         } else {
-          cat(genome.name, "found! Downloading...\n")
+          message(paste(genome.name, "found! Downloading...\n"))
           downloadNCBIGenomes(self$asm, output.dir = genome.dir)
         }
         fasta.file <- private$get_fasta_path(self$genome_name, self$db)

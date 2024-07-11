@@ -71,8 +71,8 @@ getEnsemblData <- function(url, handle, max.attempt=5) {
     
     if (attempt.no == max.attempt) {
       
-      cat(rawToChar(response$headers), "\n")
-      cat(rawToChar(response$content), "\n")
+      message(paste(rawToChar(response$headers), "\n"))
+      message(paste(rawToChar(response$content), "\n"))
       prompt.msg <- paste0(max.attempt, " attempts have been made. ",
                            "Retry? (y/n/s): ")
       

@@ -166,9 +166,9 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
           FILTER == "PASS"]
 
       time.taken <- Sys.time() - t1
-      cat("Finish parsing VCF")
-      cat("...", round(time.taken, digits = 2), " ",
-          attr(time.taken, "units"), "\n", sep = "")
+      message(paste("Finish parsing VCF"))
+      message(paste("...", round(time.taken, digits = 2), " ",
+          attr(time.taken, "units"), "\n", sep = ""))
 
       setorder(vcf, CHROM, POS)
 
@@ -298,9 +298,9 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
 
         # t1.b <- Sys.time()
         # time.taken <- t1.b - t1.a
-        # cat("Sampling bases")
-        # cat("...", round(time.taken, digits = 2), " ",
-        #     attr(time.taken, "units"), "\n", sep = "")
+        # message(paste("Sampling bases"))
+        # message(paste("...", round(time.taken, digits = 2), " ",
+        #     attr(time.taken, "units"), "\n", sep = ""))
 
         mut.merged.seq <- stri_sub_replace_all(merged.seq,
                                                from = snv$position,
@@ -309,9 +309,9 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
 
         # t1.c <- Sys.time()
         # time.taken <- t1.c - t1.b
-        # cat("Mutating genome")
-        # cat("...", round(time.taken, digits = 2), " ",
-        #     attr(time.taken, "units"), "\n", sep = "")
+        # message(paste("Mutating genome"))
+        # message(paste("...", round(time.taken, digits = 2), " ",
+        #     attr(time.taken, "units"), "\n", sep = ""))
 
         # Count susceptible k-mers in every element for each strand.
         i.cnts <- data.table()
@@ -368,18 +368,18 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
 
           # t1.c <- Sys.time()
           # time.taken <- t1.c - t1.b
-          # cat("Counting k-mers in", element, "of", strand, "strand")
-          # cat("...", round(time.taken, digits = 2), " ",
-          #     attr(time.taken, "units"), "\n", sep = "")
+          # message(paste("Counting k-mers in", element, "of", strand, "strand"))
+          # message(paste("...", round(time.taken, digits = 2), " ",
+          #     attr(time.taken, "units"), "\n", sep = ""))
 
         }, by = .(element, strand)]
 
         # t2.a <- Sys.time()
         # time.taken <- t2.a - t1.a
-        # cat("Individual from", population, "population, zooming into",
-        #     "all elements of selected genes", if(loop.chr) c("in", chromosome))
-        # cat("...", round(time.taken, digits = 2), " ",
-        #     attr(time.taken, "units"), "\n", sep = "")
+        # message(paste("Individual from", population, "population, zooming into",
+        #     "all elements of selected genes", if(loop.chr) c("in", chromosome)))
+        # message(paste("...", round(time.taken, digits = 2), " ",
+        #     attr(time.taken, "units"), "\n", sep = ""))
 
         i.cnts
       }, future.globals = c(".N", ".SD", "count", "merged.seq", "rel.coors",
@@ -393,10 +393,10 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
 
       t2 <- Sys.time()
       time.taken <- t2 - t1
-      cat("Simulation of", population.size, "individuals of", population,
-          "population in all elements", if(loop.chr) c("of", chromosome))
-      cat("...", round(time.taken, digits = 2), " ",
-          attr(time.taken, "units"), "\n", sep = "")
+      message(paste("Simulation of", population.size, "individuals of", population,
+          "population in all elements", if(loop.chr) c("of", chromosome)))
+      message(paste("...", round(time.taken, digits = 2), " ",
+          attr(time.taken, "units"), "\n", sep = ""))
 
       NULL
     }, by = eval(c(if(loop.chr) "chromosome", "population"))]

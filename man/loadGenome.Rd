@@ -42,10 +42,3 @@ The Genome object is capable of loading chromosome sequence on demand.
 UCSC Genomes are included in this kmeRtone package. Their specific
 chromosome sequence will be downloaded on demand once.
 }
-\examples{
-\dontrun{
-   genome <- loadGenome(...)
-   genome["chr1"]
-   genome[c("chr1", "chr2")]
- }
-}

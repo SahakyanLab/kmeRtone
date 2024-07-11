@@ -184,10 +184,10 @@ STUDY_CANCER_GENES <- function(cosmic.username, cosmic.password,
             })
 
           time.taken <- Sys.time() - t1
-          cat("Bootstraping genes for ", kmer.content, " in ", element, " of ",
+          message(paste("Bootstraping genes for ", kmer.content, " in ", element, " of ",
               strand.type, " strands in ", cancer.grp, " cancer genes...",
               round(time.taken, 2), " ", attr(time.taken, "units"), "\n",
-              sep = "")
+              sep = ""))
 
           dens.cancer.genes <- density.ref(get(kmer.content)[cancer ==
             cancer.grp])

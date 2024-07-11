@@ -31,7 +31,7 @@ loadGenomicContents <- function(genome) {
   wins <- c(100, 500, 1000, 5000, 10000, 50000, 100000, 200000)
   for (win in wins) {
 
-    cat("At window", win, "\n")
+    message(paste("At window", win, "\n"))
 
     # Calculate G content in genome on window of both strand
     win.dt[, paste0("win", win, "_G") :=

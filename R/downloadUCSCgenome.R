@@ -59,7 +59,7 @@ downloadUCSCgenome <- function(genome.name, output.path, chr.name,
     chr.path <- paste0(output.path, "/", chr.file)
     chr.url <- paste0(root.url, "/", chr.file)
 
-    cat("\nDownloading", chr.file, "from UCSC...\n")
+    message(paste("\nDownloading", chr.file, "from UCSC...\n"))
     download.file(chr.url, chr.path, method = method)
 
   }

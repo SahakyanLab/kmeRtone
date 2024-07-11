@@ -93,9 +93,9 @@ STUDY_ACROSS_SPECIES <- function(kmer.table, kmer.cutoff=5, k,
           asm[organism_name %like% extr, .N] == 0
         })
         miss.extr <- extremophile.names[[i]][miss.extr]
-        cat(paste(miss.extr[-length(miss.extr)], collapse = ", "), "and",
+        message(paste(paste(miss.extr[-length(miss.extr)], collapse = ", "), "and",
             miss.extr[length(miss.extr)], " are not found in both  NCBI refseq",
-            " and genbank database.\n")
+            " and genbank database.\n"))
         response <- readline("Continue without these extremophiles? (y/n): ")
         if (response == "n") stop("Stop R")
       }
@@ -125,7 +125,7 @@ STUDY_ACROSS_SPECIES <- function(kmer.table, kmer.cutoff=5, k,
 
   asm[, `:=`(top_kmer_count = {
 
-    #cat(assembly_accession, organism_name, organism_group, "\n")
+    #message(paste(assembly_accession, organism_name, organism_group, "\n"))
     p(paste(assembly_accession, organism_name, organism_group))
 
     genome <- loadGenome(genome.name = assembly_accession,

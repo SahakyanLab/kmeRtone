@@ -40,14 +40,14 @@ persistentDownload <- function(file.url, output.name, max.attempt = 5,
     } else {
 
       if (!is.null(response$message)) message(response$message)
-      cat("Download status: ",
+      message(paste("Download status: ",
           if (!is.null(response$status_code)) response$status_code
           else "unknown",
           "\n",
           "Current time: ", paste(Sys.time()), "\n",
           "File URL: ", file.url, "\n",
           "Output name: ", output.name, "\n",
-          "Download failed after ", attempt-1, " attempts.\n", sep = "")
+          "Download failed after ", attempt-1, " attempts.\n", sep = ""))
       user.response <- NA
       while(!user.response %in% c("y", "n", "s")) {
         user.response <- readline("Keep trying? (y/n/s): ")

@@ -116,7 +116,7 @@ STUDY_GENIC_ELEMENTS <- function(kmer.table, kmer.cutoff=5, k,
 
   counts <- gene.dt[end - start + 1 >= k, {
 
-    #cat(chromosome, strand, get(gene.name.col), element, "\n")
+    #message(paste(chromosome, strand, get(gene.name.col), element, "\n"))
     p(paste(chromosome, strand, get(gene.name.col), element))
 
     kmers <- buildRangedKmerTable(genome[chromosome], start, end, k,
@@ -164,8 +164,8 @@ STUDY_GENIC_ELEMENTS <- function(kmer.table, kmer.cutoff=5, k,
   }, by = c("chromosome", "strand", gene.name.col, "element")]
 
   time.taken <- Sys.time() - t1
-  cat("Counting k-mers finished in ", round(time.taken, 2), " ",
-      attr(time.taken, "units"), "\n", sep = "")
+  message(paste("Counting k-mers finished in ", round(time.taken, 2), " ",
+      attr(time.taken, "units"), "\n", sep = ""))
 
   counts[, strand := NULL]
   setnames(counts, "X", "strand")

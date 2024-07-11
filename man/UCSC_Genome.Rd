@@ -36,6 +36,7 @@ fasta files.}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-UCSC_Genome-new}{\code{UCSC_Genome$new()}}
+\item \href{#method-UCSC_Genome-[}{\code{UCSC_Genome$[()}}
 \item \href{#method-UCSC_Genome-print}{\code{UCSC_Genome$print()}}
 \item \href{#method-UCSC_Genome-get_length}{\code{UCSC_Genome$get_length()}}
 \item \href{#method-UCSC_Genome-get_content}{\code{UCSC_Genome$get_content()}}

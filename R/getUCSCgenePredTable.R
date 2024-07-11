@@ -16,7 +16,7 @@
 #' @importFrom data.table setDT rbindlist
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'    # Retrieve the RefSeq gene prediction table for the human genome (hg38)
 #'    genePredTable <- getUCSCgenePredTable(genome.name = "hg38", db = "refseq")
 #'  }

@@ -86,7 +86,7 @@ kmeRtone <- function(case.coor.path, genome.name, strand.sensitive, k,
                      pop.plot=TRUE, pop.loop.chr=FALSE) {
 
   # Argument checking ----------------------------------------------------------
-  cat("\n")
+  message("\n")
 
   # Coordinate
   if (missing(case.coor.path) & missing(case) &
@@ -146,16 +146,16 @@ kmeRtone <- function(case.coor.path, genome.name, strand.sensitive, k,
   if (missing(control.path)) control.path <- NULL
   if (missing(single.case.len)) {
     if (missing(case)) {
-      cat("Argument single.case.len is not specified. Case length is assumed",
-          " to be varied.\n")
+      message(paste("Argument single.case.len is not specified. Case length is assumed",
+          " to be varied.\n"))
       single.case.len <- NULL
     } else {
       single.case.len <- case$single_len
     }
   }
   if (missing(case.pattern) & module != "study_cancer_genes") {
-    cat("Case pattern is not specified. Case pattern is assumed to be any",
-        "pattern i.e. it is set to NULL.\n")
+    message(paste("Case pattern is not specified. Case pattern is assumed to be any",
+        "pattern i.e. it is set to NULL.\n"))
     case.pattern <- NULL
   }
 

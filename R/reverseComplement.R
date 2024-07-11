@@ -9,7 +9,7 @@
 #' @importFrom stringi stri_trans_char stri_reverse
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'    reverseComplement("AAAAA")
 #'    reverseComplement(c("AAAAA", "CCCCC"))
 #'    reverseComplement(c("A", "A", "A", "A"), form = "vector")
