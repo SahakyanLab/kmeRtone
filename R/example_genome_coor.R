@@ -4,14 +4,15 @@
 #' Below is an example code that generates random genomic coordinates.
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(data.table)
 #' library(kmeRtone)
 #' 
 #' # 1. Randomly generate genomic positions and save results
-#' dir.create("./data", showWarnings = FALSE)
+#' temp_dir <- tempdir()
 #' 
 #' set.seed(1234)
+#' temp_files <- character(1)
 #' for(chr in 1){
 #'     genomic_coor <- data.table::data.table(
 #'         seqnames = paste0("chr", chr),
@@ -23,11 +24,12 @@
 #'         width = 2
 #'     )
 #' 
-#'     data.table::fwrite(
-#'         genomic_coor, 
-#'         paste0("./data/chr", chr, ".csv")
-#'     )
+#'     f <- file.path(temp_dir, paste0("chr", chr, ".csv"))
+#'     fwrite(genomic_coor, f)
+#'     temp_files[chr] <- f
 #' }
+#' 
+#' rm_files <- file.remove(temp_files)
 #' }
 #' 
 #' @format A data frame with 1001 rows and 3 columns
@@ -38,3 +40,4 @@
 #' }
 #'
 "example_genome_coor"
+
