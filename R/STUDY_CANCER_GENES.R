@@ -30,6 +30,8 @@ STUDY_CANCER_GENES <- function(cosmic.username, cosmic.password,
                                tumour.type.regex=NULL, tumour.type.exact=NULL,
                                cell.type="somatic", genic.elements.counts.dt,
                                output.dir="study_cancer_genes/") {
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))
 
   dir.create(output.dir, recursive = TRUE, showWarnings = FALSE)
 

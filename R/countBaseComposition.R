@@ -15,6 +15,8 @@
 #' 
 #' @export
 countBaseComposition <- function(case, genome, case.pattern, output.path="./") {
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))
 
   if (!is.null(output.path)) {
     dir.create(output.path, recursive = TRUE, showWarnings = FALSE)
@@ -22,7 +24,7 @@ countBaseComposition <- function(case, genome, case.pattern, output.path="./") {
               onefile = TRUE)
   }
 
-  options(scipen = 999)
+  # options(scipen = 999)
 
   case$add_col_rep <- FALSE
 

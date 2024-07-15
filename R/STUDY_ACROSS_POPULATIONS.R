@@ -38,6 +38,8 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
                                      output.dir="study_across_populations/",
                                      population.snv.dt=NULL, loop.chr=TRUE,
                                      plot=FALSE) {
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))
 
   if (is.character(kmer.table))
     kmer.table <- fread(kmer.table, showProgress = FALSE)

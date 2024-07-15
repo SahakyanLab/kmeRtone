@@ -27,6 +27,8 @@ STUDY_ACROSS_SPECIES <- function(kmer.table, kmer.cutoff=5, k,
                                  central.pattern=NULL, selected.extremophiles,
                                  other.extremophiles,
                                  output.dir="study_across_species/") {
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))
 
   if (is.character(kmer.table))
     kmer.table <- fread(kmer.table, showProgress = FALSE)

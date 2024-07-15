@@ -22,6 +22,8 @@ STUDY_GENIC_ELEMENTS <- function(kmer.table, kmer.cutoff=5, k,
                                  genome.name="hg38", central.pattern=NULL,
                                  db="refseq",
                                  output.dir="study_genic_elements/") {
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))
 
   dir.create(output.dir, showWarnings = FALSE, recursive = TRUE)
 

@@ -19,6 +19,9 @@
 #' 
 #' @export
 countDistribution <- function(case, genome, case.pattern, output.path="./") {
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))
+
   if (!is.null(output.path)) {
     dir.create(output.path, recursive = TRUE, showWarnings = FALSE)
     cairo_pdf(paste0(output.path, "/exploration.pdf"), width = 10, height = 8,
