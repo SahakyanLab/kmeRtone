@@ -90,6 +90,7 @@ SCORE <- function(
   if (verbose) catHeader("Extraction of Control K-mers")
   if (is.null(control) & is.null(control.path)) {
   #' @param case Data.table containing the genomic coordinates of case regions.
+  #' @param k Integer size of the expanded k-mer.
   #' @param ctrl.rel.pos Relative positions of control regions with respect to case regions. 
   #'    It should be a vector of two integers indicating the upstream and downstream
   #'    distances from the case regions.
@@ -97,12 +98,14 @@ SCORE <- function(
   #' @param output.path Directory path where the output files will be saved.
   #' @param verbose Logical indicating whether to display progress messages.
     control <- buildControl(case = case,
+                            k = k,
                             ctrl.rel.pos = ctrl.rel.pos,
                             genome = genome,
                             output.path = paste0(output.path, "/control_",
                                                  ctrl.rel.pos[1], "-",
                                                  ctrl.rel.pos[2], "/"),
                             verbose = verbose)
+
     # Time
     if (verbose) {
       t <- Sys.time() - t1

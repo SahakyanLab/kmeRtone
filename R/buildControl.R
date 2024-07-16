@@ -2,6 +2,7 @@
 #'
 #' @param case Case in Coordinate class object format.
 #' @param ctrl.rel.pos Control relative position.
+#' @param k Integer size of the expanded k-mer.
 #' @param genome Genome class object.
 #' @param output.path Output directory path to save control coordinate.
 #' @param verbose Boolean. Default is TRUE and will print progress updates. 
@@ -13,7 +14,7 @@
 #' @importFrom progressr progressor
 #' 
 #' @export
-buildControl <- function(case, ctrl.rel.pos, genome, output.path="control/",
+buildControl <- function(case, k, ctrl.rel.pos, genome, output.path="control/",
                          verbose=TRUE) {
 
   # Error checking
@@ -40,22 +41,22 @@ buildControl <- function(case, ctrl.rel.pos, genome, output.path="control/",
     # Initialize control region
     control <- case[chr.name, state = "case"][, .(
       start = c(start - ctrl.rel.pos[2],
-                (if(!is.null(case$single_len)) start + case$single_len - 1 else
+                (if(!is.null(case$single_len)) (start + k - 1) else
                   end) + ctrl.rel.pos[1]),
       end = c(start - ctrl.rel.pos[1],
-              (if(!is.null(case$single_len)) (start + case$single_len - 1) else
+              (if(!is.null(case$single_len)) (start + k - 1) else
                 end) + ctrl.rel.pos[2])
     )]
     control <- trimCoordinate(control, seq.len = stri_length(genome[chr.name]))
-    control <- mergeCoordinate(control)
+    # control <- mergeCoordinate(control)
 
     # Define buffer region as outermost case regions + ctrl.rel.pos[1]
     buffer <- case[chr.name, state = "case"][
       , .(start = start - ctrl.rel.pos[1],
-          end = (if(!is.null(case$single_len)) start + case$single_len - 1 else
+          end = (if(!is.null(case$single_len)) (start + k - 1) else
             end) + ctrl.rel.pos[1])]
     buffer <- trimCoordinate(buffer, seq.len = stri_length(genome[chr.name]))
-    buffer <- mergeCoordinate(buffer)
+    # buffer <- mergeCoordinate(buffer)
 
     # Final control coordinate
     control <- removeRegion(control, region = buffer)

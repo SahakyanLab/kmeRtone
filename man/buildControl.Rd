@@ -6,6 +6,7 @@
 \usage{
 buildControl(
   case,
+  k,
   ctrl.rel.pos,
   genome,
   output.path = "control/",
@@ -14,6 +15,8 @@ buildControl(
 }
 \arguments{
 \item{case}{Case in Coordinate class object format.}
+
+\item{k}{Integer size of the expanded k-mer.}
 
 \item{ctrl.rel.pos}{Control relative position.}
 

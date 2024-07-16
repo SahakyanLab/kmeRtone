@@ -138,6 +138,9 @@ extractKmers <- function(coor, genome, k, central.pattern=NULL,
       }
     }
 
+  # coor[chr.name, state = ifelse(expand.to.kmer, "kmer", "case"), k = ifelse(expand.to.kmer, k, NA)]
+  #   map.kmers(chr.name, start, k, end = if(end.coor.matters) end, rm.trunc.kmer = TRUE)
+
     coor[chr.name,
          state = ifelse(expand.to.kmer, "kmer", "case"),
          k = ifelse(expand.to.kmer, k, NA)][
