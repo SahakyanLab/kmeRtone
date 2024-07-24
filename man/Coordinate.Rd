@@ -50,7 +50,6 @@ either starting from zero or one.}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-Coordinate-new}{\code{Coordinate$new()}}
-\item \href{#method-Coordinate-[}{\code{Coordinate$[()}}
 \item \href{#method-Coordinate-mark_overlap}{\code{Coordinate$mark_overlap()}}
 \item \href{#method-Coordinate-print}{\code{Coordinate$print()}}
 \item \href{#method-Coordinate-map_sequence}{\code{Coordinate$map_sequence()}}
