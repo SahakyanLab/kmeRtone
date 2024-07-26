@@ -7,6 +7,7 @@
 generateIntergenicCoor(
   genepred,
   genome.name,
+  fasta.path,
   igr.rel.pos = c(5000, 7500),
   igr.min.length = 150,
   return.coor.obj = FALSE
@@ -16,6 +17,9 @@ generateIntergenicCoor(
 \item{genepred}{UCSC genePred table or database name ("refseq" or "gencode").}
 
 \item{genome.name}{UCSC genome name (e.g., hg38, mm39).}
+
+\item{fasta.path}{Path to a directory of user-provided genome FASTA files or
+the destination to save the NCBI/UCSC downloaded reference genome files.}
 
 \item{igr.rel.pos}{Intergenic relative position, defaults to c(5000, 7500).}
 

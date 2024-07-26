@@ -18,7 +18,8 @@ STUDY_ACROSS_POPULATIONS(
   output.dir = "study_across_populations/",
   population.snv.dt = NULL,
   loop.chr = TRUE,
-  plot = FALSE
+  plot = FALSE,
+  fasta.path
 )
 }
 \arguments{
@@ -52,6 +53,9 @@ memory spike because of VCF content. VCF contains zero counts for every
 population. Input pre-computed trimmed-version population.snv.dt.}
 
 \item{plot}{Boolean. Default is FALSE. If TRUE, will plot results.}
+
+\item{fasta.path}{Path to a directory of user-provided genome FASTA files or
+the destination to save the NCBI/UCSC downloaded reference genome files.}
 }
 \value{
 An output directory containing plots.

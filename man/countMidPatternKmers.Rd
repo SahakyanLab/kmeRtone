@@ -21,10 +21,3 @@ This function scans through each sequence in the provided vector, locating a spe
 For each occurrence of the middle pattern, the function extracts and counts the surrounding k-mers.
 The k-mers are identified based on the given k-mer size and centered around the middle pattern.
 }
-\examples{
-sequences <- c("ATCGATCGA", "GCGCATGCA")
-k <- 5
-mid_pattern <- "CG"
-countMidPatternKmers(sequences, k, mid_pattern)
-
-}

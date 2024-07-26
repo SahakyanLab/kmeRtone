@@ -23,7 +23,8 @@ kmeRtone. Input their name e.g. hg19 or GRCh37.}
 
 \item{mask}{Genome mask: "none", "soft", or "hard". Default is "none".}
 
-\item{fasta.path}{Path to the fasta file as a character vector.}
+\item{fasta.path}{Path to a directory of user-provided genome FASTA files or
+the destination to save the NCBI/UCSC downloaded reference genome files.}
 
 \item{ncbi.db}{NCBI database: "refseq" or "genbank".}
 

@@ -21,9 +21,3 @@ UCSC genome and database.
 This function retrieves the gene prediction table from the UCSC genome database
 for a specified genome. It can fetch data from either the RefSeq or GENCODE databases.
 }
-\examples{
-\donttest{
-   # Retrieve the RefSeq gene prediction table for the human genome (hg38)
-   genePredTable <- getUCSCgenePredTable(genome.name = "hg38", db = "refseq")
- }
-}

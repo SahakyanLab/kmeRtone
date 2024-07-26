@@ -11,7 +11,8 @@ STUDY_GENIC_ELEMENTS(
   genome.name = "hg38",
   central.pattern = NULL,
   db = "refseq",
-  output.dir = "study_genic_elements/"
+  output.dir = "study_genic_elements/",
+  fasta.path
 )
 }
 \arguments{
@@ -29,6 +30,9 @@ STUDY_GENIC_ELEMENTS(
 "gencode". Default is "refseq".}
 
 \item{output.dir}{A directory for the outputs.}
+
+\item{fasta.path}{Path to a directory of user-provided genome FASTA files or
+the destination to save the NCBI/UCSC downloaded reference genome files.}
 }
 \value{
 An output directory containing plots.

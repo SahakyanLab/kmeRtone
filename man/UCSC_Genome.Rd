@@ -56,8 +56,8 @@ Create a new Genome class
 \describe{
 \item{\code{genome.name}}{A genome name. UCSC genome is included with kmeRtone.}
 
-\item{\code{root.path}}{A path to a directory containing chromosome-separated
-fasta files.}
+\item{\code{root.path}}{Path to a directory of user-provided genome FASTA files or
+the destination to save the NCBI/UCSC downloaded reference genome files.}
 
 \item{\code{mask}}{Genome mask status: "hard", "soft", or "none". Default is
 "none".}

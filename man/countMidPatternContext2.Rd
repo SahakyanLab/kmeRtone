@@ -25,11 +25,3 @@ It then counts the occurrences of specific context patterns within a defined win
 size around the middle pattern. The function returns a map where keys are the
 counts of context patterns found and values are the frequencies of these counts.
 }
-\examples{
-sequence <- "ATCGATCGA"
-mid_pattern <- "CG"
-window <- 5
-context_patterns <- c("AT", "GA")
-countMidPatternContext2(sequence, mid_pattern, window, context_patterns)
-
-}

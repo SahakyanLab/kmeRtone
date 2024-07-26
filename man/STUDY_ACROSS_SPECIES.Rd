@@ -11,7 +11,8 @@ STUDY_ACROSS_SPECIES(
   central.pattern = NULL,
   selected.extremophiles,
   other.extremophiles,
-  output.dir = "study_across_species/"
+  output.dir = "study_across_species/",
+  fasta.path
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ The best representative will be selected from the assembly summary.}
 used as a control to compare with the selected extremophiles.}
 
 \item{output.dir}{A directory for the outputs.}
+
+\item{fasta.path}{Path to a directory of user-provided genome FASTA files or
+the destination to save the NCBI/UCSC downloaded reference genome files.}
 }
 \value{
 An output directory containing plots.
