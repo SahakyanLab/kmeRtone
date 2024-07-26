@@ -9,4 +9,4 @@
 library(testthat)
 library(kmeRtone)
 
-test_check("kmeRtone")
+testthat::test_check("kmeRtone")

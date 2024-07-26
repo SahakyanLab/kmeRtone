@@ -13,8 +13,8 @@
 #' temp_dir <- tempdir()
 #' 
 #' set.seed(1234)
-#' temp_files <- character(22)
-#' for(chr in 1:22){
+#' temp_files <- character(1)
+#' for(chr in 1){
 #'     genomic_coor <- data.table(
 #'         seqnames = paste0("chr", chr),
 #'         start = sample(
@@ -31,9 +31,11 @@
 #' }
 #' 
 #' # 2. Run kmeRtone score function
+#' temp_dir_genome <- tempdir()
 #' kmeRtone::kmeRtone(
 #'     case.coor.path = temp_dir, 
 #'     genome.name = "hg19", 
+#'     genome.path = temp_dir_genome,
 #'     strand.sensitive = FALSE, 
 #'     k = 2,
 #'     ctrl.rel.pos = c(80, 500),
