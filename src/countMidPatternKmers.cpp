@@ -12,12 +12,6 @@
 //' @param mid_pattern A string representing the middle pattern to search for within each sequence.
 //' @return A std::unordered_map with k-mers as keys and their counts as values.
 //'
-//' @examples
-//' sequences <- c("ATCGATCGA", "GCGCATGCA")
-//' k <- 5
-//' mid_pattern <- "CG"
-//' countMidPatternKmers(sequences, k, mid_pattern)
-//'
 //' @export
 // [[Rcpp::export]]
 std::unordered_map<std::string,int> countMidPatternKmers(

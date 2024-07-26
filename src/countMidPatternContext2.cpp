@@ -16,12 +16,6 @@ using namespace Rcpp;
 //' @return A std::unordered_map<int,int> where keys are the counts of context patterns found 
 //'         and values are the frequencies of these counts.
 //'
-//' @examples
-//' sequence <- "ATCGATCGA"
-//' mid_pattern <- "CG"
-//' window <- 5
-//' context_patterns <- c("AT", "GA")
-//' countMidPatternContext2(sequence, mid_pattern, window, context_patterns)
 //'
 //' @export
 // [[Rcpp::export]]
