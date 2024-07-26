@@ -30,7 +30,7 @@ removeRegion <- function(coor, region) {
   setkeyv(coor, c(group.by.cols, "start", "end"))
 
   # Locate continuous region coordinates and assign group
-  coor[, group := cumsum(c(1, cummax(head(end, -1)) - tail(start, -1) < -1)),
+  coor[, group := cumsum(c(1, cummax(utils::head(end, -1)) - utils::tail(start, -1) < -1)),
        by = eval(group.by.cols)]
 
   # Make partition of the overlapping regions in each group
@@ -47,7 +47,7 @@ removeRegion <- function(coor, region) {
 
   # Find overlaps i.e. shrunken partitions within the case zones
   setkeyv(coor, c(group.by.cols, "start", "end"))
-  coor[, group := cumsum(c(1, cummax(head(end, -1)) - tail(start, -1) < 0)),
+  coor[, group := cumsum(c(1, cummax(utils::head(end, -1)) - utils::tail(start, -1) < 0)),
        by = eval(group.by.cols)]
 
   # Remove group with more than one partition i.e. the overlaps

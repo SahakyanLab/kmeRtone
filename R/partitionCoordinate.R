@@ -23,7 +23,7 @@ partitionCoordinate <- function(coor) {
   setorderv(coor, c(group.by.cols, "start", "end"))
 
   # Locate the overlapping or continuous regions
-  coor[, group := cumsum(c(1, cummax(head(end, -1)) - tail(start, -1) < -1)),
+  coor[, group := cumsum(c(1, cummax(utils::head(end, -1)) - utils::tail(start, -1) < -1)),
        by = eval(group.by.cols)]
 
   # Make partition of the overlapping regions in each group
