@@ -195,9 +195,11 @@ for(chr in 1:22){
 }
 
 #' 2. Run kmeRtone `score` function
+temp_dir_genome <- tempdir()
 kmeRtone::kmeRtone(
     case.coor.path = temp_dir, 
     genome.name = "hg19", 
+    genome.path = temp_dir_genome,
     strand.sensitive = FALSE, 
     k = 2,
     ctrl.rel.pos = c(80, 500),
