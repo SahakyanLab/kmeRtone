@@ -241,7 +241,7 @@ NCBI_Genome <- R6::R6Class(
     # @param db NCBI database: "refseq" or "genbank"
     # @return fasta.file path
     get_fasta_path = function(genome.name, db) {
-      genome.dir <- paste0(path.expand(kmeRtone.data.path), "/genome/", db)
+      genome.dir <- self$fasta_file
       fasta.file <- list.files(genome.dir, genome.name,
                                full.names = TRUE)
       fasta.file <- fasta.file[grepl("_genomic.fna.gz", fasta.file)]

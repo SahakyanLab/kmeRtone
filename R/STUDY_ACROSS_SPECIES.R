@@ -13,6 +13,8 @@
 #' @param k K-mer size.
 #' @param central.pattern K-mer's central patterns. Default is NULL.
 #' @param output.dir A directory for the outputs.
+#' @param fasta.path Path to a directory of user-provided genome FASTA files or 
+#'  the destination to save the NCBI/UCSC downloaded reference genome files.
 #'
 #' @return An output directory containing plots.
 #'
@@ -26,7 +28,8 @@
 STUDY_ACROSS_SPECIES <- function(kmer.table, kmer.cutoff=5, k,
                                  central.pattern=NULL, selected.extremophiles,
                                  other.extremophiles,
-                                 output.dir="study_across_species/") {
+                                 output.dir="study_across_species/",
+                                 fasta.path) {
   oldpar <- par(no.readonly = TRUE)
   on.exit(par(oldpar))
 
@@ -132,7 +135,8 @@ STUDY_ACROSS_SPECIES <- function(kmer.table, kmer.cutoff=5, k,
 
     genome <- loadGenome(genome.name = assembly_accession,
                          fasta.style = "NCBI",
-                         mask = "none")
+                         mask = "none",
+                         fasta.path = fasta.path)
 
     report <- genome$get_assembly_report()
 

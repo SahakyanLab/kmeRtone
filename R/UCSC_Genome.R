@@ -39,8 +39,8 @@ UCSC_Genome <- R6::R6Class(
     #' @description
     #' Create a new Genome class
     #' @param genome.name A genome name. UCSC genome is included with kmeRtone.
-    #' @param root.path A path to a directory containing chromosome-separated
-    #'     fasta files.
+    #' @param root.path Path to a directory of user-provided genome FASTA files or
+    #'     the destination to save the NCBI/UCSC downloaded reference genome files.
     #' @param load.limit Maximum chromosome sequences loaded. Default is 1.
     #' @param mask Genome mask status: "hard", "soft", or "none". Default is
     #'     "none".
@@ -49,13 +49,14 @@ UCSC_Genome <- R6::R6Class(
 
       if (!missing(genome.name)) self$genome_name <- genome.name
       else if (missing(genome.name)) self$genome_name <- basename(root.path)
-      if (!missing(root.path)) self$root_path <- root.path
       if (!missing(load.limit)) self$load_limit <- load.limit
+      if (!missing(root.path)) self$root_path <- root.path
       if (!missing(mask)) self$mask <- mask
 
       if (is.null(self$root_path)) {
-        home.path <- path.expand(kmeRtone.data.path)
-        self$root_path <- paste0(home.path, "/genome/", self$genome_name, "/")
+        stop("Root path is missing. Please indicate the directory to save files.")
+        # home.path <- path.expand(kmeRtone.data.path)
+        # self$root_path <- paste0(home.path, "/genome/", self$genome_name, "/")
       }
 
       self$paths <- private$get_seq_path()

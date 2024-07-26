@@ -8,7 +8,9 @@
 #'     "gencode". Default is "refseq".
 #' @param central.pattern K-mer's central patterns. Default is NULL.
 #' @param output.dir A directory for the outputs.
-#'
+#' @param fasta.path Path to a directory of user-provided genome FASTA files or 
+#'  the destination to save the NCBI/UCSC downloaded reference genome files.
+#' 
 #' @return An output directory containing plots.
 #'
 #' @importFrom data.table fread fwrite setorder setnames rbindlist
@@ -21,7 +23,8 @@
 STUDY_GENIC_ELEMENTS <- function(kmer.table, kmer.cutoff=5, k,
                                  genome.name="hg38", central.pattern=NULL,
                                  db="refseq",
-                                 output.dir="study_genic_elements/") {
+                                 output.dir="study_genic_elements/",
+                                 fasta.path) {
   oldpar <- par(no.readonly = TRUE)
   on.exit(par(oldpar))
 
@@ -41,7 +44,8 @@ STUDY_GENIC_ELEMENTS <- function(kmer.table, kmer.cutoff=5, k,
   genepred <- genepred[chrom %in% paste0("chr", c(1:22, "X", "Y"))]
 
   # Generate intergenic regions as a control.
-  igr.dt <- generateIntergenicCoor(genepred, genome.name = genome.name,
+  igr.dt <- generateIntergenicCoor(genepred, genome.name = genome.name, 
+                                   fasta.path = fasta.path,
                                    igr.rel.pos = c(5000, 7500),
                                    igr.min.length = 150,
                                    return.coor.obj = FALSE)
@@ -101,7 +105,7 @@ STUDY_GENIC_ELEMENTS <- function(kmer.table, kmer.cutoff=5, k,
   top.kmers <- kmer.table[1:round(kmer.cutoff / 100 * .N), kmer]
   bottom.kmers <- kmer.table[(.N - round(kmer.cutoff / 100 * .N)):.N, kmer]
 
-  genome <- loadGenome(genome.name, fasta.style = "UCSC")
+  genome <- loadGenome(genome.name, fasta.style = "UCSC", fasta.path = fasta.path)
 
   gene.dt[element == "IGR", strand := "*"]
   setorder(gene.dt, chromosome, strand)

@@ -7,6 +7,8 @@
 #'
 #' @param genepred UCSC genePred table or database name ("refseq" or "gencode").
 #' @param genome.name UCSC genome name (e.g., hg38, mm39).
+#' @param fasta.path Path to a directory of user-provided genome FASTA files or 
+#'  the destination to save the NCBI/UCSC downloaded reference genome files.
 #' @param igr.rel.pos Intergenic relative position, defaults to c(5000, 7500).
 #' @param igr.min.length Minimum length for intergenic regions, default is 150.
 #' @param return.coor.obj Return results as a `Coordinate` object? Default FALSE.
@@ -15,11 +17,11 @@
 #' @importFrom data.table data.table fwrite
 #' 
 #' @export
-generateIntergenicCoor <- function(genepred, genome.name,
+generateIntergenicCoor <- function(genepred, genome.name, fasta.path,
                                    igr.rel.pos=c(5000, 7500),
                                    igr.min.length=150, return.coor.obj=FALSE) {
 
-  genome <- loadGenome(genome.name, fasta.style = "UCSC")
+  genome <- loadGenome(genome.name, fasta.style = "UCSC", fasta.path = fasta.path)
 
   if (is.character(genepred))
     genepred <- getUCSCgenePredTable(genome.name = genome.name, db = genepred)

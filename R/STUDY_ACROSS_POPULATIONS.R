@@ -21,6 +21,8 @@
 #'     memory spike because of VCF content. VCF contains zero counts for every
 #'     population. Input pre-computed trimmed-version population.snv.dt.
 #' @param plot Boolean. Default is FALSE. If TRUE, will plot results.
+#' @param fasta.path Path to a directory of user-provided genome FASTA files or 
+#'  the destination to save the NCBI/UCSC downloaded reference genome files.
 #'
 #' @return An output directory containing plots.
 #' 
@@ -37,7 +39,7 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
                                      add.to.existing.population=FALSE,
                                      output.dir="study_across_populations/",
                                      population.snv.dt=NULL, loop.chr=TRUE,
-                                     plot=FALSE) {
+                                     plot=FALSE, fasta.path) {
   oldpar <- par(no.readonly = TRUE)
   on.exit(par(oldpar))
 
@@ -122,7 +124,7 @@ STUDY_ACROSS_POPULATIONS <- function(kmer.table, kmer.cutoff=5, genome.name, k,
   setorder(kmer.table, -z)
   top.kmers <- kmer.table[1:round(kmer.cutoff / 100 * .N), kmer]
 
-  genome <- loadGenome(genome.name, fasta.style = "UCSC")
+  genome <- loadGenome(genome.name, fasta.style = "UCSC", fasta.path = fasta.path)
 
   pop.names <- c("afr", "ami", "amr", "asj", "eas", "fin", "nfe", "sas", "oth")
 

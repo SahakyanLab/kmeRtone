@@ -10,11 +10,11 @@
 #' @param ncbi.db NCBI database: "refseq" or "genbank".
 #' @param ncbi.asm NCBI assembly table.
 #' @param mask Genome mask: "none", "soft", or "hard". Default is "none".
-#' @param fasta.path Path to the fasta file as a character vector.
+#' @param fasta.path Path to a directory of user-provided genome FASTA files or 
+#'  the destination to save the NCBI/UCSC downloaded reference genome files.
 #' @param use.UCSC.name For NCBI Genome, use UCSC-style chromosome name? Default
 #'    is FALSE.
 #' @param load.limit Maximum chromosome sequences loaded. Default is 1.
-#' 
 #' @return A `UCSC_Genome` or `NCBI_Genome` object.
 #'
 #' @export

@@ -19,7 +19,7 @@
 #' @param genome.ncbi.db NCBI database for genome data.
 #' @param use.UCSC.chr.name Boolean indicating if UCSC chromosome naming is used.
 #' @param verbose Boolean indicating if verbose output is enabled.
-#'
+#' 
 #' @return Output directory containing exploration plots.
 #'
 #' @importFrom R6 R6Class
@@ -29,7 +29,7 @@
 EXPLORE <- function(
   case.coor.path, genome.name, strand.sensitive, k, case.pattern, output.path,
   case, genome, control, genome.path, single.case.len, rm.dup,
-  case.coor.1st.idx, coor.load.limit, genome.load.limit, genome.fasta.style,
+  case.coor.1st.idx, coor.load.limit, genome.load.limit, genome.fasta.style, 
   genome.ncbi.db, use.UCSC.chr.name, verbose) {
 
   dir.create(output.path, recursive = TRUE, showWarnings = FALSE)

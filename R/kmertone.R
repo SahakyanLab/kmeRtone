@@ -101,6 +101,12 @@ kmeRtone <- function(case.coor.path, genome.name, strand.sensitive, k,
     stop("Please provide genome information.")
   }
   if (!missing(genome)) stopifnot("Genome" %in% class(genome))
+  if (missing(genome.path)) {
+    message(paste0(
+      "No path to reference genome FASTA file is provided. \n
+      Using tempdir() instead."
+    ))
+  }
 
   # Operation
   if ((missing(strand.sensitive) || !is.logical(strand.sensitive)) &
@@ -182,8 +188,8 @@ kmeRtone <- function(case.coor.path, genome.name, strand.sensitive, k,
     EXPLORE(
       case.coor.path, genome.name, strand.sensitive, k, case.pattern,
       output.dir, case, genome, control, genome.path, single.case.len, rm.dup,
-      case.coor.1st.idx, coor.load.limit, genome.load.limit, genome.fasta.style,
-      genome.ncbi.db, use.UCSC.chr.name, verbose)
+      case.coor.1st.idx, coor.load.limit, genome.load.limit,
+      genome.fasta.style, genome.ncbi.db, use.UCSC.chr.name, verbose)
   }
 
   if ("tune" %in% module) TUNE()
@@ -199,7 +205,8 @@ kmeRtone <- function(case.coor.path, genome.name, strand.sensitive, k,
   if ("study_genic_elements" %in% module) {
     STUDY_GENIC_ELEMENTS(
       kmer.table, kmer.cutoff, k, genome.name, case.pattern,
-      db = "refseq", paste0(output.dir, "/study_genic_elements/"))
+      db = "refseq", paste0(output.dir, "/study_genic_elements/"),
+      fasta.path = genome.path)
   }
 
   if ("study_cancer_genes" %in% module) {
@@ -213,7 +220,8 @@ kmeRtone <- function(case.coor.path, genome.name, strand.sensitive, k,
       db = "refseq", case.pattern, population.size, selected.genes,
       add.to.existing.population = add.to.existing.population,
       paste0(output.dir, "/study_across_populations/"),
-      population.snv.dt, pop.loop.chr, pop.plot)
+      population.snv.dt, pop.loop.chr, pop.plot,
+      fasta.path = genome.path)
   }
 
   if ("study_G4_susceptibility" %in% module) STUDY_G4_SUSCEPTIBILITY()
