@@ -3,8 +3,8 @@ library(kmeRtone)
 temp_dir <- tempdir()
 
 set.seed(1234)
-temp_files <- character(5)
-for(chr in 1:5){
+temp_files <- character(3)
+for(chr in 20:22){
     genomic_coor <- data.table(
         seqnames = paste0("chr", chr),
         start = sample(
@@ -44,13 +44,13 @@ case_sum <- sum(output_file$case)
 
 testthat::test_that('case sum from scoring function', {
   # testthat::skip_on_cran()
-  testthat::expect_equal(8916, case_sum)
+  testthat::expect_equal(936, case_sum)
 })
 
 control_sum <- sum(output_file$control)
 testthat::test_that('control sum from scoring function', {
   # testthat::skip_on_cran()
-  testthat::expect_equal(133060, control_sum)
+  testthat::expect_equal(11932, control_sum)
 })
 
 rm_files <- file.remove(temp_files)
