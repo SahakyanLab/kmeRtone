@@ -38,9 +38,6 @@ fasta files.}
 \item{\code{avail_seqs}}{Available chromosome sequences in the fasta file.}
 
 \item{\code{asm}}{Assembly summary.}
-
-\item{\code{genome_file_path}}{A path to a directory to save the NCBI
-chromosome fasta files.}
 }
 \if{html}{\out{</div>}}
 }
