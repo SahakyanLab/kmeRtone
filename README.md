@@ -12,6 +12,8 @@ install.packages('kmeRtone')
 R CMD INSTALL kmeRtone_1.0.tar.gz
 ```
 
+The latest stable version is available in CRAN https://cran.r-project.org/web/packages/kmeRtone/index.html.
+
 Alternatively, download and install using the [latest release files from here.](https://github.com/SahakyanLab/kmertone/releases/)
 
 # Overview of `kmeRtone` operations
