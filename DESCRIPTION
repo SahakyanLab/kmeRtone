@@ -55,6 +55,7 @@ Encoding: UTF-8
 License: GPL-3
 LazyData: true
 Suggests: 
+    Rhtslib,
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
